@@ -36,45 +36,43 @@ function drawMesh(time) {
   const { width, height, pointer } = state;
   const influenceX = pointer.x * width;
   const influenceY = pointer.y * height;
-  const hoverStrength = Math.min(1, pointer.speed * 0.3 + 0.08);
-  const spacing = Math.max(38, height / 17);
+  const hoverStrength = Math.min(1, pointer.speed * 0.18 + 0.04);
 
   context.clearRect(0, 0, width, height);
   context.fillStyle = '#08050f';
   context.fillRect(0, 0, width, height);
 
-  const drawRibbon = (row, color, lineWidth, glow = false) => {
-    const baseY = row * spacing - spacing;
-    const phase = time * 0.00045 + row * 0.8;
-    const amplitude = 12 + hoverStrength * 30;
-
+  const drawCurve = (offset, side) => {
+    const phase = time * 0.00012 + offset * 0.06;
+    const spread = 16 + offset * 1.9;
+    const startX = side === 'left' ? -width * 0.32 - spread : width * 1.32 + spread;
+    const endX = side === 'left' ? width * 0.28 + spread : width * 0.72 - spread;
+    const startY = height * 0.94 - offset * 2.2;
+    const endY = side === 'left'
+      ? height * 0.12 + offset * 2.2
+      : height * 0.88 - offset * 2.2;
+    const controlX = side === 'left'
+      ? width * 0.04 + Math.sin(phase) * 28
+      : width * 0.96 + Math.sin(phase) * 28;
+    const controlY = height * 0.5 + (influenceY - height * 0.5) * hoverStrength * 0.18;
     context.beginPath();
-    for (let x = -40; x <= width + 40; x += 24) {
-      const distance = Math.abs(x - influenceX);
-      const focus = Math.max(0, 1 - distance / (width * 0.42));
-      const swell = Math.sin(focus * Math.PI) * (influenceY - baseY) * hoverStrength * 0.12;
-      const wave = Math.sin(x * 0.0035 + phase) * amplitude;
-      const secondaryWave = Math.sin(x * 0.007 + phase * 1.7) * amplitude * 0.16;
-      const y = baseY + wave + secondaryWave + swell;
-      if (x === -40) context.moveTo(x, y);
-      else context.lineTo(x, y);
-    }
+    context.moveTo(startX, startY);
+    context.quadraticCurveTo(controlX, controlY, endX, endY);
     context.lineCap = 'round';
-    context.lineJoin = 'round';
-    context.lineWidth = lineWidth;
-    context.strokeStyle = color;
-    if (glow) {
-      context.shadowColor = 'rgba(255, 45, 183, 0.5)';
-      context.shadowBlur = 24;
-    }
+    context.lineWidth = 1.2 + (offset % 5 === 0 ? 0.7 : 0);
+    context.strokeStyle = offset % 5 === 0
+      ? 'rgba(157, 91, 255, 0.58)'
+      : 'rgba(109, 59, 193, 0.32)';
     context.stroke();
-    context.shadowBlur = 0;
   };
 
-  for (let row = -2; row < 19; row += 1) {
-    drawRibbon(row, '#020105', 14 + hoverStrength * 7);
-    drawRibbon(row, row % 2 === 0 ? 'rgba(255, 48, 188, 0.92)' : 'rgba(206, 31, 145, 0.76)', 2.5 + hoverStrength * 2.5, true);
+  context.shadowColor = 'rgba(125, 54, 255, 0.42)';
+  context.shadowBlur = 10;
+  for (let offset = -10; offset < 52; offset += 1) {
+    drawCurve(offset, 'left');
+    drawCurve(offset, 'right');
   }
+  context.shadowBlur = 0;
 }
 
 function animate(time) {
@@ -186,31 +184,51 @@ soundtrack?.addEventListener('error', () => {
 const characterBackdrop = document.getElementById('section-character');
 const characterImage = characterBackdrop?.querySelector('img');
 const characterSections = document.querySelectorAll('.character-section');
+let activeCharacterIndex = -1;
+let characterSwapTimer;
 
-function showCharacter(section) {
+function showCharacter(section, visibility = 1) {
   if (!characterBackdrop || !characterImage) return;
-  characterImage.src = section.dataset.characterImage || 'images/goku-black-hero.png';
-  characterBackdrop.classList.add('is-visible');
+  const sectionIndex = [...characterSections].indexOf(section);
+  const image = section.dataset.characterImage || 'images/goku-black-hero.png';
+  if (sectionIndex !== activeCharacterIndex) {
+    activeCharacterIndex = sectionIndex;
+    characterBackdrop.classList.remove('is-visible');
+    clearTimeout(characterSwapTimer);
+    characterSwapTimer = setTimeout(() => {
+      characterImage.src = image;
+      requestAnimationFrame(() => characterBackdrop.classList.add('is-visible'));
+    }, 260);
+    return;
+  }
+  characterBackdrop.style.setProperty('--character-opacity', String(visibility * 0.16));
+  if (visibility <= 0.08) characterBackdrop.classList.remove('is-visible');
+  else if (sectionIndex === activeCharacterIndex) characterBackdrop.classList.add('is-visible');
 }
 
-function hideCharacter() {
-  characterBackdrop?.classList.remove('is-visible');
-}
+function updateCharacterOnScroll() {
+  if (!characterSections.length) return;
+  const viewportCenter = window.innerHeight * 0.5;
+  let closestSection = characterSections[0];
+  let closestDistance = Infinity;
 
-characterSections.forEach((section) => {
-  section.addEventListener('pointerenter', () => showCharacter(section));
-  section.addEventListener('pointerleave', hideCharacter);
-});
-
-if ('IntersectionObserver' in window) {
-  const sectionObserver = new IntersectionObserver((entries) => {
-    if (window.matchMedia('(pointer: coarse)').matches) {
-      const visibleSection = entries.find((entry) => entry.isIntersecting);
-      if (visibleSection) showCharacter(visibleSection.target);
+  characterSections.forEach((section) => {
+    const rect = section.getBoundingClientRect();
+    const sectionCenter = rect.top + rect.height * 0.5;
+    const distance = Math.abs(sectionCenter - viewportCenter);
+    if (distance < closestDistance) {
+      closestDistance = distance;
+      closestSection = section;
     }
-  }, { threshold: 0.5 });
-  characterSections.forEach((section) => sectionObserver.observe(section));
+  });
+
+  const fadeRange = window.innerHeight * 0.72;
+  showCharacter(closestSection, Math.max(0, 1 - closestDistance / fadeRange));
 }
+
+window.addEventListener('scroll', updateCharacterOnScroll, { passive: true });
+window.addEventListener('resize', updateCharacterOnScroll);
+updateCharacterOnScroll();
 
 // Simple local clock (edit the timeZone below if you want to lock it to a specific place)
 function updateClock() {
