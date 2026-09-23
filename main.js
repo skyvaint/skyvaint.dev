@@ -19,6 +19,12 @@ let sourceMode = 'remote';
 let interactionAudioContext;
 let nextThunderAt = 0;
 let thunder = null;
+const characterImages = [
+  'images/goku-black-hero.png',
+  'images/goku-black-hero2.png',
+  'images/goku-black-hero3.png',
+  'images/goku-black-hero4.png',
+];
 
 const state = {
   width: 0,
@@ -87,7 +93,7 @@ function drawMesh(time) {
       duration: 180 + Math.random() * 180,
       seed: Math.random() * 100,
     };
-    nextThunderAt = time + 2200 + Math.random() * 4200;
+    nextThunderAt = time + 850 + Math.random() * 1900;
   }
   if (thunder) {
     const age = time - thunder.started;
@@ -121,15 +127,16 @@ function drawMesh(time) {
   }
 
   // Small drifting particles add depth without competing with the content.
-  for (let particle = 0; particle < 18; particle += 1) {
+  for (let particle = 0; particle < 82; particle += 1) {
     const phase = time * 0.00025 + particle * 2.7;
-    const x = ((particle * 137 + time * 0.012 * (particle % 2 ? 1 : -1)) % (width + 120)) - 60;
-    const y = ((particle * 83 + Math.sin(phase) * 90) % (height + 80)) - 40;
+    const x = ((particle * 137 + time * 0.018 * (particle % 2 ? 1 : -1)) % (width + 120)) - 60;
+    const y = ((particle * 83 + time * 0.006 * (particle % 3 ? 1 : -1) + Math.sin(phase) * 90) % (height + 80)) - 40;
+    const twinkle = 0.45 + Math.sin(phase * 2.4) * 0.35;
     context.fillStyle = particle % 3 === 0
-      ? 'rgba(255, 143, 221, 0.42)'
-      : 'rgba(139, 61, 255, 0.3)';
+      ? `rgba(255, 143, 221, ${Math.max(0.08, twinkle)})`
+      : `rgba(180, 142, 255, ${Math.max(0.06, twinkle * 0.72)})`;
     context.beginPath();
-    context.arc(x, y, 1.2 + (particle % 3) * 0.5, 0, Math.PI * 2);
+    context.arc(x, y, 0.7 + (particle % 4) * 0.45, 0, Math.PI * 2);
     context.fill();
   }
 
@@ -329,23 +336,39 @@ document.querySelectorAll('.project-card, .social-card, .tool, .price-card, .sta
 });
 
 const characterBackdrop = document.getElementById('section-character');
-const characterImage = characterBackdrop?.querySelector('img');
+const characterLayers = characterBackdrop ? [...characterBackdrop.querySelectorAll('.character-layer')] : [];
 const characterSections = document.querySelectorAll('.character-section');
 let activeCharacterIndex = -1;
 let characterSwapTimer;
+let activeCharacterLayer = 0;
+let activeCharacterImage = '';
+let characterCycleIndex = 0;
+
+function swapCharacterImage(image) {
+  if (!characterBackdrop || characterLayers.length < 2 || image === activeCharacterImage) return;
+  activeCharacterImage = image;
+  const nextLayer = activeCharacterLayer === 0 ? 1 : 0;
+  const currentLayer = characterLayers[activeCharacterLayer];
+  const incomingLayer = characterLayers[nextLayer];
+  clearTimeout(characterSwapTimer);
+  characterBackdrop.classList.remove('is-visible');
+  characterSwapTimer = setTimeout(() => {
+    incomingLayer.src = image;
+    incomingLayer.classList.add('is-active');
+    currentLayer.classList.remove('is-active');
+    activeCharacterLayer = nextLayer;
+    requestAnimationFrame(() => characterBackdrop.classList.add('is-visible'));
+  }, 420);
+}
 
 function showCharacter(section, visibility = 1) {
-  if (!characterBackdrop || !characterImage) return;
+  if (!characterBackdrop || characterLayers.length < 2) return;
   const sectionIndex = [...characterSections].indexOf(section);
   const image = section.dataset.characterImage || 'images/goku-black-hero.png';
   if (sectionIndex !== activeCharacterIndex) {
     activeCharacterIndex = sectionIndex;
-    characterBackdrop.classList.remove('is-visible');
-    clearTimeout(characterSwapTimer);
-    characterSwapTimer = setTimeout(() => {
-      characterImage.src = image;
-      requestAnimationFrame(() => characterBackdrop.classList.add('is-visible'));
-    }, 260);
+    characterCycleIndex = Math.max(0, characterImages.indexOf(image));
+    swapCharacterImage(image);
     return;
   }
   characterBackdrop.style.setProperty('--character-opacity', String(visibility * 0.16));
@@ -376,6 +399,11 @@ function updateCharacterOnScroll() {
 window.addEventListener('scroll', updateCharacterOnScroll, { passive: true });
 window.addEventListener('resize', updateCharacterOnScroll);
 updateCharacterOnScroll();
+setInterval(() => {
+  if (motionReduced.matches || !characterSections.length) return;
+  characterCycleIndex = (characterCycleIndex + 1) % characterImages.length;
+  swapCharacterImage(characterImages[characterCycleIndex]);
+}, 20000);
 
 // Simple local clock (edit the timeZone below if you want to lock it to a specific place)
 function updateClock() {
