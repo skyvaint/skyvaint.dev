@@ -37,13 +37,14 @@
 <div class="lightning lightning-right" aria-hidden="true"></div>
 
 <aside class="soundtrack" aria-label="Soundtrack player">
-  <span class="soundtrack-label">Soundtrack</span>
-  <strong id="track-name">Breeze</strong>
+  <div class="soundtrack-heading"><span class="soundtrack-label">Now transmitting</span><span class="soundwave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span></div>
+  <strong id="track-name">Old Digicam</strong>
   <div class="soundtrack-controls">
-    <button id="soundtrack-toggle" type="button" aria-label="Play soundtrack">Play</button>
-    <button id="track-prev" type="button" aria-label="Previous track">Prev</button>
-    <button id="track-next" type="button" aria-label="Next track">Next</button>
+    <button id="soundtrack-toggle" class="play-button" type="button" aria-label="Play soundtrack">Play</button>
+    <button id="track-prev" type="button" aria-label="Previous track">‹</button>
+    <button id="track-next" type="button" aria-label="Next track">›</button>
   </div>
+  <div class="track-progress" role="slider" aria-label="Track progress" tabindex="0"><span id="track-progress-fill"></span></div>
   <span id="track-status">Paused</span>
   <audio id="soundtrack-audio" preload="metadata"></audio>
 </aside>
@@ -58,6 +59,12 @@
   </nav>
   <a href="#contact" class="nav-cta">Contact</a>
 </header>
+
+<div class="top-energy" aria-hidden="true">
+  <div class="top-energy-copy"><span>SKYVAINT // DIGITAL FORGE</span><b>MOVE WITH THE CURRENT</b></div>
+  <div class="top-energy-mesh"></div>
+  <div class="top-energy-orb"></div>
+</div>
 
 <!-- HERO -->
 <section class="hero character-section" data-character-image="images/goku-black-hero.png">
@@ -256,10 +263,10 @@
   <p class="section-sub">Daily drivers for building and shipping.</p>
 
   <div class="tools-grid">
-    <div class="tool"><span class="tool-icon roblox" aria-hidden="true">R</span><span>Roblox Studio</span></div>
-    <div class="tool"><span class="tool-icon figma" aria-hidden="true">F</span><span>Figma</span></div>
-    <div class="tool"><span class="tool-icon vscode" aria-hidden="true">&lt;/&gt;</span><span>VS Code</span></div>
-    <div class="tool"><span class="tool-icon blender" aria-hidden="true">B</span><span>Blender</span></div>
+    <div class="tool"><span class="tool-icon roblox" aria-hidden="true"><img src="images/icons/roblox.svg" alt=""></span><span>Roblox Studio</span></div>
+    <div class="tool"><span class="tool-icon figma" aria-hidden="true"><img src="images/icons/figma.svg" alt=""></span><span>Figma</span></div>
+    <div class="tool"><span class="tool-icon vscode" aria-hidden="true"><img src="images/icons/vscode.svg" alt=""></span><span>VS Code</span></div>
+    <div class="tool"><span class="tool-icon blender" aria-hidden="true"><img src="images/icons/blender.svg" alt=""></span><span>Blender</span></div>
   </div>
 </section>
 

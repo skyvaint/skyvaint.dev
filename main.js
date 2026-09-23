@@ -5,15 +5,20 @@ const soundtrack = document.getElementById('soundtrack-audio');
 const soundtrackToggle = document.getElementById('soundtrack-toggle');
 const trackName = document.getElementById('track-name');
 const trackStatus = document.getElementById('track-status');
+const progressFill = document.getElementById('track-progress-fill');
+const progressBar = document.querySelector('.track-progress');
 const tracks = [
-  { name: 'Breeze', source: 'music/Breeze.mp3' },
-  { name: 'Crazy My Beat', source: 'music/Crazy My Beat.mp3' },
-  { name: 'Old Digicam', source: 'music/Old Digicam.mp3' },
+  { name: 'Breeze', local: 'music/Breeze.mp3', remote: 'https://raw.githubusercontent.com/skyvaint/skyvaint.dev/main/music/Breeze.mp3' },
+  { name: 'Crazy My Beat', local: 'music/Crazy%20My%20Beat.mp3', remote: 'https://raw.githubusercontent.com/skyvaint/skyvaint.dev/main/music/Crazy%20My%20Beat.mp3' },
+  { name: 'Old Digicam', local: 'music/Old%20Digicam.mp3', remote: 'https://raw.githubusercontent.com/skyvaint/skyvaint.dev/main/music/Old%20Digicam.mp3' },
 ];
 let trackIndex = 2;
 let trackLoadId = 0;
 let pendingPlay = false;
+let sourceMode = 'remote';
 let interactionAudioContext;
+let nextThunderAt = 0;
+let thunder = null;
 
 const state = {
   width: 0,
@@ -74,6 +79,46 @@ function drawMesh(time) {
     drawCurve(offset, 'right');
   }
   context.shadowBlur = 0;
+
+  if (time > nextThunderAt) {
+    thunder = {
+      side: Math.random() > 0.5 ? 'left' : 'right',
+      started: time,
+      duration: 180 + Math.random() * 180,
+      seed: Math.random() * 100,
+    };
+    nextThunderAt = time + 2200 + Math.random() * 4200;
+  }
+  if (thunder) {
+    const age = time - thunder.started;
+    if (age < thunder.duration) {
+      const progress = age / thunder.duration;
+      const alpha = Math.sin(progress * Math.PI) * (0.65 + Math.random() * 0.35);
+      const originX = thunder.side === 'left' ? width * 0.08 : width * 0.92;
+      const direction = thunder.side === 'left' ? 1 : -1;
+      context.save();
+      context.globalAlpha = alpha;
+      context.strokeStyle = '#ff8fdd';
+      context.shadowColor = '#ff3ec8';
+      context.shadowBlur = 22;
+      context.lineWidth = 2.4;
+      context.beginPath();
+      context.moveTo(originX, -10);
+      for (let bolt = 0; bolt < 9; bolt += 1) {
+        const y = 40 + bolt * height * 0.09;
+        const x = originX + direction * (Math.sin(thunder.seed + bolt * 8) * 70 + bolt * 12);
+        context.lineTo(x, y);
+      }
+      context.stroke();
+      context.strokeStyle = 'rgba(255, 255, 255, .9)';
+      context.shadowBlur = 4;
+      context.lineWidth = 0.8;
+      context.stroke();
+      context.restore();
+    } else {
+      thunder = null;
+    }
+  }
 
   // Small drifting particles add depth without competing with the content.
   for (let particle = 0; particle < 18; particle += 1) {
@@ -137,12 +182,14 @@ function loadTrack(index) {
   pendingPlay = false;
   trackIndex = (index + tracks.length) % tracks.length;
   const track = tracks[trackIndex];
-  soundtrack.src = encodeURI(track.source);
+  sourceMode = 'remote';
+  soundtrack.src = track.remote;
   soundtrack.load();
   trackName.textContent = track.name;
-  trackStatus.textContent = 'Ready';
+  trackStatus.textContent = 'Loading stream...';
   soundtrackToggle.textContent = 'Play';
   soundtrackToggle.setAttribute('aria-label', `Play ${track.name}`);
+  if (progressFill) progressFill.style.width = '0%';
   return trackLoadId;
 }
 
@@ -199,11 +246,30 @@ soundtrack?.addEventListener('ended', () => {
 soundtrack?.addEventListener('canplay', () => {
   if (pendingPlay) playLoadedTrack(trackLoadId);
 });
+soundtrack?.addEventListener('canplaythrough', () => {
+  if (!pendingPlay) trackStatus.textContent = sourceMode === 'remote' ? 'Ready · GitHub stream' : 'Ready · local fallback';
+  if (pendingPlay) playLoadedTrack(trackLoadId);
+});
 soundtrack?.addEventListener('error', () => {
+  const track = tracks[trackIndex];
+  if (sourceMode === 'remote' && track.local) {
+    sourceMode = 'local';
+    trackStatus.textContent = 'Retrying local file...';
+    soundtrack.src = track.local;
+    soundtrack.load();
+    return;
+  }
   pendingPlay = false;
-  trackStatus.textContent = window.location.protocol === 'file:'
-    ? 'Use Live Server'
-    : 'Audio unavailable';
+  trackStatus.textContent = window.location.protocol === 'file:' ? 'Use Live Server' : 'Audio unavailable';
+});
+soundtrack?.addEventListener('timeupdate', () => {
+  if (!progressFill || !soundtrack.duration) return;
+  progressFill.style.width = `${(soundtrack.currentTime / soundtrack.duration) * 100}%`;
+});
+progressBar?.addEventListener('click', (event) => {
+  if (!soundtrack?.duration) return;
+  const bounds = progressBar.getBoundingClientRect();
+  soundtrack.currentTime = ((event.clientX - bounds.left) / bounds.width) * soundtrack.duration;
 });
 
 function getInteractionAudioContext() {
