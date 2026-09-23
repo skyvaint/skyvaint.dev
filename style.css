@@ -652,9 +652,9 @@ a { color: inherit; text-decoration: none; }
 .lightning-left { left: -34px; transform: rotate(-8deg); }
 .lightning-right { right: -34px; transform: scaleX(-1) rotate(-8deg); animation-delay: -2.2s; }
 @keyframes lightning-pulse {
-    0%, 100% { opacity: .12; transform: translateY(10px) scaleY(.92); }
+    0%, 100% { opacity: .12; }
     8%, 12% { opacity: .78; }
-    50% { opacity: .2; transform: translateY(-8px) scaleY(1.04); }
+    50% { opacity: .2; }
     52%, 55% { opacity: .9; }
 }
 

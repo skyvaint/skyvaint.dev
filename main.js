@@ -19,6 +19,7 @@ let sourceMode = 'remote';
 let interactionAudioContext;
 let nextThunderAt = 0;
 let thunder = null;
+let thunderSide = 'left';
 const characterImages = [
   'images/goku-black-hero.png',
   'images/goku-black-hero2.png',
@@ -87,19 +88,20 @@ function drawMesh(time) {
   context.shadowBlur = 0;
 
   if (time > nextThunderAt) {
+    thunderSide = thunderSide === 'left' ? 'right' : 'left';
     thunder = {
-      side: Math.random() > 0.5 ? 'left' : 'right',
+      side: thunderSide,
       started: time,
-      duration: 180 + Math.random() * 180,
+      duration: 520 + Math.random() * 340,
       seed: Math.random() * 100,
     };
-    nextThunderAt = time + 850 + Math.random() * 1900;
+    nextThunderAt = time + 1500 + Math.random() * 2200;
   }
   if (thunder) {
     const age = time - thunder.started;
     if (age < thunder.duration) {
       const progress = age / thunder.duration;
-      const alpha = Math.sin(progress * Math.PI) * (0.65 + Math.random() * 0.35);
+      const alpha = Math.sin(progress * Math.PI) * 0.85;
       const originX = thunder.side === 'left' ? width * 0.08 : width * 0.92;
       const direction = thunder.side === 'left' ? 1 : -1;
       context.save();
@@ -121,13 +123,20 @@ function drawMesh(time) {
       context.lineWidth = 0.8;
       context.stroke();
       context.restore();
+      if (progress > 0.18 && progress < 0.5) {
+        context.save();
+        context.globalAlpha = alpha * 0.12;
+        context.fillStyle = '#ff3ec8';
+        context.fillRect(0, 0, width, height);
+        context.restore();
+      }
     } else {
       thunder = null;
     }
   }
 
   // Small drifting particles add depth without competing with the content.
-  for (let particle = 0; particle < 82; particle += 1) {
+  for (let particle = 0; particle < 150; particle += 1) {
     const phase = time * 0.00025 + particle * 2.7;
     const x = ((particle * 137 + time * 0.018 * (particle % 2 ? 1 : -1)) % (width + 120)) - 60;
     const y = ((particle * 83 + time * 0.006 * (particle % 3 ? 1 : -1) + Math.sin(phase) * 90) % (height + 80)) - 40;
@@ -139,6 +148,18 @@ function drawMesh(time) {
     context.arc(x, y, 0.7 + (particle % 4) * 0.45, 0, Math.PI * 2);
     context.fill();
   }
+
+  context.save();
+  context.globalAlpha = 0.16;
+  context.strokeStyle = 'rgba(255, 143, 221, .42)';
+  context.lineWidth = 0.7;
+  for (let ring = 0; ring < 5; ring += 1) {
+    const radius = 90 + ring * 72 + Math.sin(time * 0.0004 + ring) * 12;
+    context.beginPath();
+    context.arc(width * (0.18 + pointer.x * 0.64), height * (0.3 + pointer.y * 0.4), radius, 0, Math.PI * 2);
+    context.stroke();
+  }
+  context.restore();
 
   // Brief side flashes respond to pointer speed, like distant energy strikes.
   const flash = Math.min(0.22, pointer.speed * 0.12);
@@ -194,8 +215,8 @@ function loadTrack(index) {
   soundtrack.load();
   trackName.textContent = track.name;
   trackStatus.textContent = 'Loading stream...';
-  soundtrackToggle.textContent = 'Play';
-  soundtrackToggle.setAttribute('aria-label', `Play ${track.name}`);
+  soundtrackToggle.textContent = 'Stop';
+  soundtrackToggle.setAttribute('aria-label', `Stop ${track.name}`);
   if (progressFill) progressFill.style.width = '0%';
   return trackLoadId;
 }
@@ -204,8 +225,8 @@ function playLoadedTrack(loadId) {
   if (!soundtrack || loadId !== trackLoadId) return;
   soundtrack.play().then(() => {
     if (loadId !== trackLoadId) return;
-    soundtrackToggle.textContent = 'Pause';
-    soundtrackToggle.setAttribute('aria-label', `Pause ${tracks[trackIndex].name}`);
+    soundtrackToggle.textContent = 'Stop';
+    soundtrackToggle.setAttribute('aria-label', `Stop ${tracks[trackIndex].name}`);
     trackStatus.textContent = 'Playing';
   }).catch((error) => {
     if (loadId !== trackLoadId || error.name === 'AbortError') return;
@@ -230,14 +251,21 @@ function toggleSoundtrack() {
   } else {
     soundtrack.pause();
     pendingPlay = false;
-    soundtrackToggle.textContent = 'Play';
-    soundtrackToggle.setAttribute('aria-label', `Play ${tracks[trackIndex].name}`);
+    soundtrackToggle.textContent = 'Stop';
+    soundtrackToggle.setAttribute('aria-label', `Stop ${tracks[trackIndex].name}`);
     trackStatus.textContent = 'Paused';
   }
 }
 
 loadTrack(trackIndex);
+pendingPlay = true;
+trackStatus.textContent = 'Loading stream...';
 soundtrackToggle?.addEventListener('click', toggleSoundtrack);
+const retryAutoplay = () => {
+  if (soundtrack?.paused && pendingPlay) playCurrentTrack();
+};
+document.addEventListener('pointerdown', retryAutoplay, { once: true });
+document.addEventListener('keydown', retryAutoplay, { once: true });
 document.getElementById('track-prev')?.addEventListener('click', () => {
   loadTrack(trackIndex - 1);
   playCurrentTrack();
@@ -365,6 +393,7 @@ function showCharacter(section, visibility = 1) {
   if (!characterBackdrop || characterLayers.length < 2) return;
   const sectionIndex = [...characterSections].indexOf(section);
   const image = section.dataset.characterImage || 'images/goku-black-hero.png';
+  characterBackdrop.style.setProperty('--character-opacity', String(visibility * 0.16));
   if (sectionIndex !== activeCharacterIndex) {
     activeCharacterIndex = sectionIndex;
     characterCycleIndex = Math.max(0, characterImages.indexOf(image));
