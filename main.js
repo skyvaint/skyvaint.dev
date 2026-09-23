@@ -81,10 +81,13 @@ function drawMesh(time) {
 
   context.shadowColor = 'rgba(125, 54, 255, 0.42)';
   context.shadowBlur = 10;
-  for (let offset = -10; offset < 52; offset += 1) {
-    drawCurve(offset, 'left');
-    drawCurve(offset, 'right');
+  for (let vectorGroup = 0; vectorGroup < 10; vectorGroup += 1) {
+    context.globalAlpha = 0.34 + (vectorGroup % 3) * 0.08;
+    for (let offset = -10; offset < 52; offset += 1) {
+      drawCurve(offset + vectorGroup * 0.72, vectorGroup % 2 ? 'right' : 'left');
+    }
   }
+  context.globalAlpha = 1;
   context.shadowBlur = 0;
 
   if (time > nextThunderAt) {
@@ -136,7 +139,7 @@ function drawMesh(time) {
   }
 
   // Small drifting particles add depth without competing with the content.
-  for (let particle = 0; particle < 150; particle += 1) {
+  for (let particle = 0; particle < 240; particle += 1) {
     const phase = time * 0.00025 + particle * 2.7;
     const x = ((particle * 137 + time * 0.018 * (particle % 2 ? 1 : -1)) % (width + 120)) - 60;
     const y = ((particle * 83 + time * 0.006 * (particle % 3 ? 1 : -1) + Math.sin(phase) * 90) % (height + 80)) - 40;
@@ -215,8 +218,8 @@ function loadTrack(index) {
   soundtrack.load();
   trackName.textContent = track.name;
   trackStatus.textContent = 'Loading stream...';
-  soundtrackToggle.textContent = 'Stop';
-  soundtrackToggle.setAttribute('aria-label', `Stop ${track.name}`);
+  soundtrackToggle.textContent = 'Resume';
+  soundtrackToggle.setAttribute('aria-label', `Resume ${track.name}`);
   if (progressFill) progressFill.style.width = '0%';
   return trackLoadId;
 }
@@ -239,6 +242,8 @@ function playCurrentTrack() {
   if (!soundtrack) return;
   pendingPlay = true;
   trackStatus.textContent = 'Loading...';
+  soundtrackToggle.textContent = 'Loading';
+  soundtrackToggle.setAttribute('aria-label', `Loading ${tracks[trackIndex].name}`);
   if (soundtrack.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) {
     playLoadedTrack(trackLoadId);
   }
@@ -251,8 +256,8 @@ function toggleSoundtrack() {
   } else {
     soundtrack.pause();
     pendingPlay = false;
-    soundtrackToggle.textContent = 'Stop';
-    soundtrackToggle.setAttribute('aria-label', `Stop ${tracks[trackIndex].name}`);
+    soundtrackToggle.textContent = 'Resume';
+    soundtrackToggle.setAttribute('aria-label', `Resume ${tracks[trackIndex].name}`);
     trackStatus.textContent = 'Paused';
   }
 }
@@ -260,6 +265,8 @@ function toggleSoundtrack() {
 loadTrack(trackIndex);
 pendingPlay = true;
 trackStatus.textContent = 'Loading stream...';
+soundtrackToggle.textContent = 'Loading';
+soundtrackToggle.setAttribute('aria-label', `Loading ${tracks[trackIndex].name}`);
 soundtrackToggle?.addEventListener('click', toggleSoundtrack);
 const retryAutoplay = () => {
   if (soundtrack?.paused && pendingPlay) playCurrentTrack();
@@ -322,15 +329,15 @@ function playInteractionTone(type) {
     const oscillator = audioContext.createOscillator();
     const gain = audioContext.createGain();
     const now = audioContext.currentTime;
-    oscillator.type = type === 'leave' ? 'sine' : 'triangle';
-    oscillator.frequency.setValueAtTime(type === 'leave' ? 180 : 260, now);
-    oscillator.frequency.exponentialRampToValueAtTime(type === 'leave' ? 110 : 420, now + 0.07);
+    oscillator.type = type === 'leave' ? 'sine' : 'sawtooth';
+    oscillator.frequency.setValueAtTime(type === 'leave' ? 310 : 480, now);
+    oscillator.frequency.exponentialRampToValueAtTime(type === 'leave' ? 170 : 760, now + 0.16);
     gain.gain.setValueAtTime(0.0001, now);
-    gain.gain.exponentialRampToValueAtTime(0.025, now + 0.012);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.1);
+    gain.gain.exponentialRampToValueAtTime(0.018, now + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.24);
     oscillator.connect(gain).connect(audioContext.destination);
     oscillator.start(now);
-    oscillator.stop(now + 0.11);
+    oscillator.stop(now + 0.25);
   } catch (error) {
     // Browsers can deny Web Audio until a user gesture; visual effects still work.
     if (error.name !== 'NotAllowedError') console.warn('Interaction sound unavailable:', error);
@@ -391,45 +398,18 @@ function swapCharacterImage(image) {
 
 function showCharacter(section, visibility = 1) {
   if (!characterBackdrop || characterLayers.length < 2) return;
-  const sectionIndex = [...characterSections].indexOf(section);
-  const image = section.dataset.characterImage || 'images/goku-black-hero.png';
   characterBackdrop.style.setProperty('--character-opacity', String(visibility * 0.16));
-  if (sectionIndex !== activeCharacterIndex) {
-    activeCharacterIndex = sectionIndex;
-    characterCycleIndex = Math.max(0, characterImages.indexOf(image));
-    swapCharacterImage(image);
-    return;
-  }
-  characterBackdrop.style.setProperty('--character-opacity', String(visibility * 0.16));
-  if (visibility <= 0.08) characterBackdrop.classList.remove('is-visible');
-  else if (sectionIndex === activeCharacterIndex) characterBackdrop.classList.add('is-visible');
+  if (visibility > 0.08) characterBackdrop.classList.add('is-visible');
 }
 
-function updateCharacterOnScroll() {
-  if (!characterSections.length) return;
-  const viewportCenter = window.innerHeight * 0.5;
-  let closestSection = characterSections[0];
-  let closestDistance = Infinity;
-
-  characterSections.forEach((section) => {
-    const rect = section.getBoundingClientRect();
-    const sectionCenter = rect.top + rect.height * 0.5;
-    const distance = Math.abs(sectionCenter - viewportCenter);
-    if (distance < closestDistance) {
-      closestDistance = distance;
-      closestSection = section;
-    }
-  });
-
-  const fadeRange = window.innerHeight * 0.72;
-  showCharacter(closestSection, Math.max(0, 1 - closestDistance / fadeRange));
+if (characterBackdrop && characterLayers.length) {
+  characterBackdrop.style.setProperty('--character-opacity', '0.16');
+  characterLayers[0].classList.add('is-active');
+  activeCharacterImage = characterImages[0];
+  characterBackdrop.classList.add('is-visible');
 }
-
-window.addEventListener('scroll', updateCharacterOnScroll, { passive: true });
-window.addEventListener('resize', updateCharacterOnScroll);
-updateCharacterOnScroll();
 setInterval(() => {
-  if (motionReduced.matches || !characterSections.length) return;
+  if (motionReduced.matches || !characterLayers.length) return;
   characterCycleIndex = (characterCycleIndex + 1) % characterImages.length;
   swapCharacterImage(characterImages[characterCycleIndex]);
 }, 20000);
