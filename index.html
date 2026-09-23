@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>skyvaint</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="BackgroundEffect"></div>
+<canvas id="GradientCanvas"></canvas>
+<div id="section-character" aria-hidden="true">
+  <img src="images/goku-black-hero.png" alt="">
+</div>
+<div class="glow glow-a"></div>
+<div class="glow glow-b"></div>
+
+<aside class="soundtrack" aria-label="Soundtrack player">
+  <span class="soundtrack-label">Soundtrack</span>
+  <strong id="track-name">Breeze</strong>
+  <div class="soundtrack-controls">
+    <button id="soundtrack-toggle" type="button" aria-label="Play soundtrack">Play</button>
+    <button id="track-prev" type="button" aria-label="Previous track">Prev</button>
+    <button id="track-next" type="button" aria-label="Next track">Next</button>
+  </div>
+  <span id="track-status">Paused</span>
+  <audio id="soundtrack-audio" preload="metadata"></audio>
+</aside>
+
+<header class="nav">
+  <a href="#" class="nav-brand">skyvaint<span class="dot">.</span></a>
+  <nav class="nav-links">
+    <a href="#about">About</a>
+    <a href="#work">Work</a>
+    <a href="#experience">Experience</a>
+    <a href="#tools">Tools</a>
+  </nav>
+  <a href="#contact" class="nav-cta">Contact</a>
+</header>
+
+<!-- HERO -->
+<section class="hero character-section" data-character-image="images/goku-black-hero.png">
+  <div class="hero-text">
+    <p class="kicker">Roblox Developer</p>
+    <h1>Hi, I'm skyvaint.</h1>
+    <p class="hero-sub">I build worlds, systems and UI for Roblox — pulling from the same energy that makes a rose-gold timeline villain look effortless.</p>
+    <div class="hero-actions">
+      <a href="#work" class="btn btn-primary">View Work</a>
+      <a href="#contact" class="btn btn-ghost">Get in Touch</a>
+    </div>
+  </div>
+  <div class="hero-art">
+    <!-- FILLER: drop a Goku Black DBL render here (transparent PNG works best) -->
+    <div class="hero-frame" id="hero-image-slot">
+      <img src="images/goku-black-hero.png" alt="Goku Black" onerror="this.parentElement.classList.add('placeholder')">
+      <span class="placeholder-label">Goku Black render → images/goku-black-hero.png</span>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="about character-section" data-character-image="images/goku-black-hero.png">
+  <div class="about-copy">
+    <h2>About Me</h2>
+    <p>I'm skyvaint, a Roblox developer who likes building things that feel a little sharper than they need to be — clean systems underneath, and UI that doesn't get in the way.</p>
+    <p>I'm curious by default. That means constantly pulling things apart to see how they tick, then putting them back together better. Scripting, UI, gameplay loops — I go wherever the project needs me.</p>
+  </div>
+  <div class="about-stats">
+    <div class="stat">
+      <span class="stat-value">From</span>
+      <span class="stat-label">Earth, presumably</span>
+    </div>
+    <div class="stat">
+      <span class="stat-value" id="clock">00:00</span>
+      <span class="stat-label">Local Time</span>
+    </div>
+  </div>
+</section>
+
+<!-- SOCIALS -->
+<section class="socials character-section" data-character-image="images/goku-black-hero.png">
+  <a href="https://discord.com" target="_blank" class="social-card">
+    <span class="social-name">Discord</span>
+    <span class="social-handle">@skyvaint</span>
+  </a>
+  <a href="https://instagram.com" target="_blank" class="social-card">
+    <span class="social-name">Instagram</span>
+    <span class="social-handle">@skyvaint</span>
+  </a>
+  <a href="https://x.com" target="_blank" class="social-card">
+    <span class="social-name">X</span>
+    <span class="social-handle">@skyvaint</span>
+  </a>
+  <a href="https://roblox.com" target="_blank" class="social-card">
+    <span class="social-name">Roblox</span>
+    <span class="social-handle">skyvaint</span>
+  </a>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience" class="experience character-section" data-character-image="images/goku-black-hero.png">
+  <h2>Experience</h2>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-marker"></div>
+      <div class="timeline-content">
+        <div class="timeline-head">
+          <h3>Blockturns Studio</h3>
+          <span class="timeline-date">April - June</span>
+        </div>
+        <p class="timeline-role">Liveops Programmer</p>
+        <p>Maintaining players engaged, coding new systems, QOL improvements</p>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-marker"></div>
+      <div class="timeline-content">
+        <div class="timeline-head">
+          <h3>Indigo Studios</h3>
+          <span class="timeline-date">January – March</span>
+        </div>
+        <p class="timeline-role">Programmer</p>
+        <p>Creating new systems, games and liveops for all Indigo Experiences i had been tasked to maintain.</p>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-marker"></div>
+      <div class="timeline-content">
+        <div class="timeline-head">
+          <h3>Future Soccer</h3>
+          <span class="timeline-date">Month Year – Month Year</span>
+        </div>
+        <p class="timeline-role">Founder / Solo Dev</p>
+        <p>A personal project of mine, focused on developing a unique soccer experience.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="work" class="projects character-section" data-character-image="images/goku-black-hero2.png">
+  <h2>Past Work</h2>
+  <p class="section-sub">Real projects that show technical depth and product thinking.</p>
+
+  <div class="project-grid">
+    <article class="project-card">
+      <!-- FILLER: drop your own gameplay mp4 here -->
+      <div class="project-media placeholder video-slot">
+        <span class="placeholder-label">videos/project-1.mp4</span>
+      </div>
+      <h3>Future Soccer</h3>
+      <p>A unique football experience, for experienced players, with momentum and physics.</p>
+      <div class="tags"><span>Anime</span><span>Fighting</span><span>Fullstacked</span></div>
+    </article>
+
+    <article class="project-card">
+      <div class="project-media placeholder">
+        <span class="placeholder-label">images/project-2.jpg</span>
+      </div>
+      <h3>Project 2</h3>
+      <p>One or two sentences on what the game is and why it's fun to play.</p>
+      <div class="tags"><span>Tag</span><span>Tag</span><span>Tag</span></div>
+    </article>
+
+  </div>
+
+  <a href="#" class="view-all">View All Projects →</a>
+</section>
+
+<!-- TOOLS -->
+<section id="tools" class="tools character-section" data-character-image="images/goku-black-hero2.png">
+  <h2>Software & Tools</h2>
+  <p class="section-sub">Daily drivers for building and shipping.</p>
+
+  <div class="tools-grid">
+    <div class="tool"><span>Roblox Studio</span></div>
+    <div class="tool"><span>Figma</span></div>
+    <div class="tool"><span>VS Code</span></div>
+    <div class="tool"><span>Blender</span></div>
+  </div>
+</section>
+
+<section id="contact" class="footer character-section" data-character-image="images/goku-black-hero3.png">
+   <div class="footer-art placeholder">
+     <img src="images/emblem.png" alt="Goku Black" width = 1000 height = 200 onerror="this.parentElement.classList.add('placeholder')">
+  </div>
+
+  <h2>Let's build something.</h2>
+  <p>Open to new projects and collabs — reach out on Discord.</p>
+  <a href="https://discord.com/users/1367774975045406801" target="_blank" class="btn btn-primary">Message on Discord</a>
+  <p class="footer-copy">© <span id="year"></span> skyvaint.</p>
+</section>
+
+<script src="main.js"></script>
+</body>
+</html>
