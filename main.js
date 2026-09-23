@@ -361,7 +361,7 @@ document.querySelectorAll('a, button, .project-card, .social-card, .tool, .price
   });
 });
 
-document.querySelectorAll('.project-card, .social-card, .tool, .price-card, .stat, .hero-frame').forEach((element) => {
+document.querySelectorAll('.btn, .project-card, .social-card, .tool, .price-card, .stat, .hero-frame').forEach((element) => {
   element.addEventListener('pointermove', (event) => {
     if (motionReduced.matches) return;
     const bounds = element.getBoundingClientRect();
