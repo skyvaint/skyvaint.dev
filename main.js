@@ -10,9 +10,10 @@ const tracks = [
   { name: 'Crazy My Beat', source: 'music/Crazy My Beat.mp3' },
   { name: 'Old Digicam', source: 'music/Old Digicam.mp3' },
 ];
-let trackIndex = 0;
+let trackIndex = 2;
 let trackLoadId = 0;
 let pendingPlay = false;
+let interactionAudioContext;
 
 const state = {
   width: 0,
@@ -73,6 +74,28 @@ function drawMesh(time) {
     drawCurve(offset, 'right');
   }
   context.shadowBlur = 0;
+
+  // Small drifting particles add depth without competing with the content.
+  for (let particle = 0; particle < 18; particle += 1) {
+    const phase = time * 0.00025 + particle * 2.7;
+    const x = ((particle * 137 + time * 0.012 * (particle % 2 ? 1 : -1)) % (width + 120)) - 60;
+    const y = ((particle * 83 + Math.sin(phase) * 90) % (height + 80)) - 40;
+    context.fillStyle = particle % 3 === 0
+      ? 'rgba(255, 143, 221, 0.42)'
+      : 'rgba(139, 61, 255, 0.3)';
+    context.beginPath();
+    context.arc(x, y, 1.2 + (particle % 3) * 0.5, 0, Math.PI * 2);
+    context.fill();
+  }
+
+  // Brief side flashes respond to pointer speed, like distant energy strikes.
+  const flash = Math.min(0.22, pointer.speed * 0.12);
+  if (flash > 0.01) {
+    context.fillStyle = `rgba(255, 62, 200, ${flash})`;
+    context.fillRect(0, 0, 5, height);
+    context.fillStyle = `rgba(139, 61, 255, ${flash})`;
+    context.fillRect(width - 5, 0, 5, height);
+  }
 }
 
 function animate(time) {
@@ -94,6 +117,8 @@ window.addEventListener('pointermove', (event) => {
   );
   state.pointer.targetX = nextX;
   state.pointer.targetY = nextY;
+  document.documentElement.style.setProperty('--pointer-x', `${event.clientX}px`);
+  document.documentElement.style.setProperty('--pointer-y', `${event.clientY}px`);
 });
 
 resizeCanvas();
@@ -115,7 +140,7 @@ function loadTrack(index) {
   soundtrack.src = encodeURI(track.source);
   soundtrack.load();
   trackName.textContent = track.name;
-  trackStatus.textContent = 'Paused';
+  trackStatus.textContent = 'Ready';
   soundtrackToggle.textContent = 'Play';
   soundtrackToggle.setAttribute('aria-label', `Play ${track.name}`);
   return trackLoadId;
@@ -157,7 +182,7 @@ function toggleSoundtrack() {
   }
 }
 
-loadTrack(0);
+loadTrack(trackIndex);
 soundtrackToggle?.addEventListener('click', toggleSoundtrack);
 document.getElementById('track-prev')?.addEventListener('click', () => {
   loadTrack(trackIndex - 1);
@@ -179,6 +204,62 @@ soundtrack?.addEventListener('error', () => {
   trackStatus.textContent = window.location.protocol === 'file:'
     ? 'Use Live Server'
     : 'Audio unavailable';
+});
+
+function getInteractionAudioContext() {
+  if (!interactionAudioContext) {
+    interactionAudioContext = new AudioContext();
+  }
+  if (interactionAudioContext.state === 'suspended') interactionAudioContext.resume();
+  return interactionAudioContext;
+}
+
+function playInteractionTone(type) {
+  if (motionReduced.matches) return;
+  try {
+    const audioContext = getInteractionAudioContext();
+    const oscillator = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+    const now = audioContext.currentTime;
+    oscillator.type = type === 'leave' ? 'sine' : 'triangle';
+    oscillator.frequency.setValueAtTime(type === 'leave' ? 180 : 260, now);
+    oscillator.frequency.exponentialRampToValueAtTime(type === 'leave' ? 110 : 420, now + 0.07);
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.025, now + 0.012);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.1);
+    oscillator.connect(gain).connect(audioContext.destination);
+    oscillator.start(now);
+    oscillator.stop(now + 0.11);
+  } catch (error) {
+    // Browsers can deny Web Audio until a user gesture; visual effects still work.
+    if (error.name !== 'NotAllowedError') console.warn('Interaction sound unavailable:', error);
+  }
+}
+
+document.querySelectorAll('a, button, .project-card, .social-card, .tool, .price-card, .stat').forEach((element) => {
+  element.addEventListener('mouseenter', () => {
+    element.classList.add('is-hovered');
+    playInteractionTone('enter');
+  });
+  element.addEventListener('mouseleave', () => {
+    element.classList.remove('is-hovered');
+    playInteractionTone('leave');
+  });
+});
+
+document.querySelectorAll('.project-card, .social-card, .tool, .price-card, .stat, .hero-frame').forEach((element) => {
+  element.addEventListener('pointermove', (event) => {
+    if (motionReduced.matches) return;
+    const bounds = element.getBoundingClientRect();
+    const rotateX = ((event.clientY - bounds.top) / bounds.height - 0.5) * -5;
+    const rotateY = ((event.clientX - bounds.left) / bounds.width - 0.5) * 5;
+    element.style.setProperty('--tilt-x', `${rotateX}deg`);
+    element.style.setProperty('--tilt-y', `${rotateY}deg`);
+  });
+  element.addEventListener('pointerleave', () => {
+    element.style.removeProperty('--tilt-x');
+    element.style.removeProperty('--tilt-y');
+  });
 });
 
 const characterBackdrop = document.getElementById('section-character');
