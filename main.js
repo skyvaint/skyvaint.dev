@@ -176,7 +176,7 @@ function drawMesh(time) {
 }
 
 function animate(time) {
-  if (time - state.lastFrame < 33) {
+  if (time - state.lastFrame < 8) {
     requestAnimationFrame(animate);
     return;
   }
