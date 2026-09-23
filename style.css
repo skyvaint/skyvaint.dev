@@ -59,7 +59,7 @@ a { color: inherit; text-decoration: none; }
 .glow {
   position: fixed;
   border-radius: 50%;
-  filter: blur(120px);
+  filter: blur(80px);
   z-index: 0;
   pointer-events: none;
 }
@@ -83,8 +83,7 @@ a { color: inherit; text-decoration: none; }
   align-items: center;
   justify-content: space-between;
   padding: 22px 6%;
-  backdrop-filter: blur(14px);
-  background: rgba(12, 7, 20, 0.6);
+  background: rgba(12, 7, 20, 0.92);
   border-bottom: 1px solid var(--line);
 }
 .nav-brand {
@@ -629,13 +628,7 @@ a { color: inherit; text-decoration: none; }
       radial-gradient(ellipse at 12% 20%, rgba(255, 62, 200, .1), transparent 34%),
       radial-gradient(ellipse at 86% 70%, rgba(139, 61, 255, .13), transparent 38%),
       #08050f;
-    animation: ambient-drift 16s ease-in-out infinite alternate;
     pointer-events: none;
-}
-
-@keyframes ambient-drift {
-    from { filter: hue-rotate(0deg) saturate(1); transform: scale(1); }
-    to { filter: hue-rotate(18deg) saturate(1.16); transform: scale(1.04); }
 }
 
 #GradientCanvas {
@@ -646,7 +639,6 @@ a { color: inherit; text-decoration: none; }
     z-index: -2;
     pointer-events: none;
     opacity: 0.72;
-    mix-blend-mode: screen;
     contain: strict;
 }
 
@@ -708,7 +700,7 @@ a { color: inherit; text-decoration: none; }
     z-index: 0;
     pointer-events: none;
     opacity: .34;
-    filter: blur(.2px) drop-shadow(0 0 10px rgba(255, 62, 200, .8));
+    filter: none;
     background: linear-gradient(125deg, transparent 0 31%, rgba(255, 143, 221, .9) 32% 33%, transparent 34% 45%, rgba(139, 61, 255, .9) 46% 47%, transparent 48% 100%);
     clip-path: polygon(50% 0, 62% 19%, 49% 19%, 70% 43%, 53% 42%, 78% 67%, 55% 64%, 66% 100%, 40% 69%, 46% 69%, 24% 47%, 42% 48%, 20% 26%, 42% 28%);
     animation: lightning-pulse 2.8s ease-in-out infinite;
@@ -734,7 +726,7 @@ a { color: inherit; text-decoration: none; }
     background:
       linear-gradient(135deg, rgba(255, 62, 200, .1), transparent 38%),
       rgba(8, 7, 18, 0.86);
-    backdrop-filter: blur(16px);
+    backdrop-filter: blur(6px);
     box-shadow: 0 16px 42px rgba(0, 0, 0, 0.28), 0 0 30px rgba(255, 62, 200, .1), inset 0 0 22px rgba(139, 61, 255, .08);
     clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
     transform: perspective(700px) rotateX(0deg);

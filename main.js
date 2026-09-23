@@ -82,9 +82,9 @@ function drawMesh(time) {
 
   context.shadowColor = 'rgba(125, 54, 255, 0.42)';
   context.shadowBlur = 5;
-  for (let vectorGroup = 0; vectorGroup < 6; vectorGroup += 1) {
+  for (let vectorGroup = 0; vectorGroup < 3; vectorGroup += 1) {
     context.globalAlpha = 0.34 + (vectorGroup % 3) * 0.08;
-    for (let offset = -10; offset < 52; offset += 1) {
+    for (let offset = -8; offset < 48; offset += 1) {
       drawCurve(offset + vectorGroup * 0.72, vectorGroup % 2 ? 'right' : 'left');
     }
   }
@@ -112,7 +112,7 @@ function drawMesh(time) {
       context.globalAlpha = alpha;
       context.strokeStyle = '#ff8fdd';
       context.shadowColor = '#ff3ec8';
-      context.shadowBlur = 12;
+      context.shadowBlur = 6;
       context.lineWidth = 2.4;
       context.beginPath();
       context.moveTo(originX, -10);
@@ -140,7 +140,7 @@ function drawMesh(time) {
   }
 
   // Small drifting particles add depth without competing with the content.
-  for (let particle = 0; particle < 110; particle += 1) {
+  for (let particle = 0; particle < 60; particle += 1) {
     const phase = time * 0.00025 + particle * 2.7;
     const x = ((particle * 137 + time * 0.018 * (particle % 2 ? 1 : -1)) % (width + 120)) - 60;
     const y = ((particle * 83 + time * 0.006 * (particle % 3 ? 1 : -1) + Math.sin(phase) * 90) % (height + 80)) - 40;
@@ -157,7 +157,7 @@ function drawMesh(time) {
   context.globalAlpha = 0.16;
   context.strokeStyle = 'rgba(255, 143, 221, .42)';
   context.lineWidth = 0.7;
-  for (let ring = 0; ring < 5; ring += 1) {
+  for (let ring = 0; ring < 2; ring += 1) {
     const radius = 90 + ring * 72 + Math.sin(time * 0.0004 + ring) * 12;
     context.beginPath();
     context.arc(width * (0.18 + pointer.x * 0.64), height * (0.3 + pointer.y * 0.4), radius, 0, Math.PI * 2);
@@ -176,7 +176,7 @@ function drawMesh(time) {
 }
 
 function animate(time) {
-  if (time - state.lastFrame < 8) {
+  if (time - state.lastFrame < 16) {
     requestAnimationFrame(animate);
     return;
   }
