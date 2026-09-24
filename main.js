@@ -28,6 +28,9 @@ const state = {
   width: 0,
   height: 0,
   dpr: Math.min(window.devicePixelRatio || 1, window.innerWidth <= 900 ? 0.75 : 1),
+  pointerFrame: 0,
+  pointerX: 0,
+  pointerY: 0,
 };
 
 function resizeCanvas() {
@@ -86,8 +89,14 @@ function drawStaticVectors() {
 
 window.addEventListener('resize', resizeCanvas);
 window.addEventListener('pointermove', (event) => {
-  document.documentElement.style.setProperty('--pointer-x', `${event.clientX}px`);
-  document.documentElement.style.setProperty('--pointer-y', `${event.clientY}px`);
+  state.pointerX = event.clientX;
+  state.pointerY = event.clientY;
+  if (state.pointerFrame) return;
+  state.pointerFrame = requestAnimationFrame(() => {
+    document.documentElement.style.setProperty('--pointer-x', `${state.pointerX}px`);
+    document.documentElement.style.setProperty('--pointer-y', `${state.pointerY}px`);
+    state.pointerFrame = 0;
+  });
 });
 
 resizeCanvas();
@@ -195,9 +204,14 @@ soundtrack?.addEventListener('error', () => {
   pendingPlay = false;
   trackStatus.textContent = window.location.protocol === 'file:' ? 'Use Live Server' : 'Audio unavailable';
 });
+let progressFrame = 0;
 soundtrack?.addEventListener('timeupdate', () => {
   if (!progressFill || !soundtrack.duration) return;
-  progressFill.style.width = `${(soundtrack.currentTime / soundtrack.duration) * 100}%`;
+  if (progressFrame) return;
+  progressFrame = requestAnimationFrame(() => {
+    progressFill.style.width = `${(soundtrack.currentTime / soundtrack.duration) * 100}%`;
+    progressFrame = 0;
+  });
 });
 progressBar?.addEventListener('click', (event) => {
   if (!soundtrack?.duration) return;
@@ -299,11 +313,26 @@ if (characterBackdrop && characterLayers.length) {
   activeCharacterImage = characterImages[0];
   characterBackdrop.classList.add('is-visible');
 }
-setInterval(() => {
-  if (motionReduced.matches || !characterLayers.length) return;
+let characterCycleTimer;
+function cycleCharacter() {
+  if (motionReduced.matches || !characterLayers.length || document.hidden) return;
   characterCycleIndex = (characterCycleIndex + 1) % characterImages.length;
   swapCharacterImage(characterImages[characterCycleIndex]);
-}, 20000);
+}
+function startCharacterCycle() {
+  if (!characterCycleTimer && characterLayers.length) {
+    characterCycleTimer = setInterval(cycleCharacter, 20000);
+  }
+}
+function stopCharacterCycle() {
+  clearInterval(characterCycleTimer);
+  characterCycleTimer = undefined;
+}
+startCharacterCycle();
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) stopCharacterCycle();
+  else startCharacterCycle();
+});
 
 // Simple local clock (edit the timeZone below if you want to lock it to a specific place)
 function updateClock() {
