@@ -17,9 +17,6 @@ let trackLoadId = 0;
 let pendingPlay = false;
 let sourceMode = 'remote';
 let interactionAudioContext;
-let nextThunderAt = 0;
-let thunder = null;
-let thunderSide = 'left';
 const characterImages = [
   'images/goku-black-hero.png',
   'images/goku-black-hero2.png',
@@ -31,13 +28,6 @@ const state = {
   width: 0,
   height: 0,
   dpr: Math.min(window.devicePixelRatio || 1, window.innerWidth <= 900 ? 0.75 : 1),
-  pointer: { x: 0.5, y: 0.5, targetX: 0.5, targetY: 0.5, speed: 0 },
-  lastFrame: 0,
-  frameInterval: window.innerWidth <= 900 ? 50 : 33,
-  visible: true,
-  pointerStyleFrame: 0,
-  pointerClientX: 0,
-  pointerClientY: 0,
 };
 
 function resizeCanvas() {
@@ -50,22 +40,18 @@ function resizeCanvas() {
   canvas.width = Math.floor(state.width * state.dpr);
   canvas.height = Math.floor(state.height * state.dpr);
   context.setTransform(state.dpr, 0, 0, state.dpr, 0, 0);
+  drawStaticVectors();
 }
 
-function drawMesh(time) {
+function drawStaticVectors() {
   if (!canvas || !context || motionReduced.matches) return;
 
-  const { width, height, pointer } = state;
-  const influenceX = pointer.x * width;
-  const influenceY = pointer.y * height;
-  const hoverStrength = Math.min(1, pointer.speed * 0.18 + 0.04);
+  const { width, height } = state;
 
   context.clearRect(0, 0, width, height);
   context.fillStyle = '#08050f';
   context.fillRect(0, 0, width, height);
-
   const drawCurve = (offset, side) => {
-    const phase = time * 0.00012 + offset * 0.06;
     const spread = 16 + offset * 1.9;
     const startX = side === 'left' ? -width * 0.32 - spread : width * 1.32 + spread;
     const endX = side === 'left' ? width * 0.28 + spread : width * 0.72 - spread;
@@ -74,9 +60,9 @@ function drawMesh(time) {
       ? height * 0.12 + offset * 2.2
       : height * 0.88 - offset * 2.2;
     const controlX = side === 'left'
-      ? width * 0.04 + Math.sin(phase) * 28
-      : width * 0.96 + Math.sin(phase) * 28;
-    const controlY = height * 0.5 + (influenceY - height * 0.5) * hoverStrength * 0.18;
+      ? width * 0.04
+      : width * 0.96;
+    const controlY = height * 0.5;
     context.beginPath();
     context.moveTo(startX, startY);
     context.quadraticCurveTo(controlX, controlY, endX, endY);
@@ -96,139 +82,17 @@ function drawMesh(time) {
     }
   }
   context.globalAlpha = 1;
-
-  if (time > nextThunderAt) {
-    thunderSide = thunderSide === 'left' ? 'right' : 'left';
-    thunder = {
-      side: thunderSide,
-      started: time,
-      duration: 520 + Math.random() * 340,
-      seed: Math.random() * 100,
-    };
-    nextThunderAt = time + 1500 + Math.random() * 2200;
-  }
-  if (thunder) {
-    const age = time - thunder.started;
-    if (age < thunder.duration) {
-      const progress = age / thunder.duration;
-      const alpha = Math.sin(progress * Math.PI) * 0.85;
-      const originX = thunder.side === 'left' ? width * 0.08 : width * 0.92;
-      const direction = thunder.side === 'left' ? 1 : -1;
-      context.save();
-      context.globalAlpha = alpha;
-      context.strokeStyle = '#ff8fdd';
-      context.shadowColor = '#ff3ec8';
-      context.shadowBlur = 6;
-      context.lineWidth = 2.4;
-      context.beginPath();
-      context.moveTo(originX, -10);
-      for (let bolt = 0; bolt < 9; bolt += 1) {
-        const y = 40 + bolt * height * 0.09;
-        const x = originX + direction * (Math.sin(thunder.seed + bolt * 8) * 70 + bolt * 12);
-        context.lineTo(x, y);
-      }
-      context.stroke();
-      context.strokeStyle = 'rgba(255, 255, 255, .9)';
-      context.shadowBlur = 4;
-      context.lineWidth = 0.8;
-      context.stroke();
-      context.restore();
-      if (progress > 0.18 && progress < 0.5) {
-        context.save();
-        context.globalAlpha = alpha * 0.12;
-        context.fillStyle = '#ff3ec8';
-        context.fillRect(0, 0, width, height);
-        context.restore();
-      }
-    } else {
-      thunder = null;
-    }
-  }
-
-  // Small drifting particles add depth without competing with the content.
-  for (let particle = 0; particle < 28; particle += 1) {
-    const phase = time * 0.00025 + particle * 2.7;
-    const x = ((particle * 137 + time * 0.018 * (particle % 2 ? 1 : -1)) % (width + 120)) - 60;
-    const y = ((particle * 83 + time * 0.006 * (particle % 3 ? 1 : -1) + Math.sin(phase) * 90) % (height + 80)) - 40;
-    const twinkle = 0.45 + Math.sin(phase * 2.4) * 0.35;
-    context.fillStyle = particle % 3 === 0
-      ? `rgba(255, 143, 221, ${Math.max(0.08, twinkle)})`
-      : `rgba(180, 142, 255, ${Math.max(0.06, twinkle * 0.72)})`;
-    context.beginPath();
-    context.arc(x, y, 0.7 + (particle % 4) * 0.45, 0, Math.PI * 2);
-    context.fill();
-  }
-
-  context.save();
-  context.globalAlpha = 0.16;
-  context.strokeStyle = 'rgba(255, 143, 221, .42)';
-  context.lineWidth = 0.7;
-  for (let ring = 0; ring < 2; ring += 1) {
-    const radius = 90 + ring * 72 + Math.sin(time * 0.0004 + ring) * 12;
-    context.beginPath();
-    context.arc(width * (0.18 + pointer.x * 0.64), height * (0.3 + pointer.y * 0.4), radius, 0, Math.PI * 2);
-    context.stroke();
-  }
-  context.restore();
-
-  // Brief side flashes respond to pointer speed, like distant energy strikes.
-  const flash = Math.min(0.22, pointer.speed * 0.12);
-  if (flash > 0.01) {
-    context.fillStyle = `rgba(255, 62, 200, ${flash})`;
-    context.fillRect(0, 0, 5, height);
-    context.fillStyle = `rgba(139, 61, 255, ${flash})`;
-    context.fillRect(width - 5, 0, 5, height);
-  }
-}
-
-function animate(time) {
-  if (!state.visible) return;
-  if (time - state.lastFrame < state.frameInterval) {
-    requestAnimationFrame(animate);
-    return;
-  }
-  state.lastFrame = time;
-  const { pointer } = state;
-  pointer.x += (pointer.targetX - pointer.x) * 0.06;
-  pointer.y += (pointer.targetY - pointer.y) * 0.06;
-  pointer.speed += (0 - pointer.speed) * 0.08;
-  drawMesh(time);
-  if (!motionReduced.matches) requestAnimationFrame(animate);
 }
 
 window.addEventListener('resize', resizeCanvas);
-document.addEventListener('visibilitychange', () => {
-  state.visible = document.visibilityState === 'visible';
-  if (state.visible && !motionReduced.matches) {
-    state.lastFrame = 0;
-    requestAnimationFrame(animate);
-  }
-});
 window.addEventListener('pointermove', (event) => {
-  const nextX = event.clientX / window.innerWidth;
-  const nextY = event.clientY / window.innerHeight;
-  state.pointer.speed = Math.min(
-    1,
-    Math.hypot(nextX - state.pointer.targetX, nextY - state.pointer.targetY) * 12,
-  );
-  state.pointer.targetX = nextX;
-  state.pointer.targetY = nextY;
-  state.pointerClientX = event.clientX;
-  state.pointerClientY = event.clientY;
-  if (!state.pointerStyleFrame) {
-    state.pointerStyleFrame = requestAnimationFrame(() => {
-      document.documentElement.style.setProperty('--pointer-x', `${state.pointerClientX}px`);
-      document.documentElement.style.setProperty('--pointer-y', `${state.pointerClientY}px`);
-      state.pointerStyleFrame = 0;
-    });
-  }
+  document.documentElement.style.setProperty('--pointer-x', `${event.clientX}px`);
+  document.documentElement.style.setProperty('--pointer-y', `${event.clientY}px`);
 });
 
 resizeCanvas();
 if (motionReduced.matches) {
   if (canvas) canvas.style.display = 'none';
-} else {
-  requestAnimationFrame(animate);
 }
 
 // Footer year

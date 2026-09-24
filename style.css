@@ -836,8 +836,6 @@ body::after {
     #section-character img {
         filter: none;
     }
-    #section-character.is-visible .character-layer.is-active,
-    .lightning,
     .top-energy-mesh,
     .top-energy-orb {
         animation: none;
