@@ -30,17 +30,25 @@ const characterImages = [
 const state = {
   width: 0,
   height: 0,
-  dpr: Math.min(window.devicePixelRatio || 1, 1),
+  dpr: Math.min(window.devicePixelRatio || 1, window.innerWidth <= 900 ? 0.75 : 1),
   pointer: { x: 0.5, y: 0.5, targetX: 0.5, targetY: 0.5, speed: 0 },
   lastFrame: 0,
+  frameInterval: window.innerWidth <= 900 ? 50 : 33,
+  visible: true,
+  pointerStyleFrame: 0,
+  pointerClientX: 0,
+  pointerClientY: 0,
 };
 
 function resizeCanvas() {
   if (!canvas || !context) return;
-  state.width = window.innerWidth;
-  state.height = window.innerHeight;
-  canvas.width = state.width * state.dpr;
-  canvas.height = state.height * state.dpr;
+  const width = window.innerWidth;
+  const height = window.innerHeight;
+  if (width === state.width && height === state.height) return;
+  state.width = width;
+  state.height = height;
+  canvas.width = Math.floor(state.width * state.dpr);
+  canvas.height = Math.floor(state.height * state.dpr);
   context.setTransform(state.dpr, 0, 0, state.dpr, 0, 0);
 }
 
@@ -80,16 +88,14 @@ function drawMesh(time) {
     context.stroke();
   };
 
-  context.shadowColor = 'rgba(125, 54, 255, 0.42)';
-  context.shadowBlur = 5;
-  for (let vectorGroup = 0; vectorGroup < 3; vectorGroup += 1) {
+  const vectorGroupCount = width <= 900 ? 2 : 3;
+  for (let vectorGroup = 0; vectorGroup < vectorGroupCount; vectorGroup += 1) {
     context.globalAlpha = 0.34 + (vectorGroup % 3) * 0.08;
-    for (let offset = -8; offset < 48; offset += 1) {
+    for (let offset = -6; offset < 30; offset += 1) {
       drawCurve(offset + vectorGroup * 0.72, vectorGroup % 2 ? 'right' : 'left');
     }
   }
   context.globalAlpha = 1;
-  context.shadowBlur = 0;
 
   if (time > nextThunderAt) {
     thunderSide = thunderSide === 'left' ? 'right' : 'left';
@@ -140,7 +146,7 @@ function drawMesh(time) {
   }
 
   // Small drifting particles add depth without competing with the content.
-  for (let particle = 0; particle < 60; particle += 1) {
+  for (let particle = 0; particle < 28; particle += 1) {
     const phase = time * 0.00025 + particle * 2.7;
     const x = ((particle * 137 + time * 0.018 * (particle % 2 ? 1 : -1)) % (width + 120)) - 60;
     const y = ((particle * 83 + time * 0.006 * (particle % 3 ? 1 : -1) + Math.sin(phase) * 90) % (height + 80)) - 40;
@@ -176,7 +182,8 @@ function drawMesh(time) {
 }
 
 function animate(time) {
-  if (time - state.lastFrame < 16) {
+  if (!state.visible) return;
+  if (time - state.lastFrame < state.frameInterval) {
     requestAnimationFrame(animate);
     return;
   }
@@ -190,6 +197,13 @@ function animate(time) {
 }
 
 window.addEventListener('resize', resizeCanvas);
+document.addEventListener('visibilitychange', () => {
+  state.visible = document.visibilityState === 'visible';
+  if (state.visible && !motionReduced.matches) {
+    state.lastFrame = 0;
+    requestAnimationFrame(animate);
+  }
+});
 window.addEventListener('pointermove', (event) => {
   const nextX = event.clientX / window.innerWidth;
   const nextY = event.clientY / window.innerHeight;
@@ -199,8 +213,15 @@ window.addEventListener('pointermove', (event) => {
   );
   state.pointer.targetX = nextX;
   state.pointer.targetY = nextY;
-  document.documentElement.style.setProperty('--pointer-x', `${event.clientX}px`);
-  document.documentElement.style.setProperty('--pointer-y', `${event.clientY}px`);
+  state.pointerClientX = event.clientX;
+  state.pointerClientY = event.clientY;
+  if (!state.pointerStyleFrame) {
+    state.pointerStyleFrame = requestAnimationFrame(() => {
+      document.documentElement.style.setProperty('--pointer-x', `${state.pointerClientX}px`);
+      document.documentElement.style.setProperty('--pointer-y', `${state.pointerClientY}px`);
+      state.pointerStyleFrame = 0;
+    });
+  }
 });
 
 resizeCanvas();
@@ -430,4 +451,4 @@ function updateClock() {
   el.textContent = `${h}:${m}`;
 }
 updateClock();
-setInterval(updateClock, 1000 * 30);
+setInterval(updateClock, 1000 * 120);

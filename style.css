@@ -828,3 +828,24 @@ body::after {
     }
     .pricing-grid { grid-template-columns: 1fr; }
 }
+
+@media (max-width: 900px) {
+    #GradientCanvas {
+        opacity: 0.5;
+    }
+    #section-character img {
+        filter: none;
+    }
+    #section-character.is-visible .character-layer.is-active,
+    .lightning,
+    .top-energy-mesh,
+    .top-energy-orb {
+        animation: none;
+    }
+    .glow {
+        filter: blur(48px);
+    }
+    .soundtrack {
+        backdrop-filter: none;
+    }
+}
