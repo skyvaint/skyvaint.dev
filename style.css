@@ -16,6 +16,11 @@
   --grad-soft: linear-gradient(120deg, rgba(255,62,200,0.18), rgba(139,61,255,0.18));
 
   --radius: 18px;
+
+  /* consumed by common.css (soundtrack, return button) */
+  --accent: var(--pink);
+  --accent-soft: var(--pink-soft);
+  --player-bg: linear-gradient(135deg, rgba(255, 62, 200, .1), transparent 38%), rgba(8, 7, 18, .92);
   --pointer-x: 50vw;
   --pointer-y: 50vh;
 }
@@ -90,6 +95,8 @@ a { color: inherit; text-decoration: none; }
   font-size: 1.3rem;
   color: var(--text);
 }
+.nav-left { display: flex; align-items: center; gap: 20px; }
+.footer-return { margin-top: 28px; }
 .nav-brand .dot { color: var(--pink); }
 .nav-links {
   display: flex;
@@ -714,85 +721,6 @@ a { color: inherit; text-decoration: none; }
     52%, 55% { opacity: .9; }
 }
 
-.soundtrack {
-    position: fixed;
-    right: 24px;
-    bottom: 24px;
-    z-index: 60;
-    width: 235px;
-    padding: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    border-radius: 16px;
-    background:
-      linear-gradient(135deg, rgba(255, 62, 200, .1), transparent 38%),
-      rgba(8, 7, 18, 0.86);
-    backdrop-filter: blur(6px);
-    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.24), 0 0 16px rgba(255, 62, 200, .08);
-    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
-    transform: perspective(700px) rotateX(0deg);
-    transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
-}
-.soundtrack:hover { transform: perspective(700px) rotateX(4deg) translateY(-3px); border-color: rgba(255, 143, 221, .42); box-shadow: 0 22px 50px rgba(0, 0, 0, .4), 0 0 35px rgba(255, 62, 200, .2); }
-.soundtrack-heading { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-
-.soundtrack-label, #track-status {
-    display: block;
-    color: var(--muted);
-    font-size: 0.7rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-}
-
-#track-name {
-    display: block;
-    margin: 4px 0 10px;
-    font-family: 'Rajdhani', sans-serif;
-    letter-spacing: .06em;
-    text-transform: uppercase;
-    text-shadow: 0 0 14px rgba(255, 143, 221, .45);
-}
-
-.soundtrack-controls {
-    display: flex;
-    gap: 6px;
-}
-
-.soundtrack button {
-    padding: 6px 9px;
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.05);
-    color: var(--text);
-    cursor: pointer;
-    transition: transform .2s ease, background .2s ease, border-color .2s ease;
-    font: inherit;
-    font-size: 0.72rem;
-}
-
-.soundtrack button:hover {
-    border-color: var(--pink);
-    background: rgba(255, 62, 200, .12);
-    transform: translateY(-1px);
-}
-.soundtrack .play-button { flex: 1; background: var(--grad); color: #15081d; font-weight: 700; border-color: transparent; }
-.soundtrack .play-button::before { content: '◉ '; font-size: .6rem; }
-.soundwave { display: flex; gap: 3px; height: 16px; align-items: center; }
-.soundwave i { display: block; width: 3px; height: 7px; border-radius: 99px; background: var(--pink-soft); animation: soundwave 1s ease-in-out infinite alternate; }
-.soundwave i:nth-child(2) { animation-delay: -.3s; height: 13px; }
-.soundwave i:nth-child(3) { animation-delay: -.6s; height: 9px; }
-.soundwave i:nth-child(4) { animation-delay: -.15s; height: 15px; }
-.soundwave i:nth-child(5) { animation-delay: -.45s; height: 6px; }
-@keyframes soundwave { to { transform: scaleY(.35); opacity: .45; } }
-.track-progress { height: 4px; margin: 13px 0 9px; border-radius: 99px; background: rgba(255, 255, 255, .12); cursor: pointer; overflow: hidden; }
-#track-progress-fill { display: block; height: 100%; width: 0; border-radius: inherit; background: var(--grad); transition: width .1s linear; }
-.track-progress:focus-visible { outline: 1px solid var(--pink-soft); outline-offset: 4px; }
-
-#track-status {
-    margin-top: 9px;
-    letter-spacing: 0.02em;
-    text-transform: none;
-}
-
 body::after {
     content: "";
     position: fixed;
@@ -810,7 +738,7 @@ body::after {
     #section-character {
         transition: none;
     }
-    #BackgroundEffect, .lightning, .top-energy-mesh, .top-energy-orb, .soundwave i {
+    #BackgroundEffect, .lightning, .top-energy-mesh, .top-energy-orb {
         animation: none;
     }
     body::before {
@@ -821,11 +749,6 @@ body::after {
 @media (max-width: 600px) {
     .top-energy-copy { inset: 0 5%; }
     .top-energy-copy b { display: none; }
-    .soundtrack {
-        right: 12px;
-        bottom: 12px;
-        width: 190px;
-    }
     .pricing-grid { grid-template-columns: 1fr; }
 }
 
@@ -842,8 +765,5 @@ body::after {
     }
     .glow {
         filter: blur(48px);
-    }
-    .soundtrack {
-        backdrop-filter: none;
     }
 }

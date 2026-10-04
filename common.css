@@ -1,0 +1,146 @@
+/* Shared by every page. Each page theme sets --accent, --accent-soft, --grad,
+   --text, --muted, --line and --player-bg. */
+
+/* ---------- Arrival veil (set in <head> before first paint) ---------- */
+html.is-arriving::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  pointer-events: none;
+  background: var(--arrive-color, #050505);
+  opacity: 1;
+  transition: opacity .7s cubic-bezier(.4, 0, .2, 1);
+}
+html.is-arrived::after { opacity: 0; }
+
+/* ---------- Shot transition ---------- */
+.shot-ball {
+  position: fixed;
+  z-index: 9998;
+  pointer-events: none;
+  will-change: transform;
+  filter: drop-shadow(0 0 14px rgba(255, 30, 30, .75));
+}
+.shot-ball svg { display: block; width: 100%; height: 100%; }
+.shot-veil {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+}
+html.is-shooting body { pointer-events: none; }
+
+/* ---------- Return button ---------- */
+.home-return {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px 10px 12px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  color: var(--text);
+  font: 700 .82rem/1 'JetBrains Mono', 'Rajdhani', monospace;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  transition: background .2s ease, transform .2s ease;
+}
+.home-return:hover,
+.home-return:focus-visible { background: var(--accent); color: #0a0a0a; transform: translateX(-3px); }
+.home-return-icon {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #0a0a0a;
+  font-size: .9rem;
+  transition: transform .2s ease;
+}
+.home-return:hover .home-return-icon { transform: rotate(-360deg); background: #0a0a0a; color: var(--accent); }
+
+/* ---------- Gameplay video slots ---------- */
+.video-slot { position: relative; }
+.video-slot video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity .4s ease;
+}
+.video-slot.has-video video { opacity: 1; }
+.video-slot.has-video .video-placeholder-copy { visibility: hidden; }
+
+/* ---------- Soundtrack ---------- */
+.soundtrack {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 60;
+  width: 235px;
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, .14);
+  border-radius: 16px;
+  background: var(--player-bg, rgba(8, 7, 18, .9));
+  box-shadow: 0 16px 32px rgba(0, 0, 0, .3);
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  transition: transform .25s ease, border-color .25s ease;
+}
+.soundtrack:hover { transform: translateY(-3px); border-color: var(--accent-soft); }
+.soundtrack-heading { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.soundtrack-label, #track-status {
+  display: block;
+  color: var(--muted);
+  font-size: .7rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+#track-name {
+  display: block;
+  margin: 4px 0 10px;
+  font-family: 'Rajdhani', sans-serif;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+.soundtrack-controls { display: flex; gap: 6px; }
+.soundtrack button {
+  flex: 1;
+  padding: 6px 9px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--grad);
+  color: #12060a;
+  font: inherit;
+  font-size: .72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform .2s ease, filter .2s ease;
+}
+.soundtrack button:hover { transform: translateY(-1px); filter: brightness(1.12); }
+.soundtrack button::before { content: '◉ '; font-size: .6rem; }
+.soundwave { display: flex; gap: 3px; height: 16px; align-items: center; }
+.soundwave i { display: block; width: 3px; height: 7px; border-radius: 99px; background: var(--accent-soft); animation: soundwave 1s ease-in-out infinite alternate; }
+.soundwave i:nth-child(2) { animation-delay: -.3s; height: 13px; }
+.soundwave i:nth-child(3) { animation-delay: -.6s; height: 9px; }
+.soundwave i:nth-child(4) { animation-delay: -.15s; height: 15px; }
+.soundwave i:nth-child(5) { animation-delay: -.45s; height: 6px; }
+@keyframes soundwave { to { transform: scaleY(.35); opacity: .45; } }
+.track-progress { height: 4px; margin: 13px 0 9px; border-radius: 99px; background: rgba(255, 255, 255, .12); cursor: pointer; overflow: hidden; }
+#track-progress-fill { display: block; height: 100%; width: 0; border-radius: inherit; background: var(--grad); }
+.track-progress:focus-visible { outline: 1px solid var(--accent-soft); outline-offset: 4px; }
+#track-status { margin-top: 9px; letter-spacing: .02em; text-transform: none; }
+
+@media (max-width: 600px) {
+  .soundtrack { right: 12px; bottom: 12px; width: 180px; padding: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .soundwave i { animation: none; }
+  html.is-arriving::after { transition: none; }
+}

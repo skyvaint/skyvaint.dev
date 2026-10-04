@@ -1,22 +1,7 @@
 const canvas = document.getElementById('GradientCanvas');
 const context = canvas ? canvas.getContext('2d') : null;
-const motionReduced = window.matchMedia('(prefers-reduced-motion: reduce)');
-const soundtrack = document.getElementById('soundtrack-audio');
-const soundtrackToggle = document.getElementById('soundtrack-toggle');
-const trackName = document.getElementById('track-name');
-const trackStatus = document.getElementById('track-status');
-const progressFill = document.getElementById('track-progress-fill');
-const progressBar = document.querySelector('.track-progress');
-const tracks = [
-  { name: 'Breeze', local: 'music/Breeze.mp3', remote: 'https://raw.githubusercontent.com/skyvaint/skyvaint.dev/main/music/Breeze.mp3' },
-  { name: 'Crazy My Beat', local: 'music/Crazy%20My%20Beat.mp3', remote: 'https://raw.githubusercontent.com/skyvaint/skyvaint.dev/main/music/Crazy%20My%20Beat.mp3' },
-  { name: 'Old Digicam', local: 'music/Old%20Digicam.mp3', remote: 'https://raw.githubusercontent.com/skyvaint/skyvaint.dev/main/music/Old%20Digicam.mp3' },
-];
-let trackIndex = 2;
-let trackLoadId = 0;
-let pendingPlay = false;
-let sourceMode = 'remote';
-let interactionAudioContext;
+// Scripting page backdrop: static vector canvas + rotating Goku Black character art.
+// motionReduced comes from common.js.
 const characterImages = [
   'images/goku-black-hero.png',
   'images/goku-black-hero2.png',
@@ -104,181 +89,8 @@ if (motionReduced.matches) {
   if (canvas) canvas.style.display = 'none';
 }
 
-// Footer year
-document.getElementById('year').textContent = new Date().getFullYear();
-
-function loadTrack(index) {
-  if (!soundtrack) return;
-  trackLoadId += 1;
-  pendingPlay = false;
-  trackIndex = (index + tracks.length) % tracks.length;
-  const track = tracks[trackIndex];
-  sourceMode = 'remote';
-  soundtrack.src = track.remote;
-  soundtrack.load();
-  trackName.textContent = track.name;
-  trackStatus.textContent = 'Loading stream...';
-  soundtrackToggle.textContent = 'Resume';
-  soundtrackToggle.setAttribute('aria-label', `Resume ${track.name}`);
-  if (progressFill) progressFill.style.width = '0%';
-  return trackLoadId;
-}
-
-function playLoadedTrack(loadId) {
-  if (!soundtrack || loadId !== trackLoadId) return;
-  soundtrack.play().then(() => {
-    if (loadId !== trackLoadId) return;
-    soundtrackToggle.textContent = 'Stop';
-    soundtrackToggle.setAttribute('aria-label', `Stop ${tracks[trackIndex].name}`);
-    trackStatus.textContent = 'Playing';
-  }).catch((error) => {
-    if (loadId !== trackLoadId || error.name === 'AbortError') return;
-    trackStatus.textContent = 'Audio unavailable';
-    console.error('Unable to play soundtrack:', error);
-  });
-}
-
-function playCurrentTrack() {
-  if (!soundtrack) return;
-  pendingPlay = true;
-  trackStatus.textContent = 'Loading...';
-  soundtrackToggle.textContent = 'Loading';
-  soundtrackToggle.setAttribute('aria-label', `Loading ${tracks[trackIndex].name}`);
-  if (soundtrack.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) {
-    playLoadedTrack(trackLoadId);
-  }
-}
-
-function toggleSoundtrack() {
-  if (!soundtrack) return;
-  if (soundtrack.paused) {
-    playCurrentTrack();
-  } else {
-    soundtrack.pause();
-    pendingPlay = false;
-    soundtrackToggle.textContent = 'Resume';
-    soundtrackToggle.setAttribute('aria-label', `Resume ${tracks[trackIndex].name}`);
-    trackStatus.textContent = 'Paused';
-  }
-}
-
-loadTrack(trackIndex);
-pendingPlay = true;
-trackStatus.textContent = 'Loading stream...';
-soundtrackToggle.textContent = 'Loading';
-soundtrackToggle.setAttribute('aria-label', `Loading ${tracks[trackIndex].name}`);
-soundtrackToggle?.addEventListener('click', toggleSoundtrack);
-const retryAutoplay = () => {
-  if (soundtrack?.paused && pendingPlay) playCurrentTrack();
-};
-document.addEventListener('pointerdown', retryAutoplay, { once: true });
-document.addEventListener('keydown', retryAutoplay, { once: true });
-document.getElementById('track-prev')?.addEventListener('click', () => {
-  loadTrack(trackIndex - 1);
-  playCurrentTrack();
-});
-document.getElementById('track-next')?.addEventListener('click', () => {
-  loadTrack(trackIndex + 1);
-  playCurrentTrack();
-});
-soundtrack?.addEventListener('ended', () => {
-  loadTrack(trackIndex + 1);
-  playCurrentTrack();
-});
-soundtrack?.addEventListener('canplay', () => {
-  if (pendingPlay) playLoadedTrack(trackLoadId);
-});
-soundtrack?.addEventListener('canplaythrough', () => {
-  if (!pendingPlay) trackStatus.textContent = sourceMode === 'remote' ? 'Ready · GitHub stream' : 'Ready · local fallback';
-  if (pendingPlay) playLoadedTrack(trackLoadId);
-});
-soundtrack?.addEventListener('error', () => {
-  const track = tracks[trackIndex];
-  if (sourceMode === 'remote' && track.local) {
-    sourceMode = 'local';
-    trackStatus.textContent = 'Retrying local file...';
-    soundtrack.src = track.local;
-    soundtrack.load();
-    return;
-  }
-  pendingPlay = false;
-  trackStatus.textContent = window.location.protocol === 'file:' ? 'Use Live Server' : 'Audio unavailable';
-});
-let progressFrame = 0;
-soundtrack?.addEventListener('timeupdate', () => {
-  if (!progressFill || !soundtrack.duration) return;
-  if (progressFrame) return;
-  progressFrame = requestAnimationFrame(() => {
-    progressFill.style.width = `${(soundtrack.currentTime / soundtrack.duration) * 100}%`;
-    progressFrame = 0;
-  });
-});
-progressBar?.addEventListener('click', (event) => {
-  if (!soundtrack?.duration) return;
-  const bounds = progressBar.getBoundingClientRect();
-  soundtrack.currentTime = ((event.clientX - bounds.left) / bounds.width) * soundtrack.duration;
-});
-
-function getInteractionAudioContext() {
-  if (!interactionAudioContext) {
-    interactionAudioContext = new AudioContext();
-  }
-  if (interactionAudioContext.state === 'suspended') interactionAudioContext.resume();
-  return interactionAudioContext;
-}
-
-function playInteractionTone(type) {
-  if (motionReduced.matches) return;
-  try {
-    const audioContext = getInteractionAudioContext();
-    const oscillator = audioContext.createOscillator();
-    const gain = audioContext.createGain();
-    const now = audioContext.currentTime;
-    oscillator.type = type === 'leave' ? 'sine' : 'sawtooth';
-    oscillator.frequency.setValueAtTime(type === 'leave' ? 310 : 480, now);
-    oscillator.frequency.exponentialRampToValueAtTime(type === 'leave' ? 170 : 760, now + 0.16);
-    gain.gain.setValueAtTime(0.0001, now);
-    gain.gain.exponentialRampToValueAtTime(0.018, now + 0.02);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.24);
-    oscillator.connect(gain).connect(audioContext.destination);
-    oscillator.start(now);
-    oscillator.stop(now + 0.25);
-  } catch (error) {
-    // Browsers can deny Web Audio until a user gesture; visual effects still work.
-    if (error.name !== 'NotAllowedError') console.warn('Interaction sound unavailable:', error);
-  }
-}
-
-document.querySelectorAll('a, button, .project-card, .social-card, .tool, .price-card, .stat').forEach((element) => {
-  element.addEventListener('mouseenter', () => {
-    element.classList.add('is-hovered');
-    playInteractionTone('enter');
-  });
-  element.addEventListener('mouseleave', () => {
-    element.classList.remove('is-hovered');
-    playInteractionTone('leave');
-  });
-});
-
-document.querySelectorAll('.btn, .project-card, .social-card, .tool, .price-card, .stat, .hero-frame').forEach((element) => {
-  element.addEventListener('pointermove', (event) => {
-    if (motionReduced.matches) return;
-    const bounds = element.getBoundingClientRect();
-    const rotateX = ((event.clientY - bounds.top) / bounds.height - 0.5) * -5;
-    const rotateY = ((event.clientX - bounds.left) / bounds.width - 0.5) * 5;
-    element.style.setProperty('--tilt-x', `${rotateX}deg`);
-    element.style.setProperty('--tilt-y', `${rotateY}deg`);
-  });
-  element.addEventListener('pointerleave', () => {
-    element.style.removeProperty('--tilt-x');
-    element.style.removeProperty('--tilt-y');
-  });
-});
-
 const characterBackdrop = document.getElementById('section-character');
 const characterLayers = characterBackdrop ? [...characterBackdrop.querySelectorAll('.character-layer')] : [];
-const characterSections = document.querySelectorAll('.character-section');
-let activeCharacterIndex = -1;
 let characterSwapTimer;
 let activeCharacterLayer = 0;
 let activeCharacterImage = '';
@@ -299,12 +111,6 @@ function swapCharacterImage(image) {
     activeCharacterLayer = nextLayer;
     requestAnimationFrame(() => characterBackdrop.classList.add('is-visible'));
   }, 420);
-}
-
-function showCharacter(section, visibility = 1) {
-  if (!characterBackdrop || characterLayers.length < 2) return;
-  characterBackdrop.style.setProperty('--character-opacity', String(visibility * 0.16));
-  if (visibility > 0.08) characterBackdrop.classList.add('is-visible');
 }
 
 if (characterBackdrop && characterLayers.length) {
@@ -333,15 +139,3 @@ document.addEventListener('visibilitychange', () => {
   if (document.hidden) stopCharacterCycle();
   else startCharacterCycle();
 });
-
-// Simple local clock (edit the timeZone below if you want to lock it to a specific place)
-function updateClock() {
-  const el = document.getElementById('clock');
-  if (!el) return;
-  const now = new Date();
-  const h = String(now.getHours()).padStart(2, '0');
-  const m = String(now.getMinutes()).padStart(2, '0');
-  el.textContent = `${h}:${m}`;
-}
-updateClock();
-setInterval(updateClock, 1000 * 120);

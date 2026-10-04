@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>skyvaint — UI Design</title>
+<script>try{var c=sessionStorage.getItem('sv-shot');if(c){sessionStorage.removeItem('sv-shot');var d=document.documentElement;d.classList.add('is-arriving');d.style.setProperty('--arrive-color',c);}}catch(e){}</script>
+<meta name="description" content="Roblox UI design by skyvaint — Figma to shipped, in-game interfaces.">
+<meta name="theme-color" content="#070505">
+<link rel="icon" type="image/png" sizes="256x256" href="images/favicon.png">
+<link rel="apple-touch-icon" href="images/favicon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="skyvaint">
+<meta property="og:title" content="skyvaint — Roblox Developer">
+<meta property="og:description" content="Roblox worlds, systems, gameplay and UI by skyvaint.">
+<meta property="og:url" content="https://skyvaint.com/ui.html">
+<meta property="og:image" content="https://skyvaint.com/images/site-banner.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="skyvaint — Roblox Developer">
+<meta name="twitter:description" content="Roblox worlds, systems, gameplay and UI by skyvaint.">
+<meta name="twitter:image" content="https://skyvaint.com/images/site-banner.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@500;700&family=Manrope:wght@400;500;600&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="images/barou/barou-01.jpg">
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="barou.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="ball" viewBox="0 0 100 100">
+    <clipPath id="ball-clip"><circle cx="50" cy="50" r="47"/></clipPath>
+    <circle cx="50" cy="50" r="48" fill="#f7f3f3"/>
+    <g clip-path="url(#ball-clip)" fill="#0a0a0a" stroke="#0a0a0a" stroke-width="3" stroke-linejoin="round">
+      <path d="M50 30 69 44 62 66H38L31 44Z"/>
+      <path d="M50 30V12M69 44l17-6M62 66l11 15M38 66 27 81M31 44l-17-6" fill="none"/>
+      <path d="M38 -2 38 12H62L62 -2ZM86 38l16-6 2 30-14 4ZM73 81l17-2-4 24-20-6ZM27 81l-17-2 4 24 20-6ZM14 38-2 32-4 62l14 4Z"/>
+    </g>
+    <circle cx="50" cy="50" r="48" fill="none" stroke="#0a0a0a" stroke-width="3"/>
+  </symbol>
+  <symbol id="bolt" viewBox="0 0 64 160">
+    <path d="M38 0 10 72h18L6 160l50-96H36L54 0Z" fill="currentColor"/>
+  </symbol>
+</svg>
+
+<div class="backdrop" aria-hidden="true"></div>
+<canvas id="thunder" aria-hidden="true"></canvas>
+<div class="flash" aria-hidden="true"></div>
+
+<header class="topbar">
+  <div class="topbar-left">
+    <a href="index.html" class="home-return" data-shot data-shot-color="#070505"><span class="home-return-icon" aria-hidden="true">←</span>Home</a>
+    <a href="index.html" class="brand" data-shot data-shot-color="#070505">skyvaint<span class="dot">.</span></a>
+  </div>
+  <div class="topbar-meta">
+    <span class="hide-sm">02 / UI Design</span>
+    <span><i class="status-dot"></i>Commissions open</span>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="hero-copy">
+      <span class="label">02 — UI Design</span>
+      <h1 class="hero-title">UI that<br><span class="outline">rules.</span></h1>
+      <p class="hero-sub">Anime, sports, slop and everything between. I design in <strong>Figma</strong> and build it straight into Roblox — interfaces that read in a glance and never get in the player's way.</p>
+      <div class="ui-hero-strip">
+        <figure><img src="images/barou/barou-goal.png" alt="Barou striking the ball" width="498" height="281"></figure>
+        <figure><img src="images/barou/barou-02.jpg" alt="Barou in red light" width="479" height="640" style="object-position:center 30%"></figure>
+      </div>
+    </div>
+
+    <div class="barou-panel" style="aspect-ratio:736/860" aria-hidden="true">
+      <div class="barou-panel-frame"></div>
+      <div class="barou-panel-art">
+        <img src="images/barou/barou-01.jpg" alt="" width="736" height="826" fetchpriority="high">
+      </div>
+      <span class="barou-panel-tag">Figma → Roblox<b>Predator UI</b></span>
+      <svg class="bolt bolt-a" viewBox="0 0 64 160"><use href="#bolt"/></svg>
+      <svg class="bolt bolt-b" viewBox="0 0 64 160"><use href="#bolt"/></svg>
+    </div>
+  </section>
+
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <span>Figma</span><span>HUDs</span><span>Shops</span><span>Menus</span><span>Match settings</span><span>Anime UI</span><span>Sports UI</span>
+      <span>Figma</span><span>HUDs</span><span>Shops</span><span>Menus</span><span>Match settings</span><span>Anime UI</span><span>Sports UI</span>
+    </div>
+  </div>
+
+  <section class="section" id="work">
+    <span class="label">Past work</span>
+    <h2 class="section-title reveal">Interfaces <em>with range.</em></h2>
+    <p class="lede">A selection of shipped and commissioned Roblox UI.</p>
+    <div class="ui-gallery">
+      <figure class="reveal"><img src="images/ui-gallery/ui-01.jpg" alt="UI design showcase 1" width="1920" height="1080" loading="lazy" decoding="async"></figure>
+      <figure class="reveal"><img src="images/ui-gallery/ui-02.jpg" alt="UI design showcase 2" width="1920" height="1080" loading="lazy" decoding="async"></figure>
+      <figure class="reveal"><img src="images/ui-gallery/ui-03.jpg" alt="UI design showcase 3" width="1920" height="1080" loading="lazy" decoding="async"></figure>
+      <figure class="reveal"><img src="images/ui-gallery/ui-04.jpg" alt="UI design showcase 4" width="1920" height="1080" loading="lazy" decoding="async"></figure>
+      <figure class="reveal"><img src="images/ui-gallery/ui-05.jpg" alt="UI design showcase 5" width="1232" height="724" loading="lazy" decoding="async"></figure>
+      <figure class="reveal"><img src="images/ui-gallery/ui-06.jpg" alt="UI design showcase 6" width="1385" height="813" loading="lazy" decoding="async"></figure>
+      <figure class="reveal"><img src="images/ui-gallery/ui-07.jpg" alt="UI design showcase 7" width="1276" height="787" loading="lazy" decoding="async"></figure>
+      <figure class="reveal"><img src="images/ui-gallery/ui-08.jpg" alt="UI design showcase 8" width="1419" height="840" loading="lazy" decoding="async"></figure>
+      <figure class="reveal"><img src="images/ui-gallery/ui-09.jpg" alt="UI design showcase 9" width="1363" height="813" loading="lazy" decoding="async"></figure>
+      <figure class="reveal"><img src="images/ui-gallery/ui-10.jpg" alt="UI design showcase 10" width="1413" height="836" loading="lazy" decoding="async"></figure>
+      <figure class="reveal"><img src="images/ui-gallery/ui-11.jpg" alt="UI design showcase 11" width="1375" height="813" loading="lazy" decoding="async"></figure>
+      <figure class="reveal"><img src="images/ui-gallery/ui-12.jpg" alt="UI design showcase 12" width="1090" height="646" loading="lazy" decoding="async"></figure>
+      <figure class="reveal"><img src="images/ui-gallery/ui-13.jpg" alt="UI design showcase 13" width="1375" height="813" loading="lazy" decoding="async"></figure>
+      <figure class="reveal"><img src="images/ui-gallery/ui-14.jpg" alt="UI design showcase 14" width="1373" height="813" loading="lazy" decoding="async"></figure>
+      <figure class="reveal"><img src="images/ui-gallery/ui-15.jpg" alt="UI design showcase 15" width="1363" height="813" loading="lazy" decoding="async"></figure>
+      <figure class="reveal"><img src="images/ui-gallery/ui-16.jpg" alt="UI design showcase 16" width="1400" height="813" loading="lazy" decoding="async"></figure>
+      <figure class="reveal"><img src="images/ui-gallery/ui-17.jpg" alt="UI design showcase 17" width="1390" height="813" loading="lazy" decoding="async"></figure>
+      <figure class="reveal"><img src="images/ui-gallery/ui-18.jpg" alt="UI design showcase 18" width="1388" height="813" loading="lazy" decoding="async"></figure>
+      <figure class="reveal"><img src="images/ui-gallery/ui-19.jpg" alt="UI design showcase 19" width="1391" height="813" loading="lazy" decoding="async"></figure>
+      <figure class="reveal"><img src="images/ui-gallery/ui-20.jpg" alt="UI design showcase 20" width="1366" height="813" loading="lazy" decoding="async"></figure>
+      <figure class="reveal"><img src="images/ui-gallery/ui-21.jpg" alt="UI design showcase 21" width="1363" height="813" loading="lazy" decoding="async"></figure>
+      <figure class="reveal"><img src="images/ui-gallery/ui-22.jpg" alt="UI design showcase 22" width="1376" height="813" loading="lazy" decoding="async"></figure>
+      <figure class="reveal"><img src="images/ui-gallery/ui-23.jpg" alt="UI design showcase 23" width="1920" height="1080" loading="lazy" decoding="async"></figure>
+    </div>
+  </section>
+
+  <section class="section" id="pricing">
+    <span class="label">Commissions</span>
+    <h2 class="section-title reveal">Pricing.</h2>
+    <div class="card-grid">
+      <div class="card is-hot reveal"><span class="label">Per frame</span><strong>3,000 Robux</strong><p>Per UI frame · approximately $15.</p></div>
+      <div class="card reveal"><span class="label">Workflow</span><strong>Figma</strong><p>Designed in Figma, then built and wired into Roblox Studio.</p></div>
+      <div class="card reveal"><span class="label">Payment</span><strong>Flexible</strong><p>PayPal, bank transfer, Robux, gift cards, Discord decorations, nameplates or Nitro.</p></div>
+    </div>
+  </section>
+
+  <section class="section cta">
+    <span class="label">Next</span>
+    <h2 class="section-title reveal">Need a <em>frame?</em></h2>
+    <div class="cta-actions">
+      <a href="https://discord.com/users/1367774975045406801" target="_blank" rel="noreferrer" class="btn btn-solid">Message on Discord</a>
+      <a href="scripting.html" class="btn btn-line" data-shot data-shot-color="#08050f">See scripting →</a>
+    </div>
+    <div class="cta-actions">
+      <a href="index.html" class="home-return" data-shot data-shot-color="#070505"><span class="home-return-icon" aria-hidden="true">←</span>Back to home</a>
+    </div>
+  </section>
+</main>
+
+<footer class="footer-bar">
+  <span>© <span id="year"></span> skyvaint.</span>
+  <span>Fullstacked Luau · Programmer &amp; UI designer</span>
+</footer>
+
+<aside class="soundtrack" aria-label="Soundtrack player">
+  <div class="soundtrack-heading"><span class="soundtrack-label">Now transmitting</span><span class="soundwave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span></div>
+  <strong id="track-name">Old Digicam</strong>
+  <div class="soundtrack-controls"><button id="soundtrack-toggle" type="button" aria-label="Play soundtrack">Play</button></div>
+  <div class="track-progress" role="slider" aria-label="Track progress" tabindex="0"><span id="track-progress-fill"></span></div>
+  <span id="track-status">Paused</span>
+  <audio id="soundtrack-audio" preload="metadata"></audio>
+</aside>
+
+<script src="common.js"></script>
+<script src="barou.js"></script>
+</body>
+</html>
