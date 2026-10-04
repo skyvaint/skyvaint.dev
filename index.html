@@ -4,287 +4,207 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>skyvaint — Roblox Developer</title>
+<script>try{var c=sessionStorage.getItem('sv-shot');if(c){sessionStorage.removeItem('sv-shot');var d=document.documentElement;d.classList.add('is-arriving');d.style.setProperty('--arrive-color',c);}}catch(e){}</script>
 <meta name="description" content="skyvaint builds Roblox worlds, systems, gameplay and UI.">
-<meta name="theme-color" content="#08070b">
+<meta name="theme-color" content="#070505">
 <link rel="icon" type="image/png" sizes="256x256" href="images/favicon.png">
 <link rel="apple-touch-icon" href="images/favicon.png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="skyvaint">
 <meta property="og:title" content="skyvaint — Roblox Developer">
-<meta property="og:description" content="Roblox worlds, systems, gameplay and UI by skyvaint.">
+<meta property="og:description" content="skyvaint builds Roblox worlds, systems, gameplay and UI.">
 <meta property="og:url" content="https://skyvaint.com/">
 <meta property="og:image" content="https://skyvaint.com/images/site-banner.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="skyvaint — Roblox Developer">
-<meta name="twitter:description" content="Roblox worlds, systems, gameplay and UI by skyvaint.">
+<meta name="twitter:description" content="skyvaint builds Roblox worlds, systems, gameplay and UI.">
 <meta name="twitter:image" content="https://skyvaint.com/images/site-banner.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@500;700&family=Manrope:wght@400;500;600&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="images/barou/prime-barou.jpg">
+<link rel="stylesheet" href="common.css">
+<link rel="stylesheet" href="site.css">
 </head>
-<body>
-<div id="BackgroundEffect"></div>
-<canvas id="GradientCanvas"></canvas>
-<div id="section-character" aria-hidden="true">
-  <img class="character-layer character-layer-a" src="images/goku-black-hero.png" alt="">
-  <img class="character-layer character-layer-b" src="images/goku-black-hero2.png" alt="">
-</div>
-<div class="glow glow-a"></div>
-<div class="glow glow-b"></div>
-<div class="lightning lightning-left" aria-hidden="true"></div>
-<div class="lightning lightning-right" aria-hidden="true"></div>
+<body data-theme="red">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="ball" viewBox="0 0 100 100">
+    <clipPath id="ball-clip"><circle cx="50" cy="50" r="47"/></clipPath>
+    <circle cx="50" cy="50" r="48" fill="#f7f3f3"/>
+    <g clip-path="url(#ball-clip)" fill="#0a0a0a" stroke="#0a0a0a" stroke-width="3" stroke-linejoin="round">
+      <path d="M50 30 69 44 62 66H38L31 44Z"/>
+      <path d="M50 30V12M69 44l17-6M62 66l11 15M38 66 27 81M31 44l-17-6" fill="none"/>
+      <path d="M38 -2 38 12H62L62 -2ZM86 38l16-6 2 30-14 4ZM73 81l17-2-4 24-20-6ZM27 81l-17-2 4 24 20-6ZM14 38-2 32-4 62l14 4Z"/>
+    </g>
+    <circle cx="50" cy="50" r="48" fill="none" stroke="#0a0a0a" stroke-width="3"/>
+  </symbol>
+  <radialGradient id="db-gem" cx="50%" cy="50%" r="50%" fx="36%" fy="32%">
+    <stop offset="0" stop-color="#fff1b8"/><stop offset=".35" stop-color="#ffb21f"/><stop offset=".8" stop-color="#f07400"/><stop offset="1" stop-color="#b34700"/>
+  </radialGradient>
+  <symbol id="bluelock" viewBox="0 0 100 100">
+    <polygon points="50.00,10.00 91.85,40.40 75.86,89.60 24.14,89.60 8.15,40.40" fill="#1238c4" stroke="#fff" stroke-width="5" stroke-linejoin="round"/>
+    <path d="M50.00 54.00L70.92 25.20M50.00 54.00L83.85 65.00M50.00 54.00L50.00 89.60M50.00 54.00L16.15 65.00M50.00 54.00L29.08 25.20" stroke="#fff" stroke-width="5.6"/>
+    <polygon points="50.00,40.50 62.84,49.83 57.94,64.92 42.06,64.92 37.16,49.83" fill="#fff" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="dragonball" viewBox="0 0 100 100">
+    <circle cx="50" cy="50" r="46" fill="url(#db-gem)" stroke="#8a3600" stroke-width="2"/>
+    <g fill="#d81b1b">
+      <path d="M0-7 1.9-2.4 6.7-2.2 2.9.8 4.2 5.6 0 2.8-4.2 5.6-2.9.8-6.7-2.2-1.9-2.4Z" transform="translate(42 38)"/>
+      <path d="M0-7 1.9-2.4 6.7-2.2 2.9.8 4.2 5.6 0 2.8-4.2 5.6-2.9.8-6.7-2.2-1.9-2.4Z" transform="translate(60 42)"/>
+      <path d="M0-7 1.9-2.4 6.7-2.2 2.9.8 4.2 5.6 0 2.8-4.2 5.6-2.9.8-6.7-2.2-1.9-2.4Z" transform="translate(40 57)"/>
+      <path d="M0-7 1.9-2.4 6.7-2.2 2.9.8 4.2 5.6 0 2.8-4.2 5.6-2.9.8-6.7-2.2-1.9-2.4Z" transform="translate(58 61)"/>
+    </g>
+    <ellipse cx="34" cy="26" rx="11" ry="6" fill="#fff" opacity=".6" transform="rotate(-35 34 26)"/>
+  </symbol>
+  <symbol id="bolt" viewBox="0 0 64 160">
+    <path d="M38 0 10 72h18L6 160l50-96H36L54 0Z" fill="currentColor"/>
+  </symbol>
+</svg>
 
-<aside class="soundtrack" aria-label="Soundtrack player">
-  <div class="soundtrack-heading"><span class="soundtrack-label">Now transmitting</span><span class="soundwave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span></div>
-  <strong id="track-name">Old Digicam</strong>
-  <div class="soundtrack-controls">
-    <button id="soundtrack-toggle" class="play-button" type="button" aria-label="Stop soundtrack">Stop</button>
-  </div>
-  <div class="track-progress" role="slider" aria-label="Track progress" tabindex="0"><span id="track-progress-fill"></span></div>
-  <span id="track-status">Paused</span>
-  <audio id="soundtrack-audio" preload="metadata"></audio>
+<div class="backdrop" aria-hidden="true"></div>
+<canvas id="mesh" aria-hidden="true"></canvas>
+
+<!-- Everything inside #page is swapped when navigating; the rest persists. -->
+<div id="page">
+  <header class="topbar">
+    <a href="index.html" class="brand">skyvaint<span class="dot">.</span></a>
+    <div class="topbar-meta">
+      <span><i class="status-dot"></i>Commissions open</span>
+      <span class="hide-sm">Daimiel, ES · <b id="clock">00:00</b></span>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="label">01 — Roblox developer</span>
+        <h1 class="hero-title">Sky<br><span class="outline">vaint</span></h1>
+        <!-- Stats banner. Visits update live from the games below when the Roblox API is reachable;
+             otherwise the numbers written here are shown — edit them directly. -->
+        <div class="stats-banner" data-user-id="1996540411" data-place-ids="73257710123935,77393318863643,72845937010155">
+          <a class="stat-cell stat-profile" href="https://www.roblox.com/users/1996540411/profile" target="_blank" rel="noreferrer">
+            <img src="images/favicon.png" alt="" width="40" height="40">
+            <span>Roblox profile<b>@skyvaint</b></span>
+          </a>
+          <div class="stat-cell"><span>All-time visits</span><b data-stat="visits">—</b></div>
+          <div class="stat-cell"><span>Peak CCU</span><b>80K</b></div>
+          <div class="stat-cell"><span>Experience</span><b>2+ yrs</b></div>
+        </div>
+
+        <div class="shot-picker">
+          <span class="label shot-picker-label">Choose your shot</span>
+          <div class="shot-buttons">
+            <a href="ui.html" class="shot-card is-ui" aria-label="UI design" data-shot data-shot-icon="bluelock" data-shot-color="#070505" data-tilt>
+              <span class="shot-card-border" aria-hidden="true"></span>
+              <span class="shot-card-media" aria-hidden="true"><img src="images/banners/barou-shot.jpg" alt="" width="498" height="281"></span>
+              <span class="shot-card-glow" aria-hidden="true"></span>
+              <span class="shot-card-sheen" aria-hidden="true"></span>
+              <svg class="shot-card-bolt bolt-1" viewBox="0 0 64 160" aria-hidden="true"><use href="#bolt"/></svg>
+              <svg class="shot-card-bolt bolt-2" viewBox="0 0 64 160" aria-hidden="true"><use href="#bolt"/></svg>
+              <svg class="shot-card-bolt bolt-3" viewBox="0 0 64 160" aria-hidden="true"><use href="#bolt"/></svg>
+              <span class="shot-card-name">UI</span>
+              <svg class="shot-card-ball shot-card-icon shot-origin" viewBox="0 0 100 100" aria-hidden="true"><use href="#bluelock"/></svg>
+            </a>
+            <a href="scripting.html" class="shot-card is-scripting" aria-label="Scripting" data-shot data-shot-icon="dragonball" data-shot-color="#08050f" data-tilt>
+              <span class="shot-card-border" aria-hidden="true"></span>
+              <span class="shot-card-media" aria-hidden="true"><img src="images/banners/goku-black-banner.jpg" alt="" width="1100" height="619"></span>
+              <span class="shot-card-glow" aria-hidden="true"></span>
+              <span class="shot-card-sheen" aria-hidden="true"></span>
+              <svg class="shot-card-bolt bolt-1" viewBox="0 0 64 160" aria-hidden="true"><use href="#bolt"/></svg>
+              <svg class="shot-card-bolt bolt-3" viewBox="0 0 64 160" aria-hidden="true"><use href="#bolt"/></svg>
+              <span class="shot-card-sparks" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+              <span class="shot-card-name">Scripting</span>
+              <svg class="shot-card-ball shot-card-icon shot-origin" viewBox="0 0 100 100" aria-hidden="true"><use href="#dragonball"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="barou-panel" aria-hidden="true">
+        <div class="barou-panel-frame"></div>
+        <div class="barou-panel-art">
+          <img src="images/barou/prime-barou.jpg" alt="" width="634" height="1200" fetchpriority="high">
+        </div>
+        <span class="barou-panel-num">13</span>
+        <span class="barou-panel-tag">Mode: Predator<b>The King</b></span>
+        <svg class="bolt bolt-a" viewBox="0 0 64 160"><use href="#bolt"/></svg>
+        <svg class="bolt bolt-b" viewBox="0 0 64 160"><use href="#bolt"/></svg>
+        <svg class="bolt bolt-c" viewBox="0 0 64 160"><use href="#bolt"/></svg>
+        <svg class="bolt bolt-d" viewBox="0 0 64 160"><use href="#bolt"/></svg>
+      </div>
+    </section>
+
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee-track">
+        <span>Ego</span><span>Fullstack Luau</span><span>UI Design</span><span>Liveops</span><span>Predator mode</span><span>Future Soccer</span><span>The King</span>
+        <span>Ego</span><span>Fullstack Luau</span><span>UI Design</span><span>Liveops</span><span>Predator mode</span><span>Future Soccer</span><span>The King</span>
+      </div>
+    </div>
+
+    <section class="section about-grid" id="about">
+      <div class="reveal">
+        <span class="label">04 — About</span>
+        <p class="about-statement">Clean systems underneath. <em>UI that doesn't get in the way.</em> Built a little sharper than it needs to be.</p>
+      </div>
+      <div class="reveal about-body">
+        <p>I'm skyvaint, a Roblox developer who pulls things apart to see how they tick, then puts them back together better. Scripting, UI, gameplay loops — I go wherever the project needs me.</p>
+        <div class="stat-list">
+          <div class="stat-row"><span>Based in</span><b>Ciudad Real, ES</b></div>
+          <div class="stat-row"><span>Peak CCU shipped</span><b>80K</b></div>
+          <div class="stat-row"><span>Founder</span><b>Future Soccer</b></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="contact">
+      <span class="label">05 — Find me</span>
+      <h2 class="section-title reveal">Find me <em>on the field.</em></h2>
+      <div class="social-grid">
+        <a href="https://discord.com/users/1367774975045406801" target="_blank" rel="noreferrer" class="social-card reveal" data-tilt>
+          <img src="images/icons/discord.svg" alt="">
+          <span class="social-name">Discord</span><span class="social-handle">@skyvaint</span>
+        </a>
+        <a href="https://x.com/skyvaint" target="_blank" rel="noreferrer" class="social-card reveal" data-tilt>
+          <img src="images/icons/x.svg" alt="">
+          <span class="social-name">X</span><span class="social-handle">@skyvaint</span>
+        </a>
+        <a href="https://www.roblox.com/users/1996540411/profile" target="_blank" rel="noreferrer" class="social-card reveal" data-tilt>
+          <img src="images/icons/roblox.svg" alt="">
+          <span class="social-name">Roblox</span><span class="social-handle">skyvaint</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="section cta">
+      <span class="label">06 — Commissions open</span>
+      <h2 class="section-title reveal">Let's <em>build.</em></h2>
+      <div class="cta-actions">
+        <a href="https://discord.com/users/1367774975045406801" target="_blank" rel="noreferrer" class="btn btn-solid">Message on Discord</a>
+        <a href="ui.html" class="btn btn-line" data-shot data-shot-icon="bluelock" data-shot-color="#070505">See UI work</a>
+        <a href="scripting.html" class="btn btn-line" data-shot data-shot-icon="dragonball" data-shot-color="#08050f">See scripting</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer-bar">
+    <span>© <span id="year"></span> skyvaint.</span>
+    <span>Fullstacked Luau · Programmer &amp; UI designer</span>
+  </footer>
+</div>
+
+<canvas id="thunder" aria-hidden="true"></canvas>
+<div class="flash" aria-hidden="true"></div>
+
+<aside class="soundtrack" aria-label="Ambient soundtrack">
+  <div class="soundtrack-heading"><span class="soundtrack-label">Ambient</span><span class="soundwave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span></div>
+  <strong id="track-name">Calm signal</strong>
+  <div class="soundtrack-controls"><button id="soundtrack-toggle" type="button" aria-label="Play ambient soundtrack">Play</button></div>
+  <span id="track-status">Muted · press Play</span>
 </aside>
 
-<header class="nav">
-  <a href="#" class="nav-brand">skyvaint<span class="dot">.</span></a>
-  <nav class="nav-links">
-    <a href="#about">About</a>
-    <a href="#work">Work</a>
-    <a href="#experience">Experience</a>
-    <a href="#tools">Tools</a>
-  </nav>
-  <a href="#contact" class="nav-cta">Contact</a>
-</header>
-
-<div class="top-energy" aria-hidden="true">
-  <div class="top-energy-copy"><span>SKYVAINT.COM // FULLSTACKED LUAU</span><b>PROGRAMMER &amp; UI DESIGNER</b></div>
-  <div class="top-energy-mesh"></div>
-  <div class="top-energy-orb"></div>
-</div>
-
-<!-- HERO -->
-<section class="hero character-section" data-character-image="images/goku-black-hero.png">
-  <div class="hero-text">
-    <p class="kicker">Roblox Developer</p>
-    <h1>Hi, I'm skyvaint.</h1>
-    <p class="hero-sub">I build worlds, systems and UI for Roblox — pulling from the same energy that makes a rose-gold timeline villain look effortless.</p>
-    <div class="hero-actions">
-      <a href="#work" class="btn btn-primary">View Work</a>
-      <a href="#contact" class="btn btn-ghost">Get in Touch</a>
-    </div>
-  </div>
-  <div class="hero-art">
-    <!-- FILLER: drop a Goku Black DBL render here (transparent PNG works best) -->
-    <div class="hero-frame" id="hero-image-slot">
-      <img src="images/goku-black-hero.png" alt="Goku Black" onerror="this.parentElement.classList.add('placeholder')">
-      <span class="placeholder-label">Goku Black render → images/goku-black-hero.png</span>
-    </div>
-  </div>
-</section>
-
-<!-- ABOUT -->
-<section id="about" class="about character-section" data-character-image="images/goku-black-hero.png">
-  <div class="about-copy">
-    <h2>About Me</h2>
-    <p>I'm skyvaint, a Roblox developer who likes building things that feel a little sharper than they need to be — clean systems underneath, and UI that doesn't get in the way.</p>
-    <p>I'm curious by default. That means constantly pulling things apart to see how they tick, then putting them back together better. Scripting, UI, gameplay loops — I go wherever the project needs me.</p>
-  </div>
-  <div class="about-stats">
-    <div class="stat">
-      <span class="stat-value">Daimiel</span>
-      <span class="stat-label">Ciudad Real, Spain</span>
-    </div>
-    <div class="stat">
-      <span class="stat-value" id="clock">00:00</span>
-      <span class="stat-label">Local Time</span>
-    </div>
-  </div>
-</section>
-
-<!-- SOCIALS -->
-<section class="socials character-section" data-character-image="images/goku-black-hero2.png">
-  <a href="https://discord.com/users/1367774975045406801" target="_blank" rel="noreferrer" class="social-card">
-    <img class="social-logo" src="images/icons/discord.svg" alt="">
-    <span class="social-name">Discord</span>
-    <span class="social-handle">@skyvaint</span>
-  </a>
-  <div class="social-card banner-card">
-    <img src="images/emblem2.png" alt="Goku Rose banner">
-  </div>
-  <a href="https://x.com/skyvaint" target="_blank" rel="noreferrer" class="social-card">
-    <img class="social-logo" src="images/icons/x.svg" alt="">
-    <span class="social-name">X</span>
-    <span class="social-handle">@skyvaint</span>
-  </a>
-  <a href="https://www.roblox.com/users/1996540411/profile" target="_blank" rel="noreferrer" class="social-card">
-    <img class="social-logo" src="images/icons/roblox.svg" alt="">
-    <span class="social-name">Roblox</span>
-    <span class="social-handle">skyvaint</span>
-  </a>
-</section>
-
-<!-- EXPERIENCE -->
-<section id="experience" class="experience character-section" data-character-image="images/goku-black-hero3.png">
-  <h2>Experience</h2>
-
-  <div class="timeline">
-    <div class="timeline-item">
-      <div class="timeline-marker"></div>
-      <div class="timeline-content">
-        <div class="timeline-head">
-          <h3>Blockturns Studio</h3>
-          <span class="timeline-date">April - June</span>
-        </div>
-        <p class="timeline-role">Liveops Programmer</p>
-        <p>Maintaining players engaged, coding new systems, QOL improvements</p>
-      </div>
-    </div>
-
-    <div class="timeline-item">
-      <div class="timeline-marker"></div>
-      <div class="timeline-content">
-        <div class="timeline-head">
-          <h3>Indigo Studios</h3>
-          <span class="timeline-date">January – March</span>
-        </div>
-        <p class="timeline-role">Programmer</p>
-        <p>Creating new systems, games and liveops for all Indigo Experiences i had been tasked to maintain.</p>
-      </div>
-    </div>
-
-    <div class="timeline-item">
-      <div class="timeline-marker"></div>
-      <div class="timeline-content">
-        <div class="timeline-head">
-          <h3>Future Soccer</h3>
-          <span class="timeline-date">2024 - Today</span>
-        </div>
-        <p class="timeline-role">Founder / Solo Dev</p>
-        <p>A personal project of mine, focused on developing a unique soccer experience.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- PROJECTS -->
-<section id="work" class="projects character-section" data-character-image="images/goku-black-hero2.png">
-  <h2>Past Work</h2>
-  <p class="section-sub">Real projects that show technical depth and product thinking. Gameplay video slots are ready for your MP4s.</p>
-
-  <div class="project-grid">
-    <article class="project-card">
-      <div class="project-media video-slot video-placeholder">
-        <span class="video-icon" aria-hidden="true">▶</span>
-        
-      </div>
-      <h3>Future Soccer</h3>
-      <p>A unique football experience, for experienced players, with momentum and physics.</p>
-      <div class="tags"><span>Sports</span><span>Future</span><span>Fullstacked</span></div>
-    </article>
-
-     <article class="project-card">
-      <div class="project-media video-slot video-placeholder">
-        <span class="video-icon" aria-hidden="true">▶</span>
-        
-      </div>
-      <h3>Dragon Ball Tower</h3>
-      <p>Some obby ive scripted within hours.</p>
-      <div class="tags"><span>Anime</span><span>Slop</span><span>Fullstacked</span></div>
-    </article>
-
-   
-
-  </div>
-
-  <a href="#" class="view-all">View All Projects →</a>
-</section>
-
-<section class="portfolio-section character-section" data-character-image="images/goku-black-hero2.png">
-  <div class="section-heading">
-    <p class="kicker">Scripting portfolio</p>
-    <h2>Systems that ship.</h2>
-    <p class="section-sub">Frontend and backend scripting for live Roblox experiences, including liveops work for Indigo Studios and Blockturns.</p>
-  </div>
-  <div class="game-links">
-    <a href="https://www.roblox.com/games/73257710123935/Poison-Treats" target="_blank"><strong>Poison Treats</strong><span>Liveops · 20K CCU spike</span></a>
-    <a href="https://www.roblox.com/games/77393318863643/Aura-Ascension" target="_blank"><strong>Aura Ascension</strong><span>Liveops · 80K CCU spike</span></a>
-    <a href="https://www.roblox.com/games/72845937010155/Gear-Slap-Tower" target="_blank"><strong>Gear Slap Tower</strong><span>Liveops · 2K CCU constant</span></a>
-  </div>
-</section>
-
-<section class="ui-showcase character-section" data-character-image="images/goku-black-hero3.png">
-  <div class="section-heading">
-    <p class="kicker">UI past work</p>
-    <h2>Interfaces with range.</h2>
-    <p class="section-sub">Anime, sports, slop and everything between. I use Figma to turn ideas into shippable Roblox UI.</p>
-  </div>
-  <div class="ui-gallery">
-    <img src="images/ui-gallery/ui-01.png" alt="UI design showcase 1" loading="lazy">
-    <img src="images/ui-gallery/ui-02.jpg" alt="UI design showcase 2" loading="lazy">
-    <img src="images/ui-gallery/ui-03.jpg" alt="UI design showcase 3" loading="lazy">
-    <img src="images/ui-gallery/ui-04.jpg" alt="UI design showcase 4" loading="lazy">
-    <img src="images/ui-gallery/ui-05.jpg" alt="UI design showcase 5" loading="lazy">
-    <img src="images/ui-gallery/ui-06.jpg" alt="UI design showcase 6" loading="lazy">
-    <img src="images/ui-gallery/ui-07.jpg" alt="UI design showcase 7" loading="lazy">
-    <img src="images/ui-gallery/ui-08.jpg" alt="UI design showcase 8" loading="lazy">
-    <img src="images/ui-gallery/ui-09.jpg" alt="UI design showcase 9" loading="lazy">
-    <img src="images/ui-gallery/ui-10.jpg" alt="UI design showcase 10" loading="lazy">
-    <img src="images/ui-gallery/ui-11.jpg" alt="UI design showcase 11" loading="lazy">
-    <img src="images/ui-gallery/ui-12.jpg" alt="UI design showcase 12" loading="lazy">
-    <img src="images/ui-gallery/ui-13.jpg" alt="UI design showcase 13" loading="lazy">
-    <img src="images/ui-gallery/ui-14.jpg" alt="UI design showcase 14" loading="lazy">
-    <img src="images/ui-gallery/ui-15.jpg" alt="UI design showcase 15" loading="lazy">
-    <img src="images/ui-gallery/ui-16.jpg" alt="UI design showcase 16" loading="lazy">
-    <img src="images/ui-gallery/ui-17.jpg" alt="UI design showcase 17" loading="lazy">
-    <img src="images/ui-gallery/ui-18.jpg" alt="UI design showcase 18" loading="lazy">
-    <img src="images/ui-gallery/ui-19.jpg" alt="UI design showcase 19" loading="lazy">
-    <img src="images/ui-gallery/ui-20.jpg" alt="UI design showcase 20" loading="lazy">
-    <img src="images/ui-gallery/ui-21.jpg" alt="UI design showcase 21" loading="lazy">
-    <img src="images/ui-gallery/ui-22.jpg" alt="UI design showcase 22" loading="lazy">
-    <img src="images/ui-gallery/ui-23.png" alt="UI design showcase 23" loading="lazy">
-  </div>
-</section>
-
-<section class="pricing-section character-section" data-character-image="images/goku-black-hero4.png">
-  <div class="section-heading">
-    <p class="kicker">Commissions</p>
-    <h2>Let’s build something.</h2>
-    <p class="section-sub">Commissions are currently <strong class="availability">open</strong>. I can work across gameplay systems, liveops and custom UI.</p>
-  </div>
-  <div class="pricing-grid">
-    <div class="price-card"><strong>$600+</strong><span>Full game, plus a percentage for liveops</span></div>
-    <div class="price-card"><strong>3,000 Robux</strong><span>Per UI frame · approximately $15</span></div>
-  </div>
-  <p class="payment-note">Payment accepted through PayPal, bank transfer, Robux, gift cards, Discord decorations, nameplates or Nitro.</p>
-</section>
-
-<!-- TOOLS -->
-<section id="tools" class="tools character-section" data-character-image="images/goku-black-hero4.png">
-  <h2>Software & Tools</h2>
-  <p class="section-sub">Daily drivers for building and shipping.</p>
-
-  <div class="tools-grid">
-    <div class="tool"><span class="tool-icon roblox" aria-hidden="true"><img src="images/icons/roblox.svg" alt=""></span><span>Roblox Studio</span></div>
-    <div class="tool"><span class="tool-icon figma" aria-hidden="true"><img src="images/icons/figma.svg" alt=""></span><span>Figma</span></div>
-    <div class="tool"><span class="tool-icon vscode" aria-hidden="true"><img src="images/icons/vscode.svg" alt=""></span><span>VS Code</span></div>
-    <div class="tool"><span class="tool-icon blender" aria-hidden="true"><img src="images/icons/blender.svg" alt=""></span><span>Blender</span></div>
-  </div>
-</section>
-
-<section id="contact" class="footer character-section" data-character-image="images/goku-black-hero3.png">
-   <div class="footer-art placeholder">
-     <img src="images/emblem.png" alt="Goku Black" width = 1000 height = 200 onerror="this.parentElement.classList.add('placeholder')">
-  </div>
-
-  <h2>Let's build something.</h2>
-  <p>Open to new projects and collabs — reach out on Discord.</p>
-  <a href="https://discord.com/users/1367774975045406801" target="_blank" class="btn btn-primary">Message on Discord</a>
-  <p class="footer-copy">© <span id="year"></span> skyvaint.</p>
-</section>
-
-<script src="main.js"></script>
+<script src="common.js"></script>
+<script src="effects.js"></script>
 </body>
 </html>

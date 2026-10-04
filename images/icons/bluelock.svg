@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <polygon points="50.00,10.00 91.85,40.40 75.86,89.60 24.14,89.60 8.15,40.40" fill="#1238c4" stroke="#fff" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M50.00 54.00L70.92 25.20M50.00 54.00L83.85 65.00M50.00 54.00L50.00 89.60M50.00 54.00L16.15 65.00M50.00 54.00L29.08 25.20" stroke="#fff" stroke-width="5.6"/>
+  <polygon points="50.00,40.50 62.84,49.83 57.94,64.92 42.06,64.92 37.16,49.83" fill="#fff" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/>
+</svg>
