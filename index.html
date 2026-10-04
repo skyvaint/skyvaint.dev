@@ -12,23 +12,23 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="skyvaint">
 <meta property="og:title" content="skyvaint — Roblox Developer">
-<meta property="og:description" content="Roblox worlds, systems, gameplay and UI by skyvaint.">
+<meta property="og:description" content="skyvaint builds Roblox worlds, systems, gameplay and UI.">
 <meta property="og:url" content="https://skyvaint.com/">
 <meta property="og:image" content="https://skyvaint.com/images/site-banner.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="skyvaint — Roblox Developer">
-<meta name="twitter:description" content="Roblox worlds, systems, gameplay and UI by skyvaint.">
+<meta name="twitter:description" content="skyvaint builds Roblox worlds, systems, gameplay and UI.">
 <meta name="twitter:image" content="https://skyvaint.com/images/site-banner.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@500;700&family=Manrope:wght@400;500;600&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="images/barou/prime-barou.jpg">
 <link rel="stylesheet" href="common.css">
-<link rel="stylesheet" href="barou.css">
+<link rel="stylesheet" href="site.css">
 </head>
-<body>
+<body data-theme="red">
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="ball" viewBox="0 0 100 100">
     <clipPath id="ball-clip"><circle cx="50" cy="50" r="47"/></clipPath>
@@ -46,117 +46,142 @@
 </svg>
 
 <div class="backdrop" aria-hidden="true"></div>
-<canvas id="thunder" aria-hidden="true"></canvas>
-<div class="flash" aria-hidden="true"></div>
+<div class="mesh" aria-hidden="true"></div>
 
-<header class="topbar">
-  <a href="index.html" class="brand">skyvaint<span class="dot">.</span></a>
-  <div class="topbar-meta">
-    <span><i class="status-dot"></i>Commissions open</span>
-    <span class="hide-sm">Daimiel, ES · <b id="clock">00:00</b></span>
-  </div>
-</header>
+<!-- Everything inside #page is swapped when navigating; the rest persists. -->
+<div id="page">
+  <header class="topbar">
+    <a href="index.html" class="brand">skyvaint<span class="dot">.</span></a>
+    <div class="topbar-meta">
+      <span><i class="status-dot"></i>Commissions open</span>
+      <span class="hide-sm">Daimiel, ES · <b id="clock">00:00</b></span>
+    </div>
+  </header>
 
-<main>
-  <section class="hero">
-    <div class="hero-copy">
-      <span class="label">01 — Roblox developer</span>
-      <h1 class="hero-title">Sky<br><span class="outline">vaint</span></h1>
-      <p class="hero-sub">Fullstack Luau programmer &amp; UI designer. <strong>I don't play support for anyone's game</strong> — I build the systems and interfaces that carry it.</p>
-
-      <div class="shot-picker">
-        <span class="label shot-picker-label">Choose your shot</span>
-        <div class="shot-buttons">
-          <a href="ui.html" class="shot-btn" data-shot data-shot-color="#070505" data-tilt>
-            <svg class="shot-btn-ball" aria-hidden="true"><use href="#ball"/></svg>
-            <span class="shot-btn-copy">
-              <span class="shot-btn-num">02 / Interfaces</span>
-              <span class="shot-btn-name">UI Design</span>
-              <span class="shot-btn-desc">Figma → Roblox, shipped.</span>
-            </span>
-            <span class="shot-btn-arrow" aria-hidden="true">→</span>
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="label">01 — Roblox developer</span>
+        <h1 class="hero-title">Sky<br><span class="outline">vaint</span></h1>
+        <!-- Stats banner. Visits update live from the games below when the Roblox API is reachable;
+             otherwise the numbers written here are shown — edit them directly. -->
+        <div class="stats-banner" data-user-id="1996540411" data-place-ids="73257710123935,77393318863643,72845937010155">
+          <a class="stat-cell stat-profile" href="https://www.roblox.com/users/1996540411/profile" target="_blank" rel="noreferrer">
+            <img src="images/favicon.png" alt="" width="40" height="40">
+            <span>Roblox profile<b>@skyvaint</b></span>
           </a>
-          <a href="scripting.html" class="shot-btn is-scripting" data-shot data-shot-color="#08050f" data-tilt>
-            <svg class="shot-btn-ball" aria-hidden="true"><use href="#ball"/></svg>
-            <span class="shot-btn-copy">
-              <span class="shot-btn-num">03 / Systems</span>
-              <span class="shot-btn-name">Scripting</span>
-              <span class="shot-btn-desc">Gameplay, liveops, backend.</span>
-            </span>
-            <span class="shot-btn-arrow" aria-hidden="true">→</span>
-          </a>
+          <div class="stat-cell"><span>All-time visits</span><b data-stat="visits">—</b></div>
+          <div class="stat-cell"><span>Peak CCU</span><b>80K</b></div>
+          <div class="stat-cell"><span>Experience</span><b>2+ yrs</b></div>
+        </div>
+        <p class="hero-sub">Fullstack Luau programmer &amp; UI designer. <strong>I don't play support for anyone's game</strong> — I build the systems and interfaces that carry it.</p>
+
+        <div class="shot-picker">
+          <span class="label shot-picker-label">Choose your shot</span>
+          <div class="shot-buttons">
+            <a href="ui.html" class="shot-card is-ui" data-shot data-shot-color="#070505" data-tilt>
+              <span class="shot-card-border" aria-hidden="true"></span>
+              <span class="shot-card-media" aria-hidden="true"><img src="images/banners/barou-shot.jpg" alt="" width="498" height="281"></span>
+              <span class="shot-card-glow" aria-hidden="true"></span>
+              <span class="shot-card-sheen" aria-hidden="true"></span>
+              <svg class="shot-card-bolt bolt-1" viewBox="0 0 64 160" aria-hidden="true"><use href="#bolt"/></svg>
+              <svg class="shot-card-bolt bolt-2" viewBox="0 0 64 160" aria-hidden="true"><use href="#bolt"/></svg>
+              <span class="shot-card-copy">
+                <span class="shot-card-num">02 / Interfaces</span>
+                <span class="shot-card-name">UI Design</span>
+                <span class="shot-card-desc">Figma → Roblox, shipped.</span>
+              </span>
+              <svg class="shot-card-ball shot-origin" aria-hidden="true"><use href="#ball"/></svg>
+            </a>
+            <a href="scripting.html" class="shot-card is-scripting" data-shot data-shot-color="#08050f" data-tilt>
+              <span class="shot-card-border" aria-hidden="true"></span>
+              <span class="shot-card-media" aria-hidden="true"><img src="images/banners/goku-black-banner.jpg" alt="" width="1100" height="619"></span>
+              <span class="shot-card-glow" aria-hidden="true"></span>
+              <span class="shot-card-sheen" aria-hidden="true"></span>
+              <span class="shot-card-sparks" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>
+              <span class="shot-card-copy">
+                <span class="shot-card-num">03 / Systems</span>
+                <span class="shot-card-name">Scripting</span>
+                <span class="shot-card-desc">Gameplay, liveops, backend.</span>
+              </span>
+              <svg class="shot-card-ball shot-origin" aria-hidden="true"><use href="#ball"/></svg>
+            </a>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="barou-panel" aria-hidden="true">
-      <div class="barou-panel-frame"></div>
-      <div class="barou-panel-art">
-        <img src="images/barou/prime-barou.jpg" alt="" width="634" height="1200" fetchpriority="high">
+      <div class="barou-panel" aria-hidden="true">
+        <div class="barou-panel-frame"></div>
+        <div class="barou-panel-art">
+          <img src="images/barou/prime-barou.jpg" alt="" width="634" height="1200" fetchpriority="high">
+        </div>
+        <span class="barou-panel-num">13</span>
+        <span class="barou-panel-tag">Mode: Predator<b>The King</b></span>
+        <svg class="bolt bolt-a" viewBox="0 0 64 160"><use href="#bolt"/></svg>
+        <svg class="bolt bolt-b" viewBox="0 0 64 160"><use href="#bolt"/></svg>
       </div>
-      <span class="barou-panel-num">13</span>
-      <span class="barou-panel-tag">Mode: Predator<b>The King</b></span>
-      <svg class="bolt bolt-a" viewBox="0 0 64 160"><use href="#bolt"/></svg>
-      <svg class="bolt bolt-b" viewBox="0 0 64 160"><use href="#bolt"/></svg>
-    </div>
-  </section>
+    </section>
 
-  <div class="marquee" aria-hidden="true">
-    <div class="marquee-track">
-      <span>Ego</span><span>Fullstack Luau</span><span>UI Design</span><span>Liveops</span><span>Predator mode</span><span>Future Soccer</span><span>The King</span>
-      <span>Ego</span><span>Fullstack Luau</span><span>UI Design</span><span>Liveops</span><span>Predator mode</span><span>Future Soccer</span><span>The King</span>
-    </div>
-  </div>
-
-  <section class="section about-grid" id="about">
-    <div class="reveal">
-      <span class="label">04 — About</span>
-      <p class="about-statement">Clean systems underneath. <em>UI that doesn't get in the way.</em> Built a little sharper than it needs to be.</p>
-    </div>
-    <div class="reveal about-body">
-      <p>I'm skyvaint, a Roblox developer who pulls things apart to see how they tick, then puts them back together better. Scripting, UI, gameplay loops — I go wherever the project needs me.</p>
-      <div class="stat-list">
-        <div class="stat-row"><span>Based in</span><b>Ciudad Real, ES</b></div>
-        <div class="stat-row"><span>Peak CCU shipped</span><b>80K</b></div>
-        <div class="stat-row"><span>Founder</span><b>Future Soccer</b></div>
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee-track">
+        <span>Ego</span><span>Fullstack Luau</span><span>UI Design</span><span>Liveops</span><span>Predator mode</span><span>Future Soccer</span><span>The King</span>
+        <span>Ego</span><span>Fullstack Luau</span><span>UI Design</span><span>Liveops</span><span>Predator mode</span><span>Future Soccer</span><span>The King</span>
       </div>
     </div>
-  </section>
 
-  <section class="section" id="contact">
-    <span class="label">05 — Find me</span>
-    <h2 class="section-title reveal">Find me <em>on the field.</em></h2>
-    <div class="social-grid">
-      <a href="https://discord.com/users/1367774975045406801" target="_blank" rel="noreferrer" class="social-card reveal" data-tilt>
-        <img src="images/icons/discord.svg" alt="">
-        <span class="social-name">Discord</span><span class="social-handle">@skyvaint</span>
-      </a>
-      <a href="https://x.com/skyvaint" target="_blank" rel="noreferrer" class="social-card reveal" data-tilt>
-        <img src="images/icons/x.svg" alt="">
-        <span class="social-name">X</span><span class="social-handle">@skyvaint</span>
-      </a>
-      <a href="https://www.roblox.com/users/1996540411/profile" target="_blank" rel="noreferrer" class="social-card reveal" data-tilt>
-        <img src="images/icons/roblox.svg" alt="">
-        <span class="social-name">Roblox</span><span class="social-handle">skyvaint</span>
-      </a>
-    </div>
-  </section>
+    <section class="section about-grid" id="about">
+      <div class="reveal">
+        <span class="label">04 — About</span>
+        <p class="about-statement">Clean systems underneath. <em>UI that doesn't get in the way.</em> Built a little sharper than it needs to be.</p>
+      </div>
+      <div class="reveal about-body">
+        <p>I'm skyvaint, a Roblox developer who pulls things apart to see how they tick, then puts them back together better. Scripting, UI, gameplay loops — I go wherever the project needs me.</p>
+        <div class="stat-list">
+          <div class="stat-row"><span>Based in</span><b>Ciudad Real, ES</b></div>
+          <div class="stat-row"><span>Peak CCU shipped</span><b>80K</b></div>
+          <div class="stat-row"><span>Founder</span><b>Future Soccer</b></div>
+        </div>
+      </div>
+    </section>
 
-  <section class="section cta">
-    <span class="label">06 — Commissions open</span>
-    <h2 class="section-title reveal">Let's <em>build.</em></h2>
-    <div class="cta-actions">
-      <a href="https://discord.com/users/1367774975045406801" target="_blank" rel="noreferrer" class="btn btn-solid">Message on Discord</a>
-      <a href="ui.html" class="btn btn-line" data-shot data-shot-color="#070505">See UI work</a>
-      <a href="scripting.html" class="btn btn-line" data-shot data-shot-color="#08050f">See scripting</a>
-    </div>
-  </section>
-</main>
+    <section class="section" id="contact">
+      <span class="label">05 — Find me</span>
+      <h2 class="section-title reveal">Find me <em>on the field.</em></h2>
+      <div class="social-grid">
+        <a href="https://discord.com/users/1367774975045406801" target="_blank" rel="noreferrer" class="social-card reveal" data-tilt>
+          <img src="images/icons/discord.svg" alt="">
+          <span class="social-name">Discord</span><span class="social-handle">@skyvaint</span>
+        </a>
+        <a href="https://x.com/skyvaint" target="_blank" rel="noreferrer" class="social-card reveal" data-tilt>
+          <img src="images/icons/x.svg" alt="">
+          <span class="social-name">X</span><span class="social-handle">@skyvaint</span>
+        </a>
+        <a href="https://www.roblox.com/users/1996540411/profile" target="_blank" rel="noreferrer" class="social-card reveal" data-tilt>
+          <img src="images/icons/roblox.svg" alt="">
+          <span class="social-name">Roblox</span><span class="social-handle">skyvaint</span>
+        </a>
+      </div>
+    </section>
 
-<footer class="footer-bar">
-  <span>© <span id="year"></span> skyvaint.</span>
-  <span>Fullstacked Luau · Programmer &amp; UI designer</span>
-</footer>
+    <section class="section cta">
+      <span class="label">06 — Commissions open</span>
+      <h2 class="section-title reveal">Let's <em>build.</em></h2>
+      <div class="cta-actions">
+        <a href="https://discord.com/users/1367774975045406801" target="_blank" rel="noreferrer" class="btn btn-solid">Message on Discord</a>
+        <a href="ui.html" class="btn btn-line" data-shot data-shot-color="#070505">See UI work</a>
+        <a href="scripting.html" class="btn btn-line" data-shot data-shot-color="#08050f">See scripting</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer-bar">
+    <span>© <span id="year"></span> skyvaint.</span>
+    <span>Fullstacked Luau · Programmer &amp; UI designer</span>
+  </footer>
+</div>
+
+<canvas id="thunder" aria-hidden="true"></canvas>
+<div class="flash" aria-hidden="true"></div>
 
 <aside class="soundtrack" aria-label="Soundtrack player">
   <div class="soundtrack-heading"><span class="soundtrack-label">Now transmitting</span><span class="soundwave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span></div>
@@ -168,6 +193,6 @@
 </aside>
 
 <script src="common.js"></script>
-<script src="barou.js"></script>
+<script src="effects.js"></script>
 </body>
 </html>

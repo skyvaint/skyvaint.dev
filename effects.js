@@ -1,4 +1,5 @@
-// Barou pages: red thunder canvas + scroll reveals.
+// Site effects: themed thunder canvas (persistent across page swaps) plus page
+// modules for scroll reveals, the Goku Black background and the stats banner.
 // The canvas only draws while a bolt is alive (~0.5s), then sits idle — no constant render loop.
 const thunderCanvas = document.getElementById('thunder');
 const thunderCtx = thunderCanvas?.getContext('2d');
@@ -44,13 +45,16 @@ function spawnBolt(originX) {
   const endY = height * (0.45 + Math.random() * 0.45);
   const main = makeBoltPath(x, -10, endX, endY, 0.32, 7);
   const forks = [];
-  for (let f = 0; f < 3; f += 1) {
+  for (let f = 0, count = 3 + Math.floor(Math.random() * 3); f < count; f += 1) {
     const start = main[Math.floor(main.length * (0.25 + Math.random() * 0.5))];
     const angle = Math.atan2(endY, endX - x) + (Math.random() - 0.5) * 1.6;
     const reach = height * (0.08 + Math.random() * 0.16);
     forks.push(makeBoltPath(start[0], start[1], start[0] + Math.cos(angle) * reach, start[1] + Math.sin(angle) * reach, 0.4, 5));
   }
-  thunder.bolts.push({ main, forks, born: performance.now(), life: 520 });
+  const styles = getComputedStyle(document.body);
+  const glow = styles.getPropertyValue('--bolt-glow').trim() || '#ff1f1f';
+  const core = styles.getPropertyValue('--bolt-core').trim() || '#ffe2dc';
+  thunder.bolts.push({ main, forks, glow, core, born: performance.now(), life: 520 });
   if (flashEl) {
     flashEl.style.setProperty('--flash-x', `${(x / width) * 100}%`);
     flashEl.classList.remove('is-on');
@@ -78,7 +82,7 @@ function drawThunder(now) {
     const flicker = t < 0.12 ? 1 : t < 0.2 ? 0.25 : t < 0.32 ? 0.95 : 1 - (t - 0.32) / 0.68;
     // Glow pass (wide, translucent) + core pass (thin, bright) — cheaper than shadowBlur.
     thunderCtx.globalAlpha = flicker * 0.22;
-    thunderCtx.strokeStyle = '#ff1f1f';
+    thunderCtx.strokeStyle = bolt.glow;
     thunderCtx.lineWidth = 14;
     strokePath(bolt.main);
     thunderCtx.globalAlpha = flicker * 0.55;
@@ -87,7 +91,7 @@ function drawThunder(now) {
     thunderCtx.lineWidth = 2.5;
     bolt.forks.forEach(strokePath);
     thunderCtx.globalAlpha = flicker;
-    thunderCtx.strokeStyle = '#ffe2dc';
+    thunderCtx.strokeStyle = bolt.core;
     thunderCtx.lineWidth = 1.6;
     strokePath(bolt.main);
     thunderCtx.lineWidth = 0.9;
@@ -100,9 +104,14 @@ function drawThunder(now) {
 function scheduleThunder() {
   clearTimeout(thunder.timer);
   thunder.timer = setTimeout(() => {
-    if (!document.hidden) spawnBolt();
+    if (!document.hidden) {
+      spawnBolt();
+      // Frequent double and triple strikes.
+      if (Math.random() < 0.55) setTimeout(() => spawnBolt(), 90 + Math.random() * 180);
+      if (Math.random() < 0.25) setTimeout(() => spawnBolt(), 300 + Math.random() * 250);
+    }
     scheduleThunder();
-  }, 2600 + Math.random() * 4200);
+  }, 1100 + Math.random() * 2300);
 }
 
 if (thunderCanvas && thunderCtx && !reduceMotion.matches) {
@@ -123,22 +132,95 @@ if (thunderCanvas && thunderCtx && !reduceMotion.matches) {
     const bounds = event.detail.link.getBoundingClientRect();
     spawnBolt(bounds.left + bounds.width / 2);
     setTimeout(() => spawnBolt(), 160);
+    setTimeout(() => spawnBolt(), 380);
+  });
+  window.addEventListener('sv:page', () => {
+    spawnBolt();
+    setTimeout(() => spawnBolt(), 140);
   });
 } else if (thunderCanvas) {
   thunderCanvas.remove();
 }
 
 // Scroll reveals.
-const revealEls = document.querySelectorAll('.reveal');
-if ('IntersectionObserver' in window && !reduceMotion.matches) {
-  const revealObserver = new IntersectionObserver((entries) => {
+SV.page((root) => {
+  const revealEls = root.querySelectorAll('.reveal');
+  if (!('IntersectionObserver' in window) || reduceMotion.matches) {
+    revealEls.forEach((el) => el.classList.add('is-in'));
+    return undefined;
+  }
+  const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (!entry.isIntersecting) return;
       entry.target.classList.add('is-in');
-      revealObserver.unobserve(entry.target);
+      observer.unobserve(entry.target);
     });
   }, { threshold: 0.12 });
-  revealEls.forEach((el) => revealObserver.observe(el));
-} else {
-  revealEls.forEach((el) => el.classList.add('is-in'));
-}
+  revealEls.forEach((el) => observer.observe(el));
+  return () => observer.disconnect();
+});
+
+// Goku Black background: two layers cross-fade through the character art.
+SV.page((root) => {
+  const layers = [...root.querySelectorAll('.goku-bg img')];
+  if (layers.length < 2 || reduceMotion.matches) return undefined;
+  const images = (root.querySelector('.goku-bg').dataset.images || '').split(',').filter(Boolean);
+  let index = 0;
+  let active = 0;
+  const timer = setInterval(() => {
+    if (document.hidden || images.length < 2) return;
+    index = (index + 1) % images.length;
+    const incoming = layers[1 - active];
+    incoming.src = images[index];
+    incoming.decode?.().catch(() => {}).finally(() => {
+      incoming.classList.add('is-active');
+      layers[active].classList.remove('is-active');
+      active = 1 - active;
+    });
+  }, 9000);
+  return () => clearInterval(timer);
+});
+
+// Stats banner: live Roblox numbers when reachable, otherwise the values
+// written in the HTML stay. roproxy.com mirrors the Roblox API with CORS.
+SV.page((root) => {
+  const banner = root.querySelector('.stats-banner');
+  if (!banner) return undefined;
+  const controller = new AbortController();
+  const get = (url) => fetch(url, { signal: controller.signal }).then((response) => {
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return response.json();
+  });
+  const compact = (value) => new Intl.NumberFormat('en', { notation: 'compact', maximumFractionDigits: 1 }).format(value);
+  const userId = banner.dataset.userId;
+  const placeIds = (banner.dataset.placeIds || '').split(',').filter(Boolean);
+
+  if (userId) {
+    get(`https://thumbnails.roproxy.com/v1/users/avatar-headshot?userIds=${userId}&size=150x150&format=Png`)
+      .then((data) => {
+        const url = data?.data?.[0]?.imageUrl;
+        const img = banner.querySelector('.stat-profile img');
+        if (url && img) img.src = url;
+      })
+      .catch(() => {});
+  }
+  if (placeIds.length) {
+    Promise.all(placeIds.map((id) => get(`https://apis.roproxy.com/universes/v1/places/${id}/universe`).then((data) => data.universeId)))
+      .then((ids) => get(`https://games.roproxy.com/v1/games?universeIds=${ids.join(',')}`))
+      .then((data) => {
+        const games = data?.data || [];
+        if (!games.length) return;
+        const visits = games.reduce((sum, game) => sum + (game.visits || 0), 0);
+        const playing = games.reduce((sum, game) => sum + (game.playing || 0), 0);
+        const visitsEl = banner.querySelector('[data-stat="visits"]');
+        const liveEl = banner.querySelector('[data-stat="live"]');
+        if (visitsEl && visits) visitsEl.textContent = `${compact(visits)}+`;
+        if (liveEl) {
+          liveEl.textContent = compact(playing);
+          liveEl.classList.add('is-live');
+        }
+      })
+      .catch(() => {});
+  }
+  return () => controller.abort();
+});

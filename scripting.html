@@ -5,206 +5,213 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>skyvaint — Scripting</title>
 <script>try{var c=sessionStorage.getItem('sv-shot');if(c){sessionStorage.removeItem('sv-shot');var d=document.documentElement;d.classList.add('is-arriving');d.style.setProperty('--arrive-color',c);}}catch(e){}</script>
-<meta name="description" content="skyvaint builds Roblox worlds, systems, gameplay and UI.">
-<meta name="theme-color" content="#08070b">
+<meta name="description" content="Roblox scripting by skyvaint — gameplay systems, liveops and backend Luau.">
+<meta name="theme-color" content="#08050f">
 <link rel="icon" type="image/png" sizes="256x256" href="images/favicon.png">
 <link rel="apple-touch-icon" href="images/favicon.png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="skyvaint">
-<meta property="og:title" content="skyvaint — Roblox Developer">
-<meta property="og:description" content="Roblox worlds, systems, gameplay and UI by skyvaint.">
+<meta property="og:title" content="skyvaint — Scripting">
+<meta property="og:description" content="Roblox scripting by skyvaint — gameplay systems, liveops and backend Luau.">
 <meta property="og:url" content="https://skyvaint.com/scripting.html">
 <meta property="og:image" content="https://skyvaint.com/images/site-banner.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="skyvaint — Roblox Developer">
-<meta name="twitter:description" content="Roblox worlds, systems, gameplay and UI by skyvaint.">
+<meta name="twitter:title" content="skyvaint — Scripting">
+<meta name="twitter:description" content="Roblox scripting by skyvaint — gameplay systems, liveops and backend Luau.">
 <meta name="twitter:image" content="https://skyvaint.com/images/site-banner.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=JetBrains+Mono:wght@700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@500;700&family=Manrope:wght@400;500;600&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="images/goku-black-hero2.png">
 <link rel="stylesheet" href="common.css">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="site.css">
 </head>
-<body>
-<div id="BackgroundEffect"></div>
-<canvas id="GradientCanvas"></canvas>
-<div id="section-character" aria-hidden="true">
-  <img class="character-layer character-layer-a" src="images/goku-black-hero.png" alt="">
-  <img class="character-layer character-layer-b" src="images/goku-black-hero2.png" alt="">
+<body data-theme="pink">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="ball" viewBox="0 0 100 100">
+    <clipPath id="ball-clip"><circle cx="50" cy="50" r="47"/></clipPath>
+    <circle cx="50" cy="50" r="48" fill="#f7f3f3"/>
+    <g clip-path="url(#ball-clip)" fill="#0a0a0a" stroke="#0a0a0a" stroke-width="3" stroke-linejoin="round">
+      <path d="M50 30 69 44 62 66H38L31 44Z"/>
+      <path d="M50 30V12M69 44l17-6M62 66l11 15M38 66 27 81M31 44l-17-6" fill="none"/>
+      <path d="M38 -2 38 12H62L62 -2ZM86 38l16-6 2 30-14 4ZM73 81l17-2-4 24-20-6ZM27 81l-17-2 4 24 20-6ZM14 38-2 32-4 62l14 4Z"/>
+    </g>
+    <circle cx="50" cy="50" r="48" fill="none" stroke="#0a0a0a" stroke-width="3"/>
+  </symbol>
+  <symbol id="bolt" viewBox="0 0 64 160">
+    <path d="M38 0 10 72h18L6 160l50-96H36L54 0Z" fill="currentColor"/>
+  </symbol>
+</svg>
+
+<div class="backdrop" aria-hidden="true"></div>
+<div class="mesh" aria-hidden="true"></div>
+
+<!-- Everything inside #page is swapped when navigating; the rest persists. -->
+<div id="page">
+  <div class="goku-bg" data-images="images/goku-black-hero.png,images/goku-black-hero2.png,images/goku-black-hero3.png,images/goku-black-hero4.png" aria-hidden="true">
+    <img class="is-active" src="images/goku-black-hero.png" alt="">
+    <img src="images/goku-black-hero2.png" alt="">
+  </div>
+
+  <header class="topbar">
+    <div class="topbar-left">
+      <a href="index.html" class="home-return" data-shot data-shot-color="#070505"><span class="home-return-icon" aria-hidden="true">←</span>Home</a>
+      <a href="index.html" class="brand" data-shot data-shot-color="#070505">skyvaint<span class="dot">.</span></a>
+    </div>
+    <div class="topbar-meta">
+      <span class="hide-sm">03 / Scripting</span>
+      <span><i class="status-dot"></i>Commissions open</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="label">03 — Scripting</span>
+        <h1 class="hero-title">Systems<br><span class="outline">that ship.</span></h1>
+        <p class="hero-sub">Frontend and backend Luau for live Roblox experiences — <strong>gameplay loops, liveops and the systems underneath</strong>, built with the same energy that makes a rosé timeline villain look effortless.</p>
+        <div class="cta-actions" style="justify-content:flex-start">
+          <a href="#work" class="btn btn-solid">View gameplay</a>
+          <a href="#pricing" class="btn btn-line">Pricing</a>
+        </div>
+      </div>
+
+      <div class="barou-panel goku-panel" aria-hidden="true">
+        <div class="barou-panel-frame"></div>
+        <div class="barou-panel-art">
+          <img src="images/goku-black-hero2.png" alt="" width="894" height="894" fetchpriority="high">
+        </div>
+        <span class="barou-panel-num">Rosé</span>
+        <span class="barou-panel-tag">Fullstacked Luau<b>Goku Black</b></span>
+        <svg class="bolt bolt-a" viewBox="0 0 64 160"><use href="#bolt"/></svg>
+        <svg class="bolt bolt-b" viewBox="0 0 64 160"><use href="#bolt"/></svg>
+      </div>
+    </section>
+
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee-track">
+        <span>Luau</span><span>Gameplay systems</span><span>Liveops</span><span>Backend</span><span>80K CCU</span><span>Future Soccer</span><span>Rosé</span>
+        <span>Luau</span><span>Gameplay systems</span><span>Liveops</span><span>Backend</span><span>80K CCU</span><span>Future Soccer</span><span>Rosé</span>
+      </div>
+    </div>
+
+    <section class="section" id="work">
+      <span class="label">Gameplay</span>
+      <h2 class="section-title reveal">Built <em>and shipped.</em></h2>
+      <p class="lede">Real projects that show technical depth and product thinking.</p>
+      <div class="video-grid">
+        <article class="video-card reveal" data-tilt>
+          <div class="video-slot">
+            <video data-src="videos/future-soccer.mp4" muted loop playsinline preload="none" aria-label="Future Soccer gameplay"></video>
+            <span class="video-placeholder-copy"><span class="video-play" aria-hidden="true">▶</span></span>
+          </div>
+          <div class="video-card-body">
+            <h3>Future Soccer</h3>
+            <p>A unique football experience, for experienced players, with momentum and physics.</p>
+            <div class="tags"><span>Sports</span><span>Future</span><span>Fullstacked</span></div>
+          </div>
+        </article>
+        <article class="video-card reveal" data-tilt>
+          <div class="video-slot">
+            <video data-src="videos/dragon-ball-tower.mp4" muted loop playsinline preload="none" aria-label="Dragon Ball Tower gameplay"></video>
+            <span class="video-placeholder-copy"><span class="video-play" aria-hidden="true">▶</span></span>
+          </div>
+          <div class="video-card-body">
+            <h3>Dragon Ball Tower</h3>
+            <p>Some obby ive scripted within hours.</p>
+            <div class="tags"><span>Anime</span><span>Slop</span><span>Fullstacked</span></div>
+          </div>
+        </article>
+        <article class="video-card reveal" data-tilt>
+          <div class="video-slot">
+            <video data-src="videos/chicken-game.mp4" muted loop playsinline preload="none" aria-label="Chicken Game gameplay"></video>
+            <span class="video-placeholder-copy"><span class="video-play" aria-hidden="true">▶</span></span>
+          </div>
+          <div class="video-card-body">
+            <h3>Chicken Game</h3>
+            <p>Gameplay clip coming soon.</p>
+            <div class="tags"><span>Gameplay</span><span>Fullstacked</span></div>
+          </div>
+        </article>
+        <article class="video-card reveal" data-tilt>
+          <div class="video-slot">
+            <video data-src="videos/climb-tower.mp4" muted loop playsinline preload="none" aria-label="Climb Tower gameplay"></video>
+            <span class="video-placeholder-copy"><span class="video-play" aria-hidden="true">▶</span></span>
+          </div>
+          <div class="video-card-body">
+            <h3>Climb Tower</h3>
+            <p>Gameplay clip coming soon.</p>
+            <div class="tags"><span>Obby</span><span>Tower</span><span>Fullstacked</span></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="experience">
+      <span class="label">Experience</span>
+      <h2 class="section-title reveal">Where I've <em>played.</em></h2>
+      <div class="timeline">
+        <div class="timeline-row reveal"><h3>Blockturns Studio</h3><span class="timeline-role">Liveops Programmer</span><p>Maintaining players engaged, coding new systems, QOL improvements.</p><span class="timeline-date">April – June</span></div>
+        <div class="timeline-row reveal"><h3>Indigo Studios</h3><span class="timeline-role">Programmer</span><p>Creating new systems, games and liveops for all Indigo Experiences i had been tasked to maintain.</p><span class="timeline-date">January – March</span></div>
+        <div class="timeline-row reveal"><h3>Future Soccer</h3><span class="timeline-role">Founder / Solo Dev</span><p>A personal project of mine, focused on developing a unique soccer experience.</p><span class="timeline-date">2024 – Today</span></div>
+      </div>
+    </section>
+
+    <section class="section" id="liveops">
+      <span class="label">Liveops</span>
+      <h2 class="section-title reveal">Games I've <em>kept running.</em></h2>
+      <div class="liveops-grid">
+        <a class="liveops-card reveal" href="https://www.roblox.com/games/73257710123935/Poison-Treats" target="_blank" rel="noreferrer" data-tilt><span>CCU spike</span><strong>20K</strong><b>Poison Treats</b></a>
+        <a class="liveops-card reveal" href="https://www.roblox.com/games/77393318863643/Aura-Ascension" target="_blank" rel="noreferrer" data-tilt><span>CCU spike</span><strong>80K</strong><b>Aura Ascension</b></a>
+        <a class="liveops-card reveal" href="https://www.roblox.com/games/72845937010155/Gear-Slap-Tower" target="_blank" rel="noreferrer" data-tilt><span>CCU constant</span><strong>2K</strong><b>Gear Slap Tower</b></a>
+      </div>
+    </section>
+
+    <section class="section" id="tools">
+      <span class="label">Daily drivers</span>
+      <h2 class="section-title reveal">Tools.</h2>
+      <div class="tool-grid">
+        <div class="tool-tile"><i class="roblox"><img src="images/icons/roblox.svg" alt=""></i>Roblox Studio</div>
+        <div class="tool-tile"><i class="vscode"><img src="images/icons/vscode.svg" alt=""></i>VS Code</div>
+        <div class="tool-tile"><i class="figma"><img src="images/icons/figma.svg" alt=""></i>Figma</div>
+        <div class="tool-tile"><i class="blender"><img src="images/icons/blender.svg" alt=""></i>Blender</div>
+      </div>
+    </section>
+
+    <section class="section" id="pricing">
+      <span class="label">Commissions open</span>
+      <h2 class="section-title reveal">Pricing.</h2>
+      <div class="card-grid">
+        <div class="card is-hot reveal"><span class="label">Full game</span><strong>$600+</strong><p>Full game, plus a percentage for liveops.</p></div>
+        <div class="card reveal"><span class="label">UI frame</span><strong>3,000 Robux</strong><p>Per UI frame · approximately $15.</p></div>
+        <div class="card reveal"><span class="label">Payment</span><strong>Flexible</strong><p>PayPal, bank transfer, Robux, gift cards, Discord decorations, nameplates or Nitro.</p></div>
+      </div>
+    </section>
+
+    <section class="section cta">
+      <span class="label">Next</span>
+      <h2 class="section-title reveal">Let's <em>build.</em></h2>
+      <div class="cta-actions">
+        <a href="https://discord.com/users/1367774975045406801" target="_blank" rel="noreferrer" class="btn btn-solid">Message on Discord</a>
+        <a href="ui.html" class="btn btn-line" data-shot data-shot-color="#070505">See UI work →</a>
+      </div>
+      <div class="cta-actions">
+        <a href="index.html" class="home-return" data-shot data-shot-color="#070505"><span class="home-return-icon" aria-hidden="true">←</span>Back to home</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer-bar">
+    <span>© <span id="year"></span> skyvaint.</span>
+    <span>Fullstacked Luau · Programmer &amp; UI designer</span>
+  </footer>
+
 </div>
-<div class="glow glow-a"></div>
-<div class="glow glow-b"></div>
-<div class="lightning lightning-left" aria-hidden="true"></div>
-<div class="lightning lightning-right" aria-hidden="true"></div>
 
-<header class="nav">
-  <div class="nav-left">
-    <a href="index.html" class="home-return" data-shot data-shot-color="#070505"><span class="home-return-icon" aria-hidden="true">←</span>Home</a>
-    <a href="index.html" class="nav-brand" data-shot data-shot-color="#070505">skyvaint<span class="dot">.</span></a>
-  </div>
-  <nav class="nav-links">
-    <a href="#experience">Experience</a>
-    <a href="#work">Work</a>
-    <a href="#liveops">Liveops</a>
-    <a href="#tools">Tools</a>
-  </nav>
-  <a href="#contact" class="nav-cta">Contact</a>
-</header>
-
-<div class="top-energy" aria-hidden="true">
-  <div class="top-energy-copy"><span>SKYVAINT.COM // FULLSTACKED LUAU</span><b>03 / SCRIPTING</b></div>
-  <div class="top-energy-mesh"></div>
-  <div class="top-energy-orb"></div>
-</div>
-
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-text">
-    <p class="kicker">Scripting · Roblox</p>
-    <h1>Systems that ship.</h1>
-    <p class="hero-sub">Frontend and backend Luau for live Roblox experiences — gameplay loops, liveops and the systems underneath, built with the same energy that makes a rose-gold timeline villain look effortless.</p>
-    <div class="hero-actions">
-      <a href="#work" class="btn btn-primary" data-tilt>View Work</a>
-      <a href="ui.html" class="btn btn-ghost" data-tilt data-shot data-shot-color="#070505">See UI work</a>
-    </div>
-  </div>
-  <div class="hero-art">
-    <div class="hero-frame" data-tilt>
-      <img src="images/goku-black-hero.png" alt="Goku Black" fetchpriority="high">
-    </div>
-  </div>
-</section>
-
-<!-- EXPERIENCE -->
-<section id="experience" class="experience">
-  <h2>Experience</h2>
-  <div class="timeline">
-    <div class="timeline-item">
-      <div class="timeline-marker"></div>
-      <div class="timeline-content">
-        <div class="timeline-head"><h3>Blockturns Studio</h3><span class="timeline-date">April - June</span></div>
-        <p class="timeline-role">Liveops Programmer</p>
-        <p>Maintaining players engaged, coding new systems, QOL improvements</p>
-      </div>
-    </div>
-    <div class="timeline-item">
-      <div class="timeline-marker"></div>
-      <div class="timeline-content">
-        <div class="timeline-head"><h3>Indigo Studios</h3><span class="timeline-date">January – March</span></div>
-        <p class="timeline-role">Programmer</p>
-        <p>Creating new systems, games and liveops for all Indigo Experiences i had been tasked to maintain.</p>
-      </div>
-    </div>
-    <div class="timeline-item">
-      <div class="timeline-marker"></div>
-      <div class="timeline-content">
-        <div class="timeline-head"><h3>Future Soccer</h3><span class="timeline-date">2024 - Today</span></div>
-        <p class="timeline-role">Founder / Solo Dev</p>
-        <p>A personal project of mine, focused on developing a unique soccer experience.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- PROJECTS -->
-<section id="work" class="projects">
-  <h2>Gameplay</h2>
-  <p class="section-sub">Real projects that show technical depth and product thinking.</p>
-  <div class="project-grid">
-    <article class="project-card" data-tilt>
-      <div class="project-media video-slot video-placeholder">
-        <video data-src="videos/future-soccer.mp4" muted loop playsinline preload="none" aria-label="Future Soccer gameplay"></video>
-        <span class="video-placeholder-copy"><span class="video-icon" aria-hidden="true">▶</span></span>
-      </div>
-      <h3>Future Soccer</h3>
-      <p>A unique football experience, for experienced players, with momentum and physics.</p>
-      <div class="tags"><span>Sports</span><span>Future</span><span>Fullstacked</span></div>
-    </article>
-
-    <article class="project-card" data-tilt>
-      <div class="project-media video-slot video-placeholder">
-        <video data-src="videos/dragon-ball-tower.mp4" muted loop playsinline preload="none" aria-label="Dragon Ball Tower gameplay"></video>
-        <span class="video-placeholder-copy"><span class="video-icon" aria-hidden="true">▶</span></span>
-      </div>
-      <h3>Dragon Ball Tower</h3>
-      <p>Some obby ive scripted within hours.</p>
-      <div class="tags"><span>Anime</span><span>Slop</span><span>Fullstacked</span></div>
-    </article>
-
-    <article class="project-card" data-tilt>
-      <div class="project-media video-slot video-placeholder">
-        <video data-src="videos/chicken-game.mp4" muted loop playsinline preload="none" aria-label="Chicken Game gameplay"></video>
-        <span class="video-placeholder-copy"><span class="video-icon" aria-hidden="true">▶</span></span>
-      </div>
-      <h3>Chicken Game</h3>
-      <p>Gameplay clip coming soon.</p>
-      <div class="tags"><span>Gameplay</span><span>Fullstacked</span></div>
-    </article>
-
-    <article class="project-card" data-tilt>
-      <div class="project-media video-slot video-placeholder">
-        <video data-src="videos/climb-tower.mp4" muted loop playsinline preload="none" aria-label="Climb Tower gameplay"></video>
-        <span class="video-placeholder-copy"><span class="video-icon" aria-hidden="true">▶</span></span>
-      </div>
-      <h3>Climb Tower</h3>
-      <p>Gameplay clip coming soon.</p>
-      <div class="tags"><span>Obby</span><span>Tower</span><span>Fullstacked</span></div>
-    </article>
-  </div>
-</section>
-
-<section id="liveops" class="portfolio-section">
-  <div class="section-heading">
-    <p class="kicker">Liveops</p>
-    <h2>Live games I've kept running.</h2>
-    <p class="section-sub">Liveops work for Indigo Studios and Blockturns.</p>
-  </div>
-  <div class="game-links">
-    <a href="https://www.roblox.com/games/73257710123935/Poison-Treats" target="_blank" rel="noreferrer"><strong>Poison Treats</strong><span>Liveops · 20K CCU spike</span></a>
-    <a href="https://www.roblox.com/games/77393318863643/Aura-Ascension" target="_blank" rel="noreferrer"><strong>Aura Ascension</strong><span>Liveops · 80K CCU spike</span></a>
-    <a href="https://www.roblox.com/games/72845937010155/Gear-Slap-Tower" target="_blank" rel="noreferrer"><strong>Gear Slap Tower</strong><span>Liveops · 2K CCU constant</span></a>
-  </div>
-</section>
-
-<section class="pricing-section">
-  <div class="section-heading">
-    <p class="kicker">Commissions</p>
-    <h2>Let’s build something.</h2>
-    <p class="section-sub">Commissions are currently <strong class="availability">open</strong>. I can work across gameplay systems, liveops and custom UI.</p>
-  </div>
-  <div class="pricing-grid">
-    <div class="price-card" data-tilt><strong>$600+</strong><span>Full game, plus a percentage for liveops</span></div>
-    <div class="price-card" data-tilt><strong>3,000 Robux</strong><span>Per UI frame · approximately $15</span></div>
-  </div>
-  <p class="payment-note">Payment accepted through PayPal, bank transfer, Robux, gift cards, Discord decorations, nameplates or Nitro.</p>
-</section>
-
-<!-- TOOLS -->
-<section id="tools" class="tools">
-  <h2>Software & Tools</h2>
-  <p class="section-sub">Daily drivers for building and shipping.</p>
-  <div class="tools-grid">
-    <div class="tool" data-tilt><span class="tool-icon roblox" aria-hidden="true"><img src="images/icons/roblox.svg" alt=""></span><span>Roblox Studio</span></div>
-    <div class="tool" data-tilt><span class="tool-icon figma" aria-hidden="true"><img src="images/icons/figma.svg" alt=""></span><span>Figma</span></div>
-    <div class="tool" data-tilt><span class="tool-icon vscode" aria-hidden="true"><img src="images/icons/vscode.svg" alt=""></span><span>VS Code</span></div>
-    <div class="tool" data-tilt><span class="tool-icon blender" aria-hidden="true"><img src="images/icons/blender.svg" alt=""></span><span>Blender</span></div>
-  </div>
-</section>
-
-<section id="contact" class="footer">
-  <div class="footer-art">
-    <img src="images/emblem.png" alt="" width="90" height="90" loading="lazy">
-  </div>
-  <h2>Let's build something.</h2>
-  <p>Open to new projects and collabs — reach out on Discord.</p>
-  <a href="https://discord.com/users/1367774975045406801" target="_blank" rel="noreferrer" class="btn btn-primary">Message on Discord</a>
-  <div class="footer-return">
-    <a href="index.html" class="home-return" data-shot data-shot-color="#070505"><span class="home-return-icon" aria-hidden="true">←</span>Back to home</a>
-  </div>
-  <p class="footer-copy">© <span id="year"></span> skyvaint.</p>
-</section>
+<canvas id="thunder" aria-hidden="true"></canvas>
+<div class="flash" aria-hidden="true"></div>
 
 <aside class="soundtrack" aria-label="Soundtrack player">
   <div class="soundtrack-heading"><span class="soundtrack-label">Now transmitting</span><span class="soundwave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span></div>
@@ -216,6 +223,6 @@
 </aside>
 
 <script src="common.js"></script>
-<script src="main.js"></script>
+<script src="effects.js"></script>
 </body>
 </html>
