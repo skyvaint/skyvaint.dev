@@ -421,11 +421,10 @@ h1, h2, h3 { margin: 0; font-weight: 400; }
 .shot-card-potara {
   width: 50px;
   height: 50px;
-  transform-origin: 50% 15%;
   filter: drop-shadow(0 0 10px rgba(80, 255, 120, .7));
-  animation: potara-swing 2.4s ease-in-out infinite;
+  animation: potara-float 2.4s ease-in-out infinite;
 }
-@keyframes potara-swing { 0%, 100% { transform: rotate(-16deg); } 50% { transform: rotate(16deg); } }
+@keyframes potara-float { 0%, 100% { transform: translateY(-3px); } 50% { transform: translateY(3px); } }
 
 .shot-card:hover .shot-card-media img,
 .shot-card:focus-visible .shot-card-media img { filter: saturate(1.4) contrast(1.1) brightness(1.1); }
@@ -433,7 +432,7 @@ h1, h2, h3 { margin: 0; font-weight: 400; }
 .shot-card:focus-visible .shot-card-name { transform: translateX(6px); color: var(--c2); }
 .shot-card:hover .shot-card-ball,
 .shot-card:focus-visible .shot-card-ball { width: 58px; height: 58px; animation-duration: .9s; }
-.shot-card:hover .shot-card-potara { animation-duration: .8s; }
+.shot-card:hover .shot-card-potara { animation-duration: 1.2s; }
 .shot-card:hover .shot-card-border::before { animation-duration: 1.4s; }
 
 /* ---------- Marquee ---------- */

@@ -137,7 +137,8 @@ async function navigateWithShot(link) {
       const lift = Math.min(220, window.innerHeight * 0.28);
       // Scale until the solid area around the focus covers the whole screen.
       const cover = (Math.hypot(window.innerWidth, window.innerHeight) / 2 / (icon.radius * size)) * 1.12;
-      const turn = (deg) => (icon.spin ? deg : Math.sin(deg / 90) * 24);
+      // The ball spins; the Potara flies straight with no rotation.
+      const turn = (deg) => (icon.spin ? deg : 0);
       ball = document.createElement('div');
       ball.className = 'shot-ball';
       ball.innerHTML = icon.svg;
