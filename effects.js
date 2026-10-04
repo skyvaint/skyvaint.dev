@@ -45,7 +45,7 @@ function spawnBolt(originX) {
   const endY = height * (0.45 + Math.random() * 0.45);
   const main = makeBoltPath(x, -10, endX, endY, 0.32, 7);
   const forks = [];
-  for (let f = 0, count = 3 + Math.floor(Math.random() * 3); f < count; f += 1) {
+  for (let f = 0, count = 4 + Math.floor(Math.random() * 4); f < count; f += 1) {
     const start = main[Math.floor(main.length * (0.25 + Math.random() * 0.5))];
     const angle = Math.atan2(endY, endX - x) + (Math.random() - 0.5) * 1.6;
     const reach = height * (0.08 + Math.random() * 0.16);
@@ -54,7 +54,8 @@ function spawnBolt(originX) {
   const styles = getComputedStyle(document.body);
   const glow = styles.getPropertyValue('--bolt-glow').trim() || '#ff1f1f';
   const core = styles.getPropertyValue('--bolt-core').trim() || '#ffe2dc';
-  thunder.bolts.push({ main, forks, glow, core, born: performance.now(), life: 520 });
+  thunder.bolts.push({ main, forks, glow, core, born: performance.now(), life: 480 + Math.random() * 260 });
+  if (thunder.bolts.length > 10) thunder.bolts.shift();
   if (flashEl) {
     flashEl.style.setProperty('--flash-x', `${(x / width) * 100}%`);
     flashEl.classList.remove('is-on');
@@ -103,15 +104,15 @@ function drawThunder(now) {
 
 function scheduleThunder() {
   clearTimeout(thunder.timer);
+  const small = window.innerWidth < 700;
   thunder.timer = setTimeout(() => {
     if (!document.hidden) {
-      spawnBolt();
-      // Frequent double and triple strikes.
-      if (Math.random() < 0.55) setTimeout(() => spawnBolt(), 90 + Math.random() * 180);
-      if (Math.random() < 0.25) setTimeout(() => spawnBolt(), 300 + Math.random() * 250);
+      // Storm: a strike every ~0.3–1s, usually in bursts of 2–4.
+      const burst = 1 + Math.floor(Math.random() * (small ? 2 : 4));
+      for (let k = 0; k < burst; k += 1) setTimeout(() => spawnBolt(), k * (70 + Math.random() * 160));
     }
     scheduleThunder();
-  }, 1100 + Math.random() * 2300);
+  }, (small ? 600 : 300) + Math.random() * 700);
 }
 
 if (thunderCanvas && thunderCtx && !reduceMotion.matches) {
@@ -133,10 +134,13 @@ if (thunderCanvas && thunderCtx && !reduceMotion.matches) {
     spawnBolt(bounds.left + bounds.width / 2);
     setTimeout(() => spawnBolt(), 160);
     setTimeout(() => spawnBolt(), 380);
+    setTimeout(() => spawnBolt(), 560);
+    setTimeout(() => spawnBolt(), 740);
   });
   window.addEventListener('sv:page', () => {
     spawnBolt();
     setTimeout(() => spawnBolt(), 140);
+    setTimeout(() => spawnBolt(), 300);
   });
 } else if (thunderCanvas) {
   thunderCanvas.remove();

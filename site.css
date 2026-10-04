@@ -245,11 +245,13 @@ h1, h2, h3 { margin: 0; font-weight: 400; }
   width: 64px;
   color: var(--red-hot);
   filter: drop-shadow(0 0 8px var(--bolt-glow));
-  animation: bolt-flicker 3.6s steps(1) infinite;
+  animation: bolt-flicker 2.8s steps(1) infinite;
   pointer-events: none;
 }
 .bolt-a { top: 8%; left: -36px; transform: rotate(-12deg); }
 .bolt-b { bottom: 18%; right: -30px; width: 52px; transform: rotate(16deg) scaleX(-1); animation-delay: -1.7s; }
+.bolt-c { top: 42%; left: -24px; width: 40px; transform: rotate(8deg) scaleX(-1); animation-delay: -.9s; animation-duration: 2.4s; }
+.bolt-d { top: -30px; right: 22%; width: 46px; transform: rotate(-6deg); animation-delay: -2.6s; animation-duration: 2.9s; }
 @keyframes bolt-flicker { 0%, 100% { opacity: .15; } 6% { opacity: 1; } 9% { opacity: .2; } 12% { opacity: 1; } 30% { opacity: .35; } }
 
 /* ---------- Choose-your-shot banner cards ---------- */
@@ -362,10 +364,12 @@ h1, h2, h3 { margin: 0; font-weight: 400; }
   filter: drop-shadow(0 0 6px rgba(255, 40, 40, .95));
   opacity: 0;
   pointer-events: none;
-  animation: card-bolt 3.2s steps(1) infinite;
+  animation: card-bolt 2.4s steps(1) infinite;
 }
 .bolt-1 { top: -6px; right: 30%; transform: rotate(14deg); }
 .bolt-2 { top: 10px; right: 8%; width: 24px; transform: rotate(-18deg) scaleX(-1); animation-delay: -1.3s; }
+.bolt-3 { top: 30%; left: 40%; width: 28px; transform: rotate(24deg); animation-delay: -2.1s; animation-duration: 2.3s; }
+.is-scripting .shot-card-bolt { color: #ff7ad9; filter: drop-shadow(0 0 6px rgba(255, 62, 200, .95)); }
 @keyframes card-bolt { 0%, 100% { opacity: 0; } 4% { opacity: 1; } 7% { opacity: .1; } 10% { opacity: 1; } 16% { opacity: 0; } }
 
 /* Scripting card: rising ki sparks */
@@ -393,18 +397,34 @@ h1, h2, h3 { margin: 0; font-weight: 400; }
   100% { transform: translateY(-220px) scale(.3); opacity: 0; }
 }
 
-/* Label + ball / potara */
+/* Label + icon */
 .shot-card-name {
   position: absolute;
-  left: 20px;
-  bottom: 10px;
+  left: 22px;
+  bottom: 16px;
   z-index: 3;
-  font: 400 clamp(2.6rem, 4vw, 3.7rem)/1 var(--display);
-  white-space: nowrap;
+  padding-right: .12em;
+  font: 400 clamp(2.5rem, 3.7vw, 3.4rem)/.9 var(--display);
   text-transform: uppercase;
-  letter-spacing: .02em;
-  text-shadow: 0 2px 22px rgba(0, 0, 0, .85);
-  transition: transform .3s cubic-bezier(.2, .8, .2, 1), color .3s ease;
+  letter-spacing: .05em;
+  white-space: nowrap;
+  color: transparent;
+  background: linear-gradient(180deg, #fff 35%, var(--c2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  filter: drop-shadow(0 3px 0 rgba(0, 0, 0, .55)) drop-shadow(0 0 16px color-mix(in srgb, var(--c1) 70%, transparent));
+  transform: skewX(-9deg);
+  transition: transform .3s cubic-bezier(.2, .8, .2, 1);
+}
+.shot-card-name::after {
+  content: "";
+  display: block;
+  height: 4px;
+  width: 38%;
+  margin-top: 8px;
+  background: var(--c1);
+  box-shadow: 0 0 12px var(--c1);
+  transition: width .35s cubic-bezier(.2, .8, .2, 1);
 }
 .shot-card-ball {
   position: absolute;
@@ -418,21 +438,24 @@ h1, h2, h3 { margin: 0; font-weight: 400; }
   transition: width .3s ease, height .3s ease;
 }
 @keyframes card-ball-spin { to { transform: rotate(360deg); } }
-.shot-card-potara {
-  width: 50px;
-  height: 50px;
-  filter: drop-shadow(0 0 10px rgba(80, 255, 120, .7));
-  animation: potara-float 2.4s ease-in-out infinite;
+.shot-card-icon {
+  width: 52px;
+  height: 52px;
+  animation: icon-float 2.6s ease-in-out infinite;
 }
-@keyframes potara-float { 0%, 100% { transform: translateY(-3px); } 50% { transform: translateY(3px); } }
+.is-ui .shot-card-icon { filter: drop-shadow(0 0 12px rgba(70, 130, 255, .85)); }
+.is-scripting .shot-card-icon { filter: drop-shadow(0 0 12px rgba(255, 160, 30, .85)); }
+@keyframes icon-float { 0%, 100% { transform: translateY(-3px); } 50% { transform: translateY(3px); } }
 
 .shot-card:hover .shot-card-media img,
 .shot-card:focus-visible .shot-card-media img { filter: saturate(1.4) contrast(1.1) brightness(1.1); }
 .shot-card:hover .shot-card-name,
-.shot-card:focus-visible .shot-card-name { transform: translateX(6px); color: var(--c2); }
+.shot-card:focus-visible .shot-card-name { transform: skewX(-9deg) translateX(6px); }
+.shot-card:hover .shot-card-name::after,
+.shot-card:focus-visible .shot-card-name::after { width: 100%; }
 .shot-card:hover .shot-card-ball,
 .shot-card:focus-visible .shot-card-ball { width: 58px; height: 58px; animation-duration: .9s; }
-.shot-card:hover .shot-card-potara { animation-duration: 1.2s; }
+.shot-card:hover .shot-card-icon { animation-duration: 1.2s; }
 .shot-card:hover .shot-card-border::before { animation-duration: 1.4s; }
 
 /* ---------- Marquee ---------- */
@@ -720,6 +743,7 @@ h1, h2, h3 { margin: 0; font-weight: 400; }
   .topbar-meta .hide-sm { display: none; }
 }
 @media (max-width: 600px) {
+  .bolt-c, .bolt-d { display: none; }
   .shot-buttons { grid-template-columns: 1fr; }
   .shot-card { height: 180px; }
   .video-grid { grid-template-columns: 1fr; }
