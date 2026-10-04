@@ -40,13 +40,22 @@
     </g>
     <circle cx="50" cy="50" r="48" fill="none" stroke="#0a0a0a" stroke-width="3"/>
   </symbol>
+  <symbol id="potara" viewBox="0 0 100 100">
+    <circle cx="50" cy="15" r="9" fill="none" stroke="#f4cf55" stroke-width="5"/>
+    <path d="M50 24v14" stroke="#f4cf55" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="50" cy="68" r="30" fill="url(#potara-gem)" stroke="#0b3d18" stroke-width="2"/>
+    <ellipse cx="40" cy="56" rx="8" ry="5" fill="#fff" opacity=".55" transform="rotate(-30 40 56)"/>
+  </symbol>
+  <radialGradient id="potara-gem" cx="50%" cy="50%" r="50%" fx="38%" fy="34%">
+    <stop offset="0" stop-color="#d6ffb0"/><stop offset=".45" stop-color="#3fd45a"/><stop offset="1" stop-color="#0b4f1e"/>
+  </radialGradient>
   <symbol id="bolt" viewBox="0 0 64 160">
     <path d="M38 0 10 72h18L6 160l50-96H36L54 0Z" fill="currentColor"/>
   </symbol>
 </svg>
 
 <div class="backdrop" aria-hidden="true"></div>
-<div class="mesh" aria-hidden="true"></div>
+<canvas id="mesh" aria-hidden="true"></canvas>
 
 <!-- Everything inside #page is swapped when navigating; the rest persists. -->
 <div id="page">
@@ -137,7 +146,7 @@
       <h2 class="section-title reveal">Need a <em>frame?</em></h2>
       <div class="cta-actions">
         <a href="https://discord.com/users/1367774975045406801" target="_blank" rel="noreferrer" class="btn btn-solid">Message on Discord</a>
-        <a href="scripting.html" class="btn btn-line" data-shot data-shot-color="#08050f">See scripting →</a>
+        <a href="scripting.html" class="btn btn-line" data-shot data-shot-icon="potara" data-shot-color="#08050f">See scripting →</a>
       </div>
       <div class="cta-actions">
         <a href="index.html" class="home-return" data-shot data-shot-color="#070505"><span class="home-return-icon" aria-hidden="true">←</span>Back to home</a>

@@ -14,6 +14,22 @@ const BALL_SVG = `<svg viewBox="0 0 100 100" aria-hidden="true">
   </g>
   <circle cx="50" cy="50" r="48" fill="none" stroke="#0a0a0a" stroke-width="3"/>
 </svg>`;
+// Goku Black's green Potara earring.
+const POTARA_SVG = `<svg viewBox="0 0 100 100" aria-hidden="true">
+  <defs><radialGradient id="shot-potara-gem" cx="50%" cy="50%" r="50%" fx="38%" fy="34%">
+    <stop offset="0" stop-color="#d6ffb0"/><stop offset=".45" stop-color="#3fd45a"/><stop offset="1" stop-color="#0b4f1e"/>
+  </radialGradient></defs>
+  <circle cx="50" cy="15" r="9" fill="none" stroke="#f4cf55" stroke-width="5"/>
+  <path d="M50 24v14" stroke="#f4cf55" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="50" cy="68" r="30" fill="url(#shot-potara-gem)" stroke="#0b3d18" stroke-width="2"/>
+  <ellipse cx="40" cy="56" rx="8" ry="5" fill="#fff" opacity=".55" transform="rotate(-30 40 56)"/>
+</svg>`;
+// focus = the point the zoom dives into (fraction of the icon box);
+// radius = how much of the icon around that point is solid colour.
+const SHOT_ICONS = {
+  ball: { svg: BALL_SVG, focusX: 0.5, focusY: 0.5, radius: 0.155, spin: true, glow: 'rgba(255, 30, 30, .75)' },
+  potara: { svg: POTARA_SVG, focusX: 0.5, focusY: 0.68, radius: 0.27, spin: false, glow: 'rgba(80, 255, 120, .7)' },
+};
 
 /* ---------- Page lifecycle ----------
    Pages switch in place: the next page's #page is fetched and swapped in, so
@@ -110,28 +126,41 @@ async function navigateWithShot(link) {
   const veil = makeVeil(color);
   try {
     if (!motionReduced.matches && Element.prototype.animate) {
+      const icon = SHOT_ICONS[link.dataset.shotIcon] || SHOT_ICONS.ball;
       const bounds = (link.querySelector('.shot-origin') || link).getBoundingClientRect();
       const size = Math.round(Math.min(110, Math.max(56, bounds.height * 1.1)));
       const startX = bounds.left + bounds.width / 2 - size / 2;
       const startY = bounds.top + bounds.height / 2 - size / 2;
-      const dx = window.innerWidth / 2 - size / 2 - startX;
-      const dy = window.innerHeight / 2 - size / 2 - startY;
+      // Move so the focus point (not the box centre) lands on screen centre.
+      const dx = window.innerWidth / 2 - (startX + icon.focusX * size);
+      const dy = window.innerHeight / 2 - (startY + icon.focusY * size);
       const lift = Math.min(220, window.innerHeight * 0.28);
-      const cover = (Math.hypot(window.innerWidth, window.innerHeight) / size) * 1.25;
+      // Scale until the solid area around the focus covers the whole screen.
+      const cover = (Math.hypot(window.innerWidth, window.innerHeight) / 2 / (icon.radius * size)) * 1.12;
+      const turn = (deg) => (icon.spin ? deg : Math.sin(deg / 90) * 24);
       ball = document.createElement('div');
       ball.className = 'shot-ball';
-      ball.innerHTML = BALL_SVG;
-      Object.assign(ball.style, { width: `${size}px`, height: `${size}px`, left: `${startX}px`, top: `${startY}px` });
+      ball.innerHTML = icon.svg;
+      Object.assign(ball.style, {
+        width: `${size}px`,
+        height: `${size}px`,
+        left: `${startX}px`,
+        top: `${startY}px`,
+        transformOrigin: `${icon.focusX * 100}% ${icon.focusY * 100}%`,
+        filter: `drop-shadow(0 0 14px ${icon.glow})`,
+      });
       document.body.appendChild(ball);
       await finished(ball.animate([
-        { transform: 'translate(0, 0) rotate(0deg) scale(.55)' },
-        { transform: `translate(${dx * 0.5}px, ${dy * 0.5 - lift}px) rotate(420deg) scale(1.05)`, offset: 0.5 },
-        { transform: `translate(${dx}px, ${dy}px) rotate(780deg) scale(1.35)` },
+        { transform: `translate(0, 0) rotate(0deg) scale(.55)` },
+        { transform: `translate(${dx * 0.5}px, ${dy * 0.5 - lift}px) rotate(${turn(420)}deg) scale(1.05)`, offset: 0.5 },
+        { transform: `translate(${dx}px, ${dy}px) rotate(${turn(780)}deg) scale(1.35)` },
       ], { duration: 560, easing: 'cubic-bezier(.22,.8,.32,1)', fill: 'forwards' }));
+      // A huge drop-shadow is expensive to paint; drop it for the dive.
+      ball.style.filter = 'none';
       await finished(ball.animate([
-        { transform: `translate(${dx}px, ${dy}px) rotate(780deg) scale(1.35)` },
-        { transform: `translate(${dx}px, ${dy}px) rotate(1040deg) scale(${cover})` },
-      ], { duration: 520, easing: 'cubic-bezier(.7,0,.84,0)', fill: 'forwards' }));
+        { transform: `translate(${dx}px, ${dy}px) rotate(${turn(780)}deg) scale(1.35)` },
+        { transform: `translate(${dx}px, ${dy}px) rotate(${turn(1000)}deg) scale(${cover})` },
+      ], { duration: 640, easing: 'cubic-bezier(.7,0,.84,0)', fill: 'forwards' }));
     }
     await finished(veil.animate([{ opacity: 0 }, { opacity: 1 }], { duration: motionReduced.matches ? 120 : 240, fill: 'forwards' }));
     await pending;
@@ -288,8 +317,15 @@ if (soundtrack) {
   const saved = readSoundState();
   loadTrack(saved ? saved.index : trackIndex);
   resumeAt = saved ? saved.time : 0;
-  if (!saved || saved.playing) playCurrentTrack();
-  else trackStatus.textContent = 'Paused';
+  // Off by default; only resumes if the visitor had it playing.
+  if (saved && saved.playing) playCurrentTrack();
+  else {
+    trackStatus.textContent = 'Muted · press Play';
+    setToggle('Play', 'Play');
+  }
+  const playerEl = soundtrack.closest('.soundtrack');
+  soundtrack.addEventListener('play', () => playerEl?.classList.add('is-playing'));
+  soundtrack.addEventListener('pause', () => playerEl?.classList.remove('is-playing'));
 
   soundtrackToggle?.addEventListener('click', toggleSoundtrack);
   const retryAutoplay = (event) => {

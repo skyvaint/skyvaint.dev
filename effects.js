@@ -224,3 +224,139 @@ SV.page((root) => {
   }
   return () => controller.abort();
 });
+
+// Reactive mesh: a wireframe terrain flying toward the viewer (karbon-style).
+// It rolls forward over time and with scroll, swells under the cursor and
+// leans with the mouse. ~1k points per frame; paused when the tab is hidden.
+const meshCanvas = document.getElementById('mesh');
+const meshCtx = meshCanvas?.getContext('2d');
+if (meshCanvas && meshCtx) {
+  const mesh = { w: 0, h: 0, cols: 0, rows: 0, rgb: [255, 40, 40], frame: 0, last: 0 };
+  const pointer = { x: -9999, y: -9999, sx: -9999, sy: -9999, power: 0, lean: 0 };
+  const Z_NEAR = 1;
+  const Z_FAR = 15;
+
+  const readColor = () => {
+    const raw = getComputedStyle(document.body).getPropertyValue('--mesh');
+    const parts = raw.match(/[\d.]+/g);
+    if (parts && parts.length >= 3) mesh.rgb = parts.slice(0, 3).map(Number);
+  };
+  const resizeMesh = () => {
+    const dpr = Math.min(window.devicePixelRatio || 1, 1.25);
+    mesh.w = window.innerWidth;
+    mesh.h = window.innerHeight;
+    meshCanvas.width = Math.floor(mesh.w * dpr);
+    meshCanvas.height = Math.floor(mesh.h * dpr);
+    meshCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const small = mesh.w < 700;
+    mesh.cols = small ? 26 : 46;
+    mesh.rows = small ? 20 : 28;
+  };
+
+  const drawMesh = (now) => {
+    const t = now / 1000;
+    const { w, h, cols, rows } = mesh;
+    const [r, g, b] = mesh.rgb;
+    const f = h * 0.95;
+    const horizon = h * 0.3;
+    const camHeight = 1.25;
+    // Ease pointer for a soft, fluid response.
+    pointer.sx += (pointer.x - pointer.sx) * 0.12;
+    pointer.sy += (pointer.y - pointer.sy) * 0.12;
+    pointer.power *= 0.985;
+    pointer.lean += (((pointer.x > -999 ? pointer.x / w : 0.5) - 0.5) * -60 - pointer.lean) * 0.05;
+    const cx = w / 2 + pointer.lean;
+    const travel = t * 0.55 + window.scrollY * 0.004;
+    const dz = (Z_FAR - Z_NEAR) / rows;
+    const offset = travel % dz;
+    const xMax = ((w / 2) * Z_FAR) / f;
+    const radius2 = 2 * 150 * 150;
+
+    meshCtx.clearRect(0, 0, w, h);
+    const grid = [];
+    for (let i = rows; i >= 0; i -= 1) {
+      const z = Z_NEAR + i * dz - offset;
+      const worldZ = z + travel;
+      const row = [];
+      for (let j = 0; j <= cols; j += 1) {
+        const x = -xMax + (2 * xMax * j) / cols;
+        let y = 0.2 * Math.sin(x * 0.55 + t * 0.8)
+          + 0.16 * Math.sin(worldZ * 0.7 - t * 0.6)
+          + 0.08 * Math.sin((x + worldZ) * 1.4 + t * 1.5);
+        const sx = cx + (x * f) / z;
+        let sy = horizon + ((camHeight - y) * f) / z;
+        let lift = 0;
+        if (pointer.power > 0.01) {
+          const ddx = sx - pointer.sx;
+          const ddy = sy - pointer.sy;
+          lift = pointer.power * Math.exp(-(ddx * ddx + ddy * ddy) / radius2);
+          y += lift * 0.7;
+          sy = horizon + ((camHeight - y) * f) / z;
+        }
+        row.push([sx, sy, lift]);
+      }
+      grid.push({ z, row });
+    }
+
+    meshCtx.lineWidth = 1;
+    // Rows: fade into the distance.
+    for (const { z, row } of grid) {
+      const depth = (z - Z_NEAR) / (Z_FAR - Z_NEAR);
+      const alpha = Math.max(0, (1 - depth) ** 1.3) * 0.62;
+      if (alpha < 0.01) continue;
+      meshCtx.strokeStyle = `rgba(${r},${g},${b},${alpha})`;
+      meshCtx.beginPath();
+      row.forEach(([x, y], j) => (j ? meshCtx.lineTo(x, y) : meshCtx.moveTo(x, y)));
+      meshCtx.stroke();
+    }
+    // Columns: one path, faded toward the horizon with a gradient.
+    const fade = meshCtx.createLinearGradient(0, horizon, 0, h);
+    fade.addColorStop(0, `rgba(${r},${g},${b},0)`);
+    fade.addColorStop(0.5, `rgba(${r},${g},${b},.22)`);
+    fade.addColorStop(1, `rgba(${r},${g},${b},.4)`);
+    meshCtx.strokeStyle = fade;
+    meshCtx.beginPath();
+    for (let j = 0; j <= cols; j += 1) {
+      grid.forEach(({ row }, i) => (i ? meshCtx.lineTo(row[j][0], row[j][1]) : meshCtx.moveTo(row[j][0], row[j][1])));
+    }
+    meshCtx.stroke();
+    // Glowing nodes where the cursor lifts the mesh.
+    if (pointer.power > 0.05) {
+      for (const { row } of grid) {
+        for (const [x, y, lift] of row) {
+          if (lift < 0.12) continue;
+          meshCtx.fillStyle = `rgba(255,255,255,${Math.min(1, lift * 1.4)})`;
+          meshCtx.fillRect(x - 1.5, y - 1.5, 3, 3);
+        }
+      }
+    }
+  };
+
+  const loop = (now) => {
+    mesh.frame = requestAnimationFrame(loop);
+    // ~30fps on small screens, full rate elsewhere.
+    if (mesh.w < 700 && now - mesh.last < 32) return;
+    mesh.last = now;
+    drawMesh(now);
+  };
+  const start = () => { if (!mesh.frame) mesh.frame = requestAnimationFrame(loop); };
+  const stop = () => { cancelAnimationFrame(mesh.frame); mesh.frame = 0; };
+
+  resizeMesh();
+  readColor();
+  let meshResize;
+  window.addEventListener('resize', () => { clearTimeout(meshResize); meshResize = setTimeout(resizeMesh, 120); });
+  window.addEventListener('sv:page', readColor);
+  window.addEventListener('pointermove', (event) => {
+    pointer.x = event.clientX;
+    pointer.y = event.clientY;
+    if (pointer.sx < -999) { pointer.sx = pointer.x; pointer.sy = pointer.y; }
+    pointer.power = Math.min(1, pointer.power + 0.08);
+  }, { passive: true });
+  if (reduceMotion.matches) {
+    drawMesh(0);
+  } else {
+    start();
+    document.addEventListener('visibilitychange', () => (document.hidden ? stop() : start()));
+  }
+}

@@ -85,36 +85,15 @@ h1, h2, h3 { margin: 0; font-weight: 400; }
   opacity: .06;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
-/* Animated mesh: a tiled diamond lattice drifting diagonally. Only the
-   transform animates, so it stays on the compositor. */
-.mesh {
+/* Reactive 3D mesh (drawn by effects.js) */
+#mesh {
   position: fixed;
   inset: 0;
+  width: 100%;
+  height: 100%;
   z-index: -2;
-  overflow: hidden;
   pointer-events: none;
-  -webkit-mask-image: radial-gradient(ellipse 85% 75% at 60% 35%, #000 20%, transparent 85%);
-  mask-image: radial-gradient(ellipse 85% 75% at 60% 35%, #000 20%, transparent 85%);
 }
-.mesh::before {
-  content: "";
-  position: absolute;
-  inset: -96px;
-  opacity: .24;
-  background-color: var(--mesh);
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96'%3E%3Cpath d='M0 48 48 0 96 48 48 96Z M0 0 96 96 M96 0 0 96' fill='none' stroke='%23000' stroke-width='1'/%3E%3Ccircle cx='48' cy='48' r='1.6'/%3E%3Ccircle cx='0' cy='0' r='1.6'/%3E%3C/svg%3E") 0 0 / 96px 96px;
-  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96'%3E%3Cpath d='M0 48 48 0 96 48 48 96Z M0 0 96 96 M96 0 0 96' fill='none' stroke='%23000' stroke-width='1'/%3E%3Ccircle cx='48' cy='48' r='1.6'/%3E%3Ccircle cx='0' cy='0' r='1.6'/%3E%3C/svg%3E") 0 0 / 96px 96px;
-  animation: mesh-drift 9s linear infinite;
-  will-change: transform;
-}
-.mesh::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(106deg, transparent 0 46px, var(--mesh) 47px 48px, transparent 49px 140px);
-  opacity: .07;
-}
-@keyframes mesh-drift { to { transform: translate(96px, 96px); } }
 
 #thunder {
   position: fixed;
@@ -293,7 +272,7 @@ h1, h2, h3 { margin: 0; font-weight: 400; }
 }
 .shot-card.is-scripting { --c1: #ff3ec8; --c2: #ff8fdd; background: rgba(255, 62, 200, .25); }
 .shot-card:focus-visible { outline: none; }
-.shot-card:focus-visible .shot-card-copy { text-decoration: underline; }
+.shot-card:focus-visible .shot-card-name { text-decoration: underline; }
 
 /* Rotating light running around the border */
 .shot-card-border { position: absolute; inset: 0; z-index: -1; overflow: hidden; }
@@ -414,30 +393,23 @@ h1, h2, h3 { margin: 0; font-weight: 400; }
   100% { transform: translateY(-220px) scale(.3); opacity: 0; }
 }
 
-/* Copy + ball */
-.shot-card-copy {
+/* Label + ball / potara */
+.shot-card-name {
   position: absolute;
   left: 20px;
-  right: 76px;
-  bottom: 16px;
+  bottom: 10px;
   z-index: 3;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.shot-card-num { font: 500 .66rem var(--mono); letter-spacing: .16em; text-transform: uppercase; color: var(--c2); }
-.shot-card-name {
-  font: 400 clamp(2rem, 3.4vw, 2.8rem)/.95 var(--display);
+  font: 400 clamp(2.6rem, 4vw, 3.7rem)/1 var(--display);
+  white-space: nowrap;
   text-transform: uppercase;
   letter-spacing: .02em;
-  text-shadow: 0 2px 18px rgba(0, 0, 0, .8);
+  text-shadow: 0 2px 22px rgba(0, 0, 0, .85);
   transition: transform .3s cubic-bezier(.2, .8, .2, 1), color .3s ease;
 }
-.shot-card-desc { font-size: .8rem; color: rgba(255, 255, 255, .72); }
 .shot-card-ball {
   position: absolute;
-  right: 16px;
-  bottom: 16px;
+  right: 30px;
+  top: 14px;
   z-index: 3;
   width: 46px;
   height: 46px;
@@ -446,13 +418,22 @@ h1, h2, h3 { margin: 0; font-weight: 400; }
   transition: width .3s ease, height .3s ease;
 }
 @keyframes card-ball-spin { to { transform: rotate(360deg); } }
+.shot-card-potara {
+  width: 50px;
+  height: 50px;
+  transform-origin: 50% 15%;
+  filter: drop-shadow(0 0 10px rgba(80, 255, 120, .7));
+  animation: potara-swing 2.4s ease-in-out infinite;
+}
+@keyframes potara-swing { 0%, 100% { transform: rotate(-16deg); } 50% { transform: rotate(16deg); } }
 
 .shot-card:hover .shot-card-media img,
 .shot-card:focus-visible .shot-card-media img { filter: saturate(1.4) contrast(1.1) brightness(1.1); }
 .shot-card:hover .shot-card-name,
 .shot-card:focus-visible .shot-card-name { transform: translateX(6px); color: var(--c2); }
 .shot-card:hover .shot-card-ball,
-.shot-card:focus-visible .shot-card-ball { width: 56px; height: 56px; animation-duration: .9s; }
+.shot-card:focus-visible .shot-card-ball { width: 58px; height: 58px; animation-duration: .9s; }
+.shot-card:hover .shot-card-potara { animation-duration: .8s; }
 .shot-card:hover .shot-card-border::before { animation-duration: 1.4s; }
 
 /* ---------- Marquee ---------- */
@@ -759,7 +740,7 @@ h1, h2, h3 { margin: 0; font-weight: 400; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .bolt, .marquee-track, .flash.is-on,
-  .shot-card *, .shot-card *::before, .mesh::before, .stats-banner::before,
+  .shot-card *, .shot-card *::before, .stats-banner::before,
   .goku-bg img, .goku-panel img, .video-play { animation: none !important; }
   .reveal { opacity: 1; transform: none; transition: none; }
 }

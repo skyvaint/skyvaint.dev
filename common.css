@@ -130,6 +130,7 @@ html.is-shooting body { pointer-events: none; }
 .soundwave i:nth-child(3) { animation-delay: -.6s; height: 9px; }
 .soundwave i:nth-child(4) { animation-delay: -.15s; height: 15px; }
 .soundwave i:nth-child(5) { animation-delay: -.45s; height: 6px; }
+.soundtrack:not(.is-playing) .soundwave i { animation-play-state: paused; opacity: .35; }
 @keyframes soundwave { to { transform: scaleY(.35); opacity: .45; } }
 .track-progress { height: 4px; margin: 13px 0 9px; border-radius: 99px; background: rgba(255, 255, 255, .12); cursor: pointer; overflow: hidden; }
 #track-progress-fill { display: block; height: 100%; width: 0; border-radius: inherit; background: var(--grad); }
