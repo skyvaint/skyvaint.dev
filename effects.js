@@ -225,138 +225,163 @@ SV.page((root) => {
   return () => controller.abort();
 });
 
-// Reactive mesh: a wireframe terrain flying toward the viewer (karbon-style).
-// It rolls forward over time and with scroll, swells under the cursor and
-// leans with the mouse. ~1k points per frame; paused when the tab is hidden.
+// Dot-matrix silk (karbon.cloud style): a WebGL shader renders flowing fabric
+// folds, then quantises them to a halftone dot grid — bright fold edges become
+// big glowing dots, shadows become pinpoints. Reacts to the cursor (folds bend
+// and light up around it) and to scroll. Paused while the tab is hidden.
 const meshCanvas = document.getElementById('mesh');
-const meshCtx = meshCanvas?.getContext('2d');
-if (meshCanvas && meshCtx) {
-  const mesh = { w: 0, h: 0, cols: 0, rows: 0, rgb: [255, 40, 40], frame: 0, last: 0 };
-  const pointer = { x: -9999, y: -9999, sx: -9999, sy: -9999, power: 0, lean: 0 };
-  const Z_NEAR = 1;
-  const Z_FAR = 15;
+const gl = meshCanvas?.getContext('webgl', { antialias: false, alpha: true, premultipliedAlpha: false, powerPreference: 'low-power' });
+if (meshCanvas && gl) {
+  const VERT = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
+  const FRAG = `
+precision mediump float;
+uniform vec2 uRes;
+uniform float uTime;
+uniform float uPitch;
+uniform float uScroll;
+uniform vec3 uMouse;      // xy in px (GL coords), z = strength
+uniform vec3 uDim;
+uniform vec3 uHot;
 
-  const readColor = () => {
-    const raw = getComputedStyle(document.body).getPropertyValue('--mesh');
-    const parts = raw.match(/[\d.]+/g);
-    if (parts && parts.length >= 3) mesh.rgb = parts.slice(0, 3).map(Number);
-  };
-  const resizeMesh = () => {
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.25);
-    mesh.w = window.innerWidth;
-    mesh.h = window.innerHeight;
-    meshCanvas.width = Math.floor(mesh.w * dpr);
-    meshCanvas.height = Math.floor(mesh.h * dpr);
-    meshCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const small = mesh.w < 700;
-    mesh.cols = small ? 26 : 46;
-    mesh.rows = small ? 20 : 28;
-  };
-
-  const drawMesh = (now) => {
-    const t = now / 1000;
-    const { w, h, cols, rows } = mesh;
-    const [r, g, b] = mesh.rgb;
-    const f = h * 0.95;
-    const horizon = h * 0.3;
-    const camHeight = 1.25;
-    // Ease pointer for a soft, fluid response.
-    pointer.sx += (pointer.x - pointer.sx) * 0.12;
-    pointer.sy += (pointer.y - pointer.sy) * 0.12;
-    pointer.power *= 0.985;
-    pointer.lean += (((pointer.x > -999 ? pointer.x / w : 0.5) - 0.5) * -60 - pointer.lean) * 0.05;
-    const cx = w / 2 + pointer.lean;
-    const travel = t * 0.55 + window.scrollY * 0.004;
-    const dz = (Z_FAR - Z_NEAR) / rows;
-    const offset = travel % dz;
-    const xMax = ((w / 2) * Z_FAR) / f;
-    const radius2 = 2 * 150 * 150;
-
-    meshCtx.clearRect(0, 0, w, h);
-    const grid = [];
-    for (let i = rows; i >= 0; i -= 1) {
-      const z = Z_NEAR + i * dz - offset;
-      const worldZ = z + travel;
-      const row = [];
-      for (let j = 0; j <= cols; j += 1) {
-        const x = -xMax + (2 * xMax * j) / cols;
-        let y = 0.2 * Math.sin(x * 0.55 + t * 0.8)
-          + 0.16 * Math.sin(worldZ * 0.7 - t * 0.6)
-          + 0.08 * Math.sin((x + worldZ) * 1.4 + t * 1.5);
-        const sx = cx + (x * f) / z;
-        let sy = horizon + ((camHeight - y) * f) / z;
-        let lift = 0;
-        if (pointer.power > 0.01) {
-          const ddx = sx - pointer.sx;
-          const ddy = sy - pointer.sy;
-          lift = pointer.power * Math.exp(-(ddx * ddx + ddy * ddy) / radius2);
-          y += lift * 0.7;
-          sy = horizon + ((camHeight - y) * f) / z;
-        }
-        row.push([sx, sy, lift]);
-      }
-      grid.push({ z, row });
-    }
-
-    meshCtx.lineWidth = 1;
-    // Rows: fade into the distance.
-    for (const { z, row } of grid) {
-      const depth = (z - Z_NEAR) / (Z_FAR - Z_NEAR);
-      const alpha = Math.max(0, (1 - depth) ** 1.3) * 0.62;
-      if (alpha < 0.01) continue;
-      meshCtx.strokeStyle = `rgba(${r},${g},${b},${alpha})`;
-      meshCtx.beginPath();
-      row.forEach(([x, y], j) => (j ? meshCtx.lineTo(x, y) : meshCtx.moveTo(x, y)));
-      meshCtx.stroke();
-    }
-    // Columns: one path, faded toward the horizon with a gradient.
-    const fade = meshCtx.createLinearGradient(0, horizon, 0, h);
-    fade.addColorStop(0, `rgba(${r},${g},${b},0)`);
-    fade.addColorStop(0.5, `rgba(${r},${g},${b},.22)`);
-    fade.addColorStop(1, `rgba(${r},${g},${b},.4)`);
-    meshCtx.strokeStyle = fade;
-    meshCtx.beginPath();
-    for (let j = 0; j <= cols; j += 1) {
-      grid.forEach(({ row }, i) => (i ? meshCtx.lineTo(row[j][0], row[j][1]) : meshCtx.moveTo(row[j][0], row[j][1])));
-    }
-    meshCtx.stroke();
-    // Glowing nodes where the cursor lifts the mesh.
-    if (pointer.power > 0.05) {
-      for (const { row } of grid) {
-        for (const [x, y, lift] of row) {
-          if (lift < 0.12) continue;
-          meshCtx.fillStyle = `rgba(255,255,255,${Math.min(1, lift * 1.4)})`;
-          meshCtx.fillRect(x - 1.5, y - 1.5, 3, 3);
-        }
-      }
-    }
-  };
-
-  const loop = (now) => {
-    mesh.frame = requestAnimationFrame(loop);
-    // ~30fps on small screens, full rate elsewhere.
-    if (mesh.w < 700 && now - mesh.last < 32) return;
-    mesh.last = now;
-    drawMesh(now);
-  };
-  const start = () => { if (!mesh.frame) mesh.frame = requestAnimationFrame(loop); };
-  const stop = () => { cancelAnimationFrame(mesh.frame); mesh.frame = 0; };
-
-  resizeMesh();
-  readColor();
-  let meshResize;
-  window.addEventListener('resize', () => { clearTimeout(meshResize); meshResize = setTimeout(resizeMesh, 120); });
-  window.addEventListener('sv:page', readColor);
-  window.addEventListener('pointermove', (event) => {
-    pointer.x = event.clientX;
-    pointer.y = event.clientY;
-    if (pointer.sx < -999) { pointer.sx = pointer.x; pointer.sy = pointer.y; }
-    pointer.power = Math.min(1, pointer.power + 0.08);
-  }, { passive: true });
-  if (reduceMotion.matches) {
-    drawMesh(0);
-  } else {
-    start();
-    document.addEventListener('visibilitychange', () => (document.hidden ? stop() : start()));
+// Fold height field: domain-warped sine sheets, tilted diagonally, drifting.
+float fold(vec2 q, float t) {
+  float c = cos(0.42), sn = sin(0.42);
+  vec2 p = mat2(c, -sn, sn, c) * q * vec2(1.7, 1.0);
+  p.y += uScroll;
+  for (int i = 1; i < 5; i++) {
+    float fi = float(i);
+    p.x += 0.6 / fi * sin(fi * 1.25 * p.y + t * 0.3 + fi * 1.7);
+    p.y += 0.3 / fi * cos(fi * 1.05 * p.x - t * 0.2 + fi);
   }
+  return sin(p.x * 4.1 + p.y * 0.8);
+}
+
+void main() {
+  vec2 cell = floor(gl_FragCoord.xy / uPitch);
+  vec2 center = (cell + 0.5) * uPitch;
+  float aspect = uRes.x / uRes.y;
+  vec2 q = center / uRes.y;
+
+  // Cursor: bend the cloth toward the pointer and light it up.
+  vec2 m = uMouse.xy / uRes.y;
+  vec2 dm = q - m;
+  float near = uMouse.z * exp(-dot(dm, dm) * 18.0);
+  q -= dm * near * 0.35;
+
+  float t = uTime;
+  float e = 0.003;
+  float h = fold(q, t);
+  float hx = fold(q + vec2(e, 0.0), t);
+  float hy = fold(q + vec2(0.0, e), t);
+  vec2 g = vec2(hx - h, hy - h) / e;
+  vec3 n = normalize(vec3(-g, 3.0));
+  vec3 light = normalize(vec3(-0.45, 0.55, 0.7));
+  float diff = clamp(dot(n, light), 0.0, 1.0);
+  float spec = pow(clamp(dot(reflect(-light, n), vec3(0.0, 0.0, 1.0)), 0.0, 1.0), 10.0);
+
+  // Fabric body (dim dots), dark troughs (pinpoints), and thin bright lines
+  // tracing the fold edges: distance in px to the h = 0.55 contour.
+  float body = smoothstep(-0.35, 0.45, h);
+  float edgeDist = abs(h - 0.55) / max(length(g), 0.001) * uRes.y;
+  float edge = exp(-pow(edgeDist / (uPitch * 0.85), 2.0)) * smoothstep(0.0, 0.6, diff + 0.2);
+  float lum = body * (0.26 + 0.5 * diff) + spec * 0.4 * body + edge * 0.72 + near * 0.45;
+  lum *= smoothstep(1.35, 0.15, abs(q.x / aspect - 0.62)) * 0.5 + 0.5; // calmer left side
+  lum = clamp(lum, 0.0, 1.0);
+
+  // Halftone dot: radius grows with brightness, tiny pinpoint floor.
+  float r = uPitch * (0.07 + 0.41 * pow(lum, 0.8));
+  float d = length(gl_FragCoord.xy - center);
+  float a = clamp(r - d + 0.5, 0.0, 1.0);
+  vec3 col = mix(uDim, uHot, smoothstep(0.25, 1.0, lum));
+  gl_FragColor = vec4(col, a * (0.3 + 0.55 * lum));
+}`;
+  const compile = (type, src) => {
+    const shader = gl.createShader(type);
+    gl.shaderSource(shader, src);
+    gl.compileShader(shader);
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(shader));
+    return shader;
+  };
+  try {
+    const program = gl.createProgram();
+    gl.attachShader(program, compile(gl.VERTEX_SHADER, VERT));
+    gl.attachShader(program, compile(gl.FRAGMENT_SHADER, FRAG));
+    gl.linkProgram(program);
+    gl.useProgram(program);
+    gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    const loc = gl.getAttribLocation(program, 'p');
+    gl.enableVertexAttribArray(loc);
+    gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    const u = (name) => gl.getUniformLocation(program, name);
+    const uRes = u('uRes');
+    const uTime = u('uTime');
+    const uPitch = u('uPitch');
+    const uScroll = u('uScroll');
+    const uMouse = u('uMouse');
+    const uDim = u('uDim');
+    const uHot = u('uHot');
+
+    const state = { dpr: 1, frame: 0, start: performance.now(), mx: -1e4, my: -1e4, tx: -1e4, ty: -1e4, power: 0, scroll: 0 };
+    const hexToRgb = (value, fallback) => {
+      const parts = value.match(/[\d.]+/g);
+      return parts && parts.length >= 3 ? parts.slice(0, 3).map((n) => Number(n) / 255) : fallback;
+    };
+    const readColors = () => {
+      const styles = getComputedStyle(document.body);
+      gl.uniform3fv(uDim, hexToRgb(styles.getPropertyValue('--dots-dim'), [0.45, 0.08, 0.1]));
+      gl.uniform3fv(uHot, hexToRgb(styles.getPropertyValue('--dots-hot'), [1, 0.42, 0.36]));
+    };
+    const resize = () => {
+      state.dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      meshCanvas.width = Math.floor(window.innerWidth * state.dpr);
+      meshCanvas.height = Math.floor(window.innerHeight * state.dpr);
+      gl.viewport(0, 0, meshCanvas.width, meshCanvas.height);
+      gl.uniform2f(uRes, meshCanvas.width, meshCanvas.height);
+      gl.uniform1f(uPitch, (window.innerWidth < 700 ? 8 : 9) * state.dpr);
+    };
+    const draw = (now) => {
+      // Ease the cursor and its influence for a fluid feel.
+      state.mx += (state.tx - state.mx) * 0.08;
+      state.my += (state.ty - state.my) * 0.08;
+      state.power *= 0.975;
+      state.scroll += (window.scrollY * 0.0009 - state.scroll) * 0.08;
+      gl.clearColor(0, 0, 0, 0);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.uniform1f(uTime, (now - state.start) / 1000);
+      gl.uniform1f(uScroll, state.scroll);
+      gl.uniform3f(uMouse, state.mx * state.dpr, (window.innerHeight - state.my) * state.dpr, state.power);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+    };
+    const loop = (now) => {
+      state.frame = requestAnimationFrame(loop);
+      draw(now);
+    };
+    const start = () => { if (!state.frame) state.frame = requestAnimationFrame(loop); };
+    const stop = () => { cancelAnimationFrame(state.frame); state.frame = 0; };
+
+    resize();
+    readColors();
+    let resizeTimer;
+    window.addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(resize, 120); });
+    window.addEventListener('sv:page', readColors);
+    window.addEventListener('pointermove', (event) => {
+      state.tx = event.clientX;
+      state.ty = event.clientY;
+      if (state.mx < -9e3) { state.mx = state.tx; state.my = state.ty; }
+      state.power = Math.min(1, state.power + 0.06);
+    }, { passive: true });
+    if (reduceMotion.matches) {
+      draw(performance.now() + 20000);
+    } else {
+      start();
+      document.addEventListener('visibilitychange', () => (document.hidden ? stop() : start()));
+    }
+  } catch (error) {
+    meshCanvas.remove();
+  }
+} else if (meshCanvas) {
+  meshCanvas.remove();
 }

@@ -18,7 +18,8 @@
 
   --glow-1: rgba(200, 0, 0, .22);
   --glow-2: rgba(120, 0, 0, .25);
-  --mesh: rgba(255, 40, 40, .5);
+  --dots-dim: rgb(140, 32, 38);
+  --dots-hot: rgb(232, 98, 88);
   --bolt-glow: #ff1f1f;
   --bolt-core: #ffe2dc;
   --flash: rgba(255, 40, 40, .28);
@@ -44,7 +45,8 @@
   --player-bg: rgba(10, 6, 18, .92);
   --glow-1: rgba(255, 62, 200, .16);
   --glow-2: rgba(139, 61, 255, .22);
-  --mesh: rgba(200, 90, 255, .5);
+  --dots-dim: rgb(96, 40, 124);
+  --dots-hot: rgb(214, 118, 200);
   --bolt-glow: #ff3ec8;
   --bolt-core: #ffe6fa;
   --flash: rgba(255, 62, 200, .26);
@@ -74,8 +76,6 @@ h1, h2, h3 { margin: 0; font-weight: 400; }
   background:
     radial-gradient(ellipse 70% 55% at 78% 30%, var(--glow-1), transparent 70%),
     radial-gradient(ellipse 50% 40% at 0% 100%, var(--glow-2), transparent 70%),
-    linear-gradient(var(--line) 1px, transparent 1px) 0 0 / 100% 120px,
-    linear-gradient(90deg, var(--line) 1px, transparent 1px) 0 0 / 120px 100%,
     var(--bg);
 }
 .backdrop::after {
@@ -85,7 +85,7 @@ h1, h2, h3 { margin: 0; font-weight: 400; }
   opacity: .06;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
-/* Reactive 3D mesh (drawn by effects.js) */
+/* Dot-matrix silk background (WebGL, drawn by effects.js) */
 #mesh {
   position: fixed;
   inset: 0;
@@ -718,7 +718,6 @@ h1, h2, h3 { margin: 0; font-weight: 400; }
   .timeline-row { grid-template-columns: 1fr auto; gap: 6px 16px; }
   .timeline-row p { grid-column: 1 / -1; }
   .topbar-meta .hide-sm { display: none; }
-  .backdrop { background-size: auto, auto, 100% 80px, 80px 100%, auto; }
 }
 @media (max-width: 600px) {
   .shot-buttons { grid-template-columns: 1fr; }
