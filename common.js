@@ -14,12 +14,11 @@ const BALL_SVG = `<svg viewBox="0 0 100 100" aria-hidden="true">
   </g>
   <circle cx="50" cy="50" r="48" fill="none" stroke="#0a0a0a" stroke-width="3"/>
 </svg>`;
-// Blue Lock padlock (UI page) and the four-star Dragon Ball (scripting page).
+// Blue Lock emblem (UI page) and the four-star Dragon Ball (scripting page).
 const BLUELOCK_SVG = `<svg viewBox="0 0 100 100" aria-hidden="true">
-  <defs><linearGradient id="shot-bl-body" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4f8bff"/><stop offset="1" stop-color="#0d2f9e"/></linearGradient></defs>
-  <path d="M31 44V31a19 19 0 0 1 38 0v13" fill="none" stroke="#8fb4ff" stroke-width="9" stroke-linecap="round"/>
-  <rect x="16" y="40" width="68" height="56" rx="11" fill="url(#shot-bl-body)" stroke="#06164f" stroke-width="2.5"/>
-  <circle cx="50" cy="60" r="7" fill="#06164f"/><path d="M46 63h8l2 12H44Z" fill="#06164f"/>
+  <polygon points="50.00,10.00 91.85,40.40 75.86,89.60 24.14,89.60 8.15,40.40" fill="#1238c4" stroke="#fff" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M50.00 54.00L70.92 25.20M50.00 54.00L83.85 65.00M50.00 54.00L50.00 89.60M50.00 54.00L16.15 65.00M50.00 54.00L29.08 25.20" stroke="#fff" stroke-width="5.6"/>
+  <polygon points="50.00,40.50 62.84,49.83 57.94,64.92 42.06,64.92 37.16,49.83" fill="#fff" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/>
 </svg>`;
 const STAR = 'M0-7 1.9-2.4 6.7-2.2 2.9.8 4.2 5.6 0 2.8-4.2 5.6-2.9.8-6.7-2.2-1.9-2.4Z';
 const DRAGONBALL_SVG = `<svg viewBox="0 0 100 100" aria-hidden="true">
@@ -32,7 +31,7 @@ const DRAGONBALL_SVG = `<svg viewBox="0 0 100 100" aria-hidden="true">
 // radius = how much of the icon around that point is solid colour.
 const SHOT_ICONS = {
   ball: { svg: BALL_SVG, focusX: 0.5, focusY: 0.5, radius: 0.155, spin: true, glow: 'rgba(255, 30, 30, .75)' },
-  bluelock: { svg: BLUELOCK_SVG, focusX: 0.5, focusY: 0.84, radius: 0.085, spin: false, glow: 'rgba(70, 130, 255, .8)' },
+  bluelock: { svg: BLUELOCK_SVG, focusX: 0.5, focusY: 0.27, radius: 0.095, spin: false, glow: 'rgba(70, 130, 255, .8)' },
   dragonball: { svg: DRAGONBALL_SVG, focusX: 0.5, focusY: 0.8, radius: 0.13, spin: false, glow: 'rgba(255, 160, 30, .8)' },
 };
 
