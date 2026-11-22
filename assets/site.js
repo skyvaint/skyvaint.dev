@@ -98,13 +98,53 @@ function renderUpcoming(g, grid) {
   inner.append(media, body);
   card.append(inner);
   grid.append(card);
+  upcomingCards.push(card);
+}
+const upcomingCards = [];
+
+/* Order: games with players (most first) → upcoming banner → games at 0 players (smaller).
+   Sizes are picked so every row of the 6-column grid is filled. */
+const narrowGrid = matchMedia("(max-width: 1080px)");
+function sizeRow(cards, perRow) {
+  cards.forEach((c) => c.classList.remove("span-2", "span-3", "span-6"));
+  const n = cards.length;
+  if (!n) return;
+  if (narrowGrid.matches) perRow = 2; // tablet: two per row, odd one out goes full width
+  if (perRow === 2) {
+    cards.forEach((c) => c.classList.add("span-3"));
+    if (n % 2) {
+      if (n >= 3 && !narrowGrid.matches) cards.slice(-3).forEach((c) => { c.classList.remove("span-3"); c.classList.add("span-2"); });
+      else cards[n - 1].classList.replace("span-3", "span-6");
+    }
+  } else {
+    cards.forEach((c) => c.classList.add("span-2"));
+    const r = n % 3;
+    if (r === 2) cards.slice(-2).forEach((c) => c.classList.replace("span-2", "span-3"));
+    if (r === 1) {
+      if (n >= 4) cards.slice(-4).forEach((c) => c.classList.replace("span-2", "span-3"));
+      else cards[n - 1].classList.replace("span-2", "span-6");
+    }
+  }
+}
+function arrangeGames(stats) {
+  const grid = $("#game-grid");
+  const rows = [...gameRefs.values()].map((ref) => ({ ref, s: stats.get(ref.g.universeId) || ref.g.snapshot || {} }));
+  const active = rows.filter((x) => (x.s.playing || 0) > 0).sort((a, b) => b.s.playing - a.s.playing);
+  const idle = rows.filter((x) => !(x.s.playing > 0)).sort((a, b) => (b.s.visits || 0) - (a.s.visits || 0));
+  active.forEach((x) => x.ref.card.classList.remove("is-compact"));
+  idle.forEach((x) => x.ref.card.classList.add("is-compact"));
+  sizeRow(active.map((x) => x.ref.card), 2);
+  sizeRow(idle.map((x) => x.ref.card), 3);
+  const order = [...active.map((x) => x.ref.card), ...upcomingCards, ...idle.map((x) => x.ref.card)];
+  const current = [...grid.children];
+  if (order.some((c, i) => current[i] !== c)) order.forEach((c) => grid.append(c));
 }
 
 function renderGames() {
   const grid = $("#game-grid");
   for (const g of P.games) {
     if (g.status === "upcoming") { renderUpcoming(g, grid); continue; }
-    const card = el("article", "game-card reveal" + (g.rarity === "LL" ? " is-legend" : "") + (g.size === "compact" ? " is-compact" : ""));
+    const card = el("article", "game-card reveal");
     const inner = el("div", "game-inner");
 
     const media = el("div", "game-media");
@@ -164,7 +204,9 @@ function renderGames() {
     const more = el("button", "btn btn-ghost btn-sm"); more.type = "button"; more.append(el("span", null, "Details"));
     foot.append(more);
 
-    body.append(head, el("p", "game-blurb", g.blurb), stats, hp, foot);
+    body.append(head);
+    if (g.blurb) body.append(el("p", "game-blurb", g.blurb));
+    body.append(stats, hp, foot);
     inner.append(media, body);
     card.append(inner);
     grid.append(card);
@@ -246,12 +288,14 @@ function applyStats({ games, live }) {
     ref.rating.textContent = fmt.pct(pct);
     ref.fill.style.setProperty("--v", (pct ?? 0) + "%");
   }
+  arrangeGames(lastStats);
   for (const node of $$('[data-live="totalPlaying"]')) tween(node, playing, fmt.full);
   for (const node of $$('[data-live="totalVisits"]')) tween(node, visits, (n) => fmt.compact(n) + "+");
   const stamp = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   for (const node of $$('[data-live="updated"]')) node.textContent = live ? `Updated ${stamp} · refreshes every minute.` : "Showing saved numbers — Roblox didn’t answer.";
 }
 async function refreshStats() { applyStats(await fetchStats()); }
+narrowGrid.addEventListener?.("change", () => { if (lastStats) arrangeGames(lastStats); });
 
 /* Game details dialog */
 const gameDialog = $("#game-dialog");

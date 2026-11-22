@@ -17,7 +17,9 @@ window.Portfolio = {
   /* Games. `trailer` can be an .mp4/.webm in assets/ (plays muted on the card)
      or a YouTube link (opens in the details view). Leave it "" to show the
      Roblox thumbnails as a slideshow instead.
-     size: "compact" makes a small card; status: "upcoming" makes a banner card with an Invest button. */
+     Cards are ordered live by players online: active games first, then the
+     upcoming game (status: "upcoming", big banner + Invest), then games at 0 players
+     as smaller cards. Leave blurb "" to hide the description. */
   games: [
     {
       universeId: 9674224595, placeId: 77393318863643,
@@ -61,10 +63,42 @@ window.Portfolio = {
     {
       universeId: 10770237203, placeId: 132974555712777,
       name: "Sneak For Eggs", role: "Owner · Fullstack", studio: "some bunch of farmers",
-      size: "compact", peakCcu: null, ccuNote: "Fresh release",
+      peakCcu: null, ccuNote: "Fresh release",
       blurb: "A farm-to-base loop with egg hatching, passive income and training upgrades.",
       trailer: "",
       snapshot: { playing: 0, visits: 1673, favorites: 8, up: 5, down: 3 },
+    },
+    {
+      universeId: 10771351496, placeId: 82605394674193,
+      name: "Be The Manager", role: "Programmer", studio: "Othorth Studios",
+      peakCcu: null, ccuNote: "Live",
+      blurb: "",
+      trailer: "",
+      snapshot: { playing: 241, visits: 166048, favorites: 6012, up: 127, down: 47 },
+    },
+    {
+      universeId: 10771383023, placeId: 94831407518345,
+      name: "TROLL Hug & Gear Tower", role: "Programmer", studio: "Wrong Decisions",
+      peakCcu: null, ccuNote: "Live",
+      blurb: "",
+      trailer: "",
+      snapshot: { playing: 47, visits: 83130, favorites: 9420, up: 40, down: 16 },
+    },
+    {
+      universeId: 10772991177, placeId: 90831941913879,
+      name: "Don't Press The Button Extreme", role: "Programmer", studio: "Colorful Party",
+      peakCcu: null, ccuNote: "Live",
+      blurb: "",
+      trailer: "",
+      snapshot: { playing: 11, visits: 44814, favorites: 5568, up: 33, down: 29 },
+    },
+    {
+      universeId: 10775792017, placeId: 133616997465873,
+      name: "TROLL Carry Christmas Tower", role: "Programmer", studio: "Christmas Chapter",
+      peakCcu: null, ccuNote: "Seasonal", thumbs: 1,
+      blurb: "",
+      trailer: "",
+      snapshot: { playing: 0, visits: 4948, favorites: 512, up: 12, down: 5 },
     },
   ],
 
