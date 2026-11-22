@@ -595,7 +595,12 @@ const soundToggle = $(".sound-toggle");
 function paintSound(on) { soundToggle.setAttribute("aria-pressed", String(on)); $(".sound-label", soundToggle).textContent = on ? "Sound on" : "Sound off"; }
 document.addEventListener("sky:sound", (e) => paintSound(e.detail));
 paintSound(false);
-soundToggle.addEventListener("click", () => { Sound.set(!Sound.enabled); Sound.click(); });
+soundToggle.addEventListener("click", () => {
+  const on = !Sound.enabled;
+  if (on) localStorage.removeItem("sky-mute"); else localStorage.setItem("sky-mute", "1");
+  Sound.set(on);
+  Sound.click();
+});
 
 const timeEl = $("#stat-time");
 $("#stat-place").textContent = P.location || "Spain";
@@ -761,6 +766,7 @@ function startIntro() {
   armReveals();
 }
 function enter(withSound) {
+  if (withSound) localStorage.removeItem("sky-mute");
   Sound.set(withSound);
   loader.classList.add("is-gone");
   root.classList.remove("is-loading");
@@ -774,7 +780,14 @@ if (sessionStorage.getItem("sky-entered")) {
   loader.classList.add("is-hidden");
   root.classList.remove("is-loading");
   startIntro();
-  if (localStorage.getItem("sky-sound") === "on") addEventListener("pointerdown", () => { if (!Sound.ctx) Sound.set(true); }, { once: true });
+  // Browsers only allow audio after a click or key press, so sound starts on the first one.
+  if (!localStorage.getItem("sky-mute")) {
+    const wake = () => {
+      ["pointerdown", "keydown", "touchstart"].forEach((t) => removeEventListener(t, wake, true));
+      if (!Sound.enabled) Sound.set(true);
+    };
+    ["pointerdown", "keydown", "touchstart"].forEach((t) => addEventListener(t, wake, true));
+  }
 } else {
   const pct = $(".loader-pct b", loader), bar = $(".loader-bar", loader), started = performance.now();
   (function load() {
