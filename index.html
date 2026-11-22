@@ -1,210 +1,346 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="en" class="is-loading">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>skyvaint — Roblox Developer</title>
-<script>try{var c=sessionStorage.getItem('sv-shot');if(c){sessionStorage.removeItem('sv-shot');var d=document.documentElement;d.classList.add('is-arriving');d.style.setProperty('--arrive-color',c);}}catch(e){}</script>
-<meta name="description" content="skyvaint builds Roblox worlds, systems, gameplay and UI.">
-<meta name="theme-color" content="#070505">
-<link rel="icon" type="image/png" sizes="256x256" href="images/favicon.png">
-<link rel="apple-touch-icon" href="images/favicon.png">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="skyvaint">
-<meta property="og:title" content="skyvaint — Roblox Developer">
-<meta property="og:description" content="skyvaint builds Roblox worlds, systems, gameplay and UI.">
-<meta property="og:url" content="https://skyvaint.com/">
-<meta property="og:image" content="https://skyvaint.com/images/site-banner.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="skyvaint — Roblox Developer">
-<meta name="twitter:description" content="skyvaint builds Roblox worlds, systems, gameplay and UI.">
-<meta name="twitter:image" content="https://skyvaint.com/images/site-banner.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@500;700&family=Manrope:wght@400;500;600&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
-<link rel="preload" as="image" href="images/barou/prime-barou.jpg">
-<link rel="stylesheet" href="common.css">
-<link rel="stylesheet" href="site.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>skyvaint — Roblox Developer</title>
+  <meta name="description" content="skyvaint builds Roblox games, Luau systems and UI. Liveops on games with 480M+ visits and an 80K CCU peak. Commissions open.">
+  <meta name="theme-color" content="#050713">
+  <link rel="icon" type="image/png" href="assets/brand/favicon.png">
+  <link rel="apple-touch-icon" href="assets/brand/favicon.png">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="skyvaint">
+  <meta property="og:title" content="skyvaint — Roblox Developer">
+  <meta property="og:description" content="Roblox games, Luau systems and UI. Commissions open.">
+  <meta property="og:url" content="https://skyvaint.com/">
+  <meta property="og:image" content="https://skyvaint.com/assets/brand/og.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Chakra+Petch:wght@500;600;700&family=Inter+Tight:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&family=Noto+Sans+JP:wght@900&display=swap" rel="stylesheet">
+  <link rel="preload" as="image" href="assets/brand/fighter.webp">
+  <link rel="stylesheet" href="assets/style.css?v=9">
+  <script defer src="portfolio.js?v=9"></script>
+  <script defer src="assets/relay.js?v=9"></script>
+  <script defer src="assets/fx.js?v=9"></script>
+  <script defer src="assets/site.js?v=9"></script>
 </head>
-<body data-theme="red">
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <symbol id="ball" viewBox="0 0 100 100">
-    <clipPath id="ball-clip"><circle cx="50" cy="50" r="47"/></clipPath>
-    <circle cx="50" cy="50" r="48" fill="#f7f3f3"/>
-    <g clip-path="url(#ball-clip)" fill="#0a0a0a" stroke="#0a0a0a" stroke-width="3" stroke-linejoin="round">
-      <path d="M50 30 69 44 62 66H38L31 44Z"/>
-      <path d="M50 30V12M69 44l17-6M62 66l11 15M38 66 27 81M31 44l-17-6" fill="none"/>
-      <path d="M38 -2 38 12H62L62 -2ZM86 38l16-6 2 30-14 4ZM73 81l17-2-4 24-20-6ZM27 81l-17-2 4 24 20-6ZM14 38-2 32-4 62l14 4Z"/>
-    </g>
-    <circle cx="50" cy="50" r="48" fill="none" stroke="#0a0a0a" stroke-width="3"/>
-  </symbol>
-  <radialGradient id="db-gem" cx="50%" cy="50%" r="50%" fx="36%" fy="32%">
-    <stop offset="0" stop-color="#fff1b8"/><stop offset=".35" stop-color="#ffb21f"/><stop offset=".8" stop-color="#f07400"/><stop offset="1" stop-color="#b34700"/>
-  </radialGradient>
-  <symbol id="bluelock" viewBox="0 0 100 100">
-    <polygon points="50.00,10.00 91.85,40.40 75.86,89.60 24.14,89.60 8.15,40.40" fill="#1238c4" stroke="#fff" stroke-width="5" stroke-linejoin="round"/>
-    <path d="M50.00 54.00L70.92 25.20M50.00 54.00L83.85 65.00M50.00 54.00L50.00 89.60M50.00 54.00L16.15 65.00M50.00 54.00L29.08 25.20" stroke="#fff" stroke-width="5.6"/>
-    <polygon points="50.00,40.50 62.84,49.83 57.94,64.92 42.06,64.92 37.16,49.83" fill="#fff" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/>
-  </symbol>
-  <symbol id="dragonball" viewBox="0 0 100 100">
-    <circle cx="50" cy="50" r="46" fill="url(#db-gem)" stroke="#8a3600" stroke-width="2"/>
-    <g fill="#d81b1b">
-      <path d="M0-7 1.9-2.4 6.7-2.2 2.9.8 4.2 5.6 0 2.8-4.2 5.6-2.9.8-6.7-2.2-1.9-2.4Z" transform="translate(42 38)"/>
-      <path d="M0-7 1.9-2.4 6.7-2.2 2.9.8 4.2 5.6 0 2.8-4.2 5.6-2.9.8-6.7-2.2-1.9-2.4Z" transform="translate(60 42)"/>
-      <path d="M0-7 1.9-2.4 6.7-2.2 2.9.8 4.2 5.6 0 2.8-4.2 5.6-2.9.8-6.7-2.2-1.9-2.4Z" transform="translate(40 57)"/>
-      <path d="M0-7 1.9-2.4 6.7-2.2 2.9.8 4.2 5.6 0 2.8-4.2 5.6-2.9.8-6.7-2.2-1.9-2.4Z" transform="translate(58 61)"/>
-    </g>
-    <ellipse cx="34" cy="26" rx="11" ry="6" fill="#fff" opacity=".6" transform="rotate(-35 34 26)"/>
-  </symbol>
-  <symbol id="bolt" viewBox="0 0 64 160">
-    <path d="M38 0 10 72h18L6 160l50-96H36L54 0Z" fill="currentColor"/>
-  </symbol>
-</svg>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
 
-<div class="backdrop" aria-hidden="true"></div>
-<canvas id="mesh" aria-hidden="true"></canvas>
+  <!-- Title screen. The start click is what lets the browser play sound. -->
+  <div class="loader" id="loader">
+    <img class="loader-ring" src="assets/vfx/ring.webp" alt="" aria-hidden="true">
+    <img class="loader-flare" src="assets/vfx/flare.webp" alt="" aria-hidden="true">
+    <div class="loader-logo">
+      <p class="loader-kanji" aria-hidden="true"><span>身</span><span>勝</span><span>手</span><span>の</span><span>極</span><span>意</span></p>
+      <h2 class="logo-type" data-text="SKYVAINT">SKYVAINT</h2>
+      <p class="loader-sub">Roblox developer · Luau · UI</p>
+    </div>
+    <div class="loader-bar" aria-hidden="true"><i></i></div>
+    <p class="loader-pct">Loading <b>000</b>%</p>
+    <div class="loader-actions">
+      <button type="button" class="tap-start" data-sound="on">Tap to start</button>
+      <button type="button" class="loader-silent" data-sound="off">Start without sound</button>
+    </div>
+  </div>
 
-<!-- Everything inside #page is swapped when navigating; the rest persists. -->
-<div id="page">
-  <header class="topbar">
-    <a href="index.html" class="brand">skyvaint<span class="dot">.</span></a>
-    <div class="topbar-meta">
-      <span><i class="status-dot"></i>Commissions open</span>
-      <span class="hide-sm">Daimiel, ES · <b id="clock">00:00</b></span>
+  <div class="bg-fx" aria-hidden="true">
+    <i class="beam b1"></i><i class="beam b2"></i><i class="beam b3"></i>
+    <img class="smoke s1" src="assets/vfx/smoke.webp" alt="">
+    <img class="smoke s2" src="assets/vfx/smoke.webp" alt="">
+    <i class="bg-flash"></i>
+    <img class="strike" src="assets/vfx/lightning.webp" alt="">
+  </div>
+  <canvas class="fx-canvas" aria-hidden="true"></canvas>
+  <div class="impact-frame" aria-hidden="true"></div>
+  <div class="cursor" aria-hidden="true"><span class="cursor-ring"><b class="cursor-label"></b></span><span class="cursor-dot"></span></div>
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="site-header" id="top">
+    <div class="shell nav">
+      <a class="brand" href="#top" aria-label="skyvaint home"><img src="assets/brand/favicon.png" width="30" height="30" alt="">skyvaint<span>.</span></a>
+      <button class="nav-toggle" type="button" aria-controls="navigation" aria-expanded="false">Menu</button>
+      <nav id="navigation" aria-label="Main navigation">
+        <a href="#games">Games</a><a href="#ui">UI</a><a href="#scripting">Scripting</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a><a class="mobile-contact" href="#commission">Commission</a>
+      </nav>
+      <div class="nav-tools">
+        <button class="sound-toggle" type="button" aria-pressed="false" aria-label="Sound effects"><span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span class="sound-label">Sound off</span></button>
+        <a class="btn btn-gold btn-sm header-cta" href="#commission"><span>Commission</span></a>
+      </div>
     </div>
   </header>
 
-  <main>
-    <section class="hero">
-      <div class="hero-copy">
-        <span class="label">01 — Roblox developer</span>
-        <h1 class="hero-title">Sky<br><span class="outline">vaint</span></h1>
-        <!-- Stats banner. Visits update live from the games below when the Roblox API is reachable;
-             otherwise the numbers written here are shown — edit them directly. -->
-        <div class="stats-banner" data-user-id="1996540411" data-place-ids="73257710123935,77393318863643,72845937010155">
-          <a class="stat-cell stat-profile" href="https://www.roblox.com/users/1996540411/profile" target="_blank" rel="noreferrer">
-            <img src="images/favicon.png" alt="" width="40" height="40">
-            <span>Roblox profile<b>@skyvaint</b></span>
-          </a>
-          <div class="stat-cell"><span>All-time visits</span><b data-stat="visits">—</b></div>
-          <div class="stat-cell"><span>Peak CCU</span><b>80K</b></div>
-          <div class="stat-cell"><span>Experience</span><b>2+ yrs</b></div>
+  <main id="main">
+    <!-- ================= HERO ================= -->
+    <section class="hero" aria-labelledby="hero-title">
+      <img class="hero-vfx hero-swoosh" src="assets/vfx/swoosh.webp" alt="" aria-hidden="true">
+      <img class="hero-vfx hero-streaks" src="assets/vfx/streaks.webp" alt="" aria-hidden="true">
+      <div class="shell hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="signal"></span><span data-scramble>ROBLOX DEVELOPER // LUAU · UI · LIVEOPS</span></p>
+          <h1 id="hero-title" class="hero-title">
+            <span class="hero-line hero-small">Hi, I’m</span>
+            <span class="hero-line hero-name" data-text="skyvaint.">skyvaint.</span>
+          </h1>
+          <p class="hero-description">I build Roblox games, the Luau systems underneath and the UI on top. Liveops on games with <strong data-live="totalVisits">480M+</strong> visits and an <strong>80K CCU</strong> peak.</p>
+          <div class="actions">
+            <a class="btn btn-gold" data-impact href="#commission"><span>Commission me</span></a>
+            <a class="btn btn-ghost" href="#games"><span>View games</span></a>
+          </div>
         </div>
 
-        <div class="shot-picker">
-          <span class="label shot-picker-label">Choose your shot</span>
-          <div class="shot-buttons">
-            <a href="ui.html" class="shot-card is-ui" aria-label="UI design" data-shot data-shot-icon="bluelock" data-shot-color="#070505" data-tilt>
-              <span class="shot-card-border" aria-hidden="true"></span>
-              <span class="shot-card-media" aria-hidden="true"><img src="images/banners/barou-shot.jpg" alt="" width="498" height="281"></span>
-              <span class="shot-card-glow" aria-hidden="true"></span>
-              <span class="shot-card-sheen" aria-hidden="true"></span>
-              <svg class="shot-card-bolt bolt-1" viewBox="0 0 64 160" aria-hidden="true"><use href="#bolt"/></svg>
-              <svg class="shot-card-bolt bolt-2" viewBox="0 0 64 160" aria-hidden="true"><use href="#bolt"/></svg>
-              <svg class="shot-card-bolt bolt-3" viewBox="0 0 64 160" aria-hidden="true"><use href="#bolt"/></svg>
-              <span class="shot-card-name">UI</span>
-              <svg class="shot-card-ball shot-card-icon shot-origin" viewBox="0 0 100 100" aria-hidden="true"><use href="#bluelock"/></svg>
-            </a>
-            <a href="scripting.html" class="shot-card is-scripting" aria-label="Scripting" data-shot data-shot-icon="dragonball" data-shot-color="#08050f" data-tilt>
-              <span class="shot-card-border" aria-hidden="true"></span>
-              <span class="shot-card-media" aria-hidden="true"><img src="images/banners/goku-black-banner.jpg" alt="" width="1100" height="619"></span>
-              <span class="shot-card-glow" aria-hidden="true"></span>
-              <span class="shot-card-sheen" aria-hidden="true"></span>
-              <svg class="shot-card-bolt bolt-1" viewBox="0 0 64 160" aria-hidden="true"><use href="#bolt"/></svg>
-              <svg class="shot-card-bolt bolt-3" viewBox="0 0 64 160" aria-hidden="true"><use href="#bolt"/></svg>
-              <span class="shot-card-sparks" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>
-              <span class="shot-card-name">Scripting</span>
-              <svg class="shot-card-ball shot-card-icon shot-origin" viewBox="0 0 100 100" aria-hidden="true"><use href="#dragonball"/></svg>
-            </a>
+        <!-- Character card -->
+        <div class="char-card" data-tilt aria-label="skyvaint character card">
+          <div class="char-card-inner">
+            <div class="char-bg" aria-hidden="true">
+              <img class="char-ring" src="assets/vfx/ring.webp" alt="">
+              <img class="char-wings" src="assets/vfx/wings.webp" alt="">
+              <img class="char-smoke" src="assets/vfx/smoke.webp" alt="">
+              <i class="char-rays"></i>
+            </div>
+            <img class="char-avatar" src="assets/brand/fighter.webp" alt="skyvaint character art" width="880" height="1100">
+            <div class="char-stars" aria-label="7 stars">★★★★★★★</div>
+            <div class="char-plate">
+              <span class="char-title">Fullstack Luau</span>
+              <strong class="char-name">SKYVAINT</strong>
+              <span class="char-tags"><i>Programmer</i><i>UI Designer</i><i>Liveops</i></span>
+            </div>
+            <i class="char-sheen" aria-hidden="true"></i>
           </div>
         </div>
       </div>
-
-      <div class="barou-panel" aria-hidden="true">
-        <div class="barou-panel-frame"></div>
-        <div class="barou-panel-art">
-          <img src="images/barou/prime-barou.jpg" alt="" width="634" height="1200" fetchpriority="high">
-        </div>
-        <span class="barou-panel-num">13</span>
-        <span class="barou-panel-tag">Mode: Predator<b>The King</b></span>
-        <svg class="bolt bolt-a" viewBox="0 0 64 160"><use href="#bolt"/></svg>
-        <svg class="bolt bolt-b" viewBox="0 0 64 160"><use href="#bolt"/></svg>
-        <svg class="bolt bolt-c" viewBox="0 0 64 160"><use href="#bolt"/></svg>
-        <svg class="bolt bolt-d" viewBox="0 0 64 160"><use href="#bolt"/></svg>
-      </div>
+      <div class="scroll-cue" aria-hidden="true"><span>scroll</span><i></i></div>
     </section>
 
-    <div class="marquee" aria-hidden="true">
-      <div class="marquee-track">
-        <span>Ego</span><span>Fullstack Luau</span><span>UI Design</span><span>Liveops</span><span>Predator mode</span><span>Future Soccer</span><span>The King</span>
-        <span>Ego</span><span>Fullstack Luau</span><span>UI Design</span><span>Liveops</span><span>Predator mode</span><span>Future Soccer</span><span>The King</span>
-      </div>
+    <!-- ================= STATS ================= -->
+    <div class="shell stats" aria-label="Live stats">
+      <div class="stat"><span class="stat-label"><i class="live-dot"></i>Playing now</span><span class="stat-value" data-live="totalPlaying">—</span><span class="stat-sub">across my games</span></div>
+      <div class="stat"><span class="stat-label">Total visits</span><span class="stat-value" data-live="totalVisits">—</span><span class="stat-sub">games I’ve worked on</span></div>
+      <div class="stat"><span class="stat-label">Peak CCU</span><span class="stat-value">80K</span><span class="stat-sub">Aura Ascension</span></div>
+      <div class="stat"><span class="stat-label">My time</span><span class="stat-value" id="stat-time">--:--</span><span class="stat-sub" id="stat-place">Spain</span></div>
     </div>
 
-    <section class="section about-grid" id="about">
-      <div class="reveal">
-        <span class="label">04 — About</span>
-        <p class="about-statement">Clean systems underneath. <em>UI that doesn't get in the way.</em> Built a little sharper than it needs to be.</p>
+    <div class="ticker" aria-hidden="true"><div class="ticker-track">
+      <span>LUAU <b>◆</b> GAMEPLAY SYSTEMS <b>◆</b> 極 <b>◆</b> UI DESIGN <b>◆</b> LIVEOPS <b>◆</b> 意 <b>◆</b> FIGMA → STUDIO <b>◆</b> 80K CCU <b>◆</b> 身 <b>◆</b></span><span>LUAU <b>◆</b> GAMEPLAY SYSTEMS <b>◆</b> 極 <b>◆</b> UI DESIGN <b>◆</b> LIVEOPS <b>◆</b> 意 <b>◆</b> FIGMA → STUDIO <b>◆</b> 80K CCU <b>◆</b> 身 <b>◆</b></span>
+    </div></div>
+
+    <!-- ================= GAMES ================= -->
+    <section id="games" class="section shell" aria-labelledby="games-title">
+      <div class="section-head reveal">
+        <p class="kicker"><b>01</b><span>Battle record</span></p>
+        <h2 id="games-title" class="title" data-scramble>Games I’ve built &amp; kept running.</h2>
+        <p class="lede">Live numbers straight from Roblox. <span class="updated" data-live="updated"></span></p>
       </div>
-      <div class="reveal about-body">
-        <p>I'm skyvaint, a Roblox developer who pulls things apart to see how they tick, then puts them back together better. Scripting, UI, gameplay loops — I go wherever the project needs me.</p>
-        <div class="stat-list">
-          <div class="stat-row"><span>Based in</span><b>Ciudad Real, ES</b></div>
-          <div class="stat-row"><span>Peak CCU shipped</span><b>80K</b></div>
-          <div class="stat-row"><span>Founder</span><b>Future Soccer</b></div>
+      <div class="game-grid" id="game-grid"></div>
+    </section>
+
+    <!-- ================= UI ================= -->
+    <section id="ui" class="section shell" aria-labelledby="ui-title">
+      <div class="section-head reveal">
+        <p class="kicker"><b>02</b><span>Interface design</span></p>
+        <h2 id="ui-title" class="title" data-scramble>Past UI work.</h2>
+        <ul class="chips"><li>Anime</li><li>Sports</li><li>Slop</li><li class="is-figma">Made in Figma</li></ul>
+        <p class="price-line">Per frame <b>$15</b> or <b>3,500 R$</b></p>
+      </div>
+      <div class="ui-grid" id="ui-grid"></div>
+      <div class="more-row"><button type="button" class="btn btn-ghost" id="ui-more"><span>Show all</span></button></div>
+    </section>
+
+    <!-- ================= SCRIPTING ================= -->
+    <section id="scripting" class="section shell" aria-labelledby="scripting-title">
+      <div class="section-head reveal">
+        <p class="kicker"><b>03</b><span>Programming</span></p>
+        <h2 id="scripting-title" class="title" data-scramble>Systems, made to order.</h2>
+        <p class="lede">Every system is a <strong>custom request</strong>. Tell me what you need and I’ll quote it.</p>
+      </div>
+      <div class="code-cta reveal">
+        <img class="smoke-in" src="assets/vfx/smoke.webp" alt="" aria-hidden="true">
+        <div class="arts-cta">
+          <p>Custom request · Contact required</p>
+          <h3>Tell me the system.<br>I’ll build it.</h3>
+          <ul><li>Combat</li><li>Movement</li><li>Pets &amp; RNG</li><li>Economy</li><li>Data</li><li>Liveops</li><li>Sports physics</li><li>And more</li></ul>
+          <button type="button" class="btn btn-gold btn-lg" data-request="Scripting system"><span>Commission a system</span></button>
+        </div>
+        <div class="code-art" aria-hidden="true">
+          <!-- drop your art here: assets/art/emblem.png and assets/art/scripting.png -->
+          <img class="art-emblem" src="assets/art/emblem.png" alt="" onerror="this.remove()">
+          <img class="art-main" src="assets/art/scripting.png" alt="" onerror="this.remove()">
         </div>
       </div>
     </section>
 
-    <section class="section" id="contact">
-      <span class="label">05 — Find me</span>
-      <h2 class="section-title reveal">Find me <em>on the field.</em></h2>
-      <div class="social-grid">
-        <a href="https://discord.com/users/1367774975045406801" target="_blank" rel="noreferrer" class="social-card reveal" data-tilt>
-          <img src="images/icons/discord.svg" alt="">
-          <span class="social-name">Discord</span><span class="social-handle">@skyvaint</span>
-        </a>
-        <a href="https://x.com/skyvaint" target="_blank" rel="noreferrer" class="social-card reveal" data-tilt>
-          <img src="images/icons/x.svg" alt="">
-          <span class="social-name">X</span><span class="social-handle">@skyvaint</span>
-        </a>
-        <a href="https://www.roblox.com/users/1996540411/profile" target="_blank" rel="noreferrer" class="social-card reveal" data-tilt>
-          <img src="images/icons/roblox.svg" alt="">
-          <span class="social-name">Roblox</span><span class="social-handle">skyvaint</span>
-        </a>
+    <!-- ================= STUDIOS + TOOLS ================= -->
+    <section id="studios" class="section shell studios-grid" aria-labelledby="studios-title">
+      <div>
+        <div class="section-head reveal">
+          <p class="kicker"><b>04</b><span>Experience</span></p>
+          <h2 id="studios-title" class="title" data-scramble>Where I’ve played.</h2>
+        </div>
+        <ol class="timeline" id="timeline"></ol>
+      </div>
+      <aside class="reveal" aria-labelledby="dc-title">
+        <p class="kicker dc-label"><b>DC</b><span id="dc-title">Discord</span></p>
+        <div class="dc-card">
+          <div class="dc-banner"><img src="assets/discord/banner.webp" alt="" loading="lazy"></div>
+          <div class="dc-head">
+            <div class="dc-avatar">
+              <img class="av" src="assets/discord/avatar.webp" alt="skyvaint's Discord avatar" width="92" height="92">
+              <img class="deco" src="assets/discord/decoration.webp" alt="" loading="lazy">
+              <i class="dot" title="Status"></i>
+            </div>
+            <span class="dc-clan"><img src="assets/discord/clan.png" alt="">SKY</span>
+          </div>
+          <div class="dc-body">
+            <h3 class="dc-name">skyvaint 吾艾</h3>
+            <span class="dc-user">@skyvaint</span>
+            <div class="dc-box"><b>About me</b><span class="dc-about">Roblox programmer &amp; UI designer. DMs open for commissions and investors.</span></div>
+            <a class="btn btn-gold btn-sm dc-link" href="https://discord.com/users/1367774975045406801" target="_blank" rel="noopener noreferrer"><span>Message on Discord</span></a>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <!-- ================= PRICING ================= -->
+    <section id="pricing" class="section shell" aria-labelledby="pricing-title">
+      <div class="section-head reveal">
+        <p class="kicker"><b>05</b><span>Commissions</span></p>
+        <h2 id="pricing-title" class="title" data-scramble>Pricing.</h2>
+        <p class="lede">Commissions are open. Final quotes depend on scope.</p>
+      </div>
+      <div class="price-grid">
+        <article class="price-card is-hot reveal" data-type="Full game">
+          <p class="price-label">Full game</p>
+          <strong class="price">$600<small>+</small></strong>
+          <p>A complete game, plus an agreed percentage for liveops.</p>
+          <button type="button" class="btn btn-gold btn-sm" data-request="Full game"><span>Request</span></button>
+        </article>
+        <article class="price-card reveal">
+          <p class="price-label">UI frame</p>
+          <strong class="price">3,500<small> R$</small></strong>
+          <p>Per UI frame, or $15. Designed in Figma, built and wired in Studio.</p>
+          <button type="button" class="btn btn-ghost btn-sm" data-request="UI frames"><span>Request</span></button>
+        </article>
+        <article class="price-card reveal">
+          <p class="price-label">Scripting</p>
+          <strong class="price">Custom</strong>
+          <p>Systems are quoted per request, based on scope and timeline.</p>
+          <button type="button" class="btn btn-ghost btn-sm" data-request="Scripting system"><span>Request</span></button>
+        </article>
+      </div>
+      <div class="pay reveal">
+        <span class="pay-label">Payment</span>
+        <ul><li>PayPal</li><li>Bank transfer</li><li>Robux</li><li>Gift cards</li><li>Discord decorations</li><li>Nameplates</li><li>Nitro</li></ul>
       </div>
     </section>
 
-    <section class="section cta">
-      <span class="label">06 — Commissions open</span>
-      <h2 class="section-title reveal">Let's <em>build.</em></h2>
-      <div class="cta-actions">
-        <a href="https://discord.com/users/1367774975045406801" target="_blank" rel="noreferrer" class="btn btn-solid">Message on Discord</a>
-        <a href="ui.html" class="btn btn-line" data-shot data-shot-icon="bluelock" data-shot-color="#070505">See UI work</a>
-        <a href="scripting.html" class="btn btn-line" data-shot data-shot-icon="dragonball" data-shot-color="#08050f">See scripting</a>
+    <!-- ================= COMMISSION FORM ================= -->
+    <section id="commission" class="section shell commission" aria-labelledby="commission-title">
+      <div class="commission-copy">
+        <div class="section-head reveal">
+          <p class="kicker"><b>06</b><span>Summon me</span></p>
+          <h2 id="commission-title" class="title" data-scramble>Let’s build your game.</h2>
+          <p class="lede">Tell me what you need. It goes straight to my Discord, and I’ll reply there.</p>
+        </div>
+        <ul class="socials" id="socials"></ul>
       </div>
+
+      <form class="form reveal" id="commission-form" novalidate>
+        <div class="form-row">
+          <label class="field"><span>Name</span><input name="name" autocomplete="name" maxlength="60" placeholder="What should I call you?"></label>
+          <label class="field"><span>Discord username <b>*</b></span><input name="discord" required maxlength="40" placeholder="yourname" autocomplete="off"></label>
+        </div>
+        <div class="form-row">
+          <label class="field"><span>Project type <b>*</b></span>
+            <select name="type" required>
+              <option value="">Choose one</option>
+              <option>Full game</option><option>UI frames</option><option>Scripting system</option><option>Liveops</option><option>Investment</option><option>Other</option>
+            </select>
+          </label>
+          <label class="field"><span>Budget</span>
+            <select name="budget">
+              <option value="">Not sure yet</option>
+              <option>Under $50</option><option>$50 – $150</option><option>$150 – $600</option><option>$600+</option><option>Robux</option><option>Revenue share</option>
+            </select>
+          </label>
+        </div>
+        <div class="form-row">
+          <label class="field"><span>Timeline</span>
+            <select name="timeline">
+              <option value="">Flexible</option>
+              <option>ASAP</option><option>1 – 2 weeks</option><option>2 – 4 weeks</option><option>1 month+</option>
+            </select>
+          </label>
+          <label class="field"><span>Game or reference link</span><input name="link" type="url" maxlength="200" placeholder="https://www.roblox.com/games/…"></label>
+        </div>
+        <label class="field"><span>What do you need? <b>*</b></span><textarea name="details" required minlength="20" maxlength="1500" rows="5" placeholder="Features, references, target devices, anything I should know."></textarea><em class="count"><b>0</b>/1500</em></label>
+        <label class="hpot" aria-hidden="true">Leave this empty<input name="website" tabindex="-1" autocomplete="off"></label>
+        <div class="form-foot">
+          <button type="submit" class="btn btn-gold btn-lg" data-impact><span>Send request</span></button>
+          <p class="form-status" role="status" aria-live="polite"></p>
+        </div>
+      </form>
     </section>
+
+    <!-- ================= FAQ + TERMS ================= -->
+    <div class="shell info-grid">
+      <section id="faq" class="section" aria-labelledby="faq-title">
+        <p class="kicker"><b>07</b><span>Questions</span></p>
+        <h2 id="faq-title" class="title" data-scramble>FAQ.</h2>
+        <details class="reveal"><summary>What can I commission?</summary><p>Full games, Roblox UI and Luau systems: menus, HUDs, combat, movement, economies, data and liveops.</p></details>
+        <details class="reveal"><summary>How do I get a quote?</summary><p>Send the form above or message me on Discord with your feature list, references, target devices and timeline.</p></details>
+        <details class="reveal"><summary>Can you build for mobile and console?</summary><p>Yes. Tell me which devices you target so I can factor layout, controls and testing into the quote.</p></details>
+        <details class="reveal"><summary>Do you accept revenue share?</summary><p>Yes, with an agreed USD payment upfront. We agree on both the upfront amount and the percentage before work starts.</p></details>
+      </section>
+      <section id="terms" class="section terms" aria-labelledby="terms-title">
+        <p class="kicker"><b>08</b><span>Terms</span></p>
+        <h2 id="terms-title" class="title" data-scramble>Terms of service.</h2>
+        <p>By agreeing to start a commission with me, you accept the payment terms for the option we agree on.</p>
+        <dl>
+          <div><dt>USD</dt><dd>50% of the agreed quote is due before work starts, and 50% is due at completion.</dd></div>
+          <div><dt>Robux</dt><dd>50% of the agreed quote is due before work starts, and 50% is due at completion.</dd></div>
+          <div><dt>Revenue share</dt><dd>An agreed USD payment is due before work starts, alongside the agreed revenue share. The upfront payment covers the work even if the game underperforms.</dd></div>
+        </dl>
+      </section>
+    </div>
   </main>
 
-  <footer class="footer-bar">
-    <span>© <span id="year"></span> skyvaint.</span>
-    <span>Fullstacked Luau · Programmer &amp; UI designer</span>
+  <footer class="shell footer">
+    <a class="brand" href="#top"><img src="assets/brand/favicon.png" width="24" height="24" alt="">skyvaint<span>.</span></a>
+    <span>© <span id="year"></span> skyvaint · Fullstack Luau · Programmer &amp; UI designer</span>
+    <div class="footer-links"><a href="#terms">Terms</a><button class="motion-toggle" type="button" aria-pressed="false">Pause motion</button></div>
   </footer>
-</div>
 
-<canvas id="thunder" aria-hidden="true"></canvas>
-<div class="flash" aria-hidden="true"></div>
+  <!-- Game details -->
+  <dialog id="game-dialog" aria-labelledby="game-dialog-title">
+    <div class="dialog-inner">
+      <div class="dialog-head"><h2 id="game-dialog-title"></h2><button type="button" class="icon-btn dialog-close" aria-label="Close">×</button></div>
+      <div id="game-dialog-content"></div>
+    </div>
+  </dialog>
 
-<aside class="soundtrack" aria-label="Ambient soundtrack">
-  <div class="soundtrack-heading"><span class="soundtrack-label">Ambient</span><span class="soundwave" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span></div>
-  <strong id="track-name">Calm signal</strong>
-  <div class="soundtrack-controls"><button id="soundtrack-toggle" type="button" aria-label="Play ambient soundtrack">Play</button></div>
-  <span id="track-status">Muted · press Play</span>
-</aside>
+  <!-- UI lightbox -->
+  <dialog id="lightbox" aria-label="UI design viewer">
+    <button type="button" class="icon-btn lb-close" aria-label="Close">×</button>
+    <button type="button" class="icon-btn lb-prev" aria-label="Previous">‹</button>
+    <figure class="lb-figure"><img alt=""><figcaption></figcaption></figure>
+    <button type="button" class="icon-btn lb-next" aria-label="Next">›</button>
+  </dialog>
 
-<script src="common.js"></script>
-<script src="effects.js"></script>
+  <!-- Summon animation after a commission is sent -->
+  <div class="summon" id="summon" hidden>
+    <div class="summon-stage">
+      <img class="summon-ring" src="assets/vfx/ring.webp" alt="">
+      <img class="summon-wings" src="assets/vfx/wings.webp" alt="">
+      <img class="summon-flare" src="assets/vfx/flare.webp" alt="">
+      <i class="summon-rays"></i>
+      <div class="summon-card">
+        <img src="assets/brand/fighter.webp" alt="">
+        <strong>Request received</strong>
+        <p>I’ll message <b class="summon-discord"></b> on Discord soon.</p>
+        <button type="button" class="btn btn-gold btn-sm summon-close"><span>Nice</span></button>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
